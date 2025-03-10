@@ -17,14 +17,21 @@
             </div>
             <div class="nav-links">
                 <a href="{% url 'tc_app:home' %}">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'tc_app:membership' %}">Membership</a>
+                {% endif %}
                 <a href="#about">About</a>
-                <a href="#membership">Membership</a>
-                <a href="#events">Events</a>
                 <a href="#contact">Contact</a>
             </div>
             <div class="auth-buttons">
-                <a href="{% url 'tc_app:login' %}" class="login-button">Login</a>
-                <a href="{% url 'tc_app:signup' %}" class="signup-button">Signup</a>
+                {% if user.is_authenticated %}
+                    <span class="welcome-text">Welcome, {{ user.username }}</span>
+                    <a href="{% url 'tc_app:membership' %}" class="membership-button">My Membership</a>
+                    <a href="{% url 'tc_app:logout' %}" class="logout-button">Logout</a>
+                {% else %}
+                    <a href="{% url 'tc_app:login' %}" class="login-button">Login</a>
+                    <a href="{% url 'tc_app:signup' %}" class="signup-button">Signup</a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -32,7 +39,7 @@
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
-        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+        <div class="message {{ message.tags }}">
             {{ message }}
         </div>
         {% endfor %}

@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+import json
 
 # Create your views here.
 from django.views.generic import TemplateView
-from .models import Testimonial, MembershipType, CustomUser, UserProfile
+from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -101,3 +103,58 @@ def signup_view(request):
             })
 
     return render(request, 'signup.html')
+
+@login_required
+def membership_view(request):
+    if request.method == 'POST':
+        try:
+            # Get form data
+            full_name = request.POST.get('full_name')
+            email = request.POST.get('email')
+            membership_type = request.POST.get('membership_type')
+            interests = request.POST.getlist('interests')
+            terms = request.POST.get('terms') == 'on'
+            
+            # Handle profile image
+            profile_image = request.FILES.get('profile_image')
+
+            # Validate data
+            if not all([full_name, email, membership_type, interests, terms]):
+                messages.error(request, 'All fields are required')
+                return render(request, 'membership.html')
+
+            # Create or update membership
+            membership, created = Membership.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'full_name': full_name,
+                    'email': email,
+                    'membership_type': membership_type,
+                    'interests': json.dumps(interests),  # Convert list to JSON string
+                    'terms_accepted': terms,
+                }
+            )
+
+            if profile_image:
+                membership.profile_image = profile_image
+                membership.save()
+
+            messages.success(request, 'Membership updated successfully!')
+            return redirect('tc_app:membership')
+
+        except Exception as e:
+            print(f"Error: {str(e)}")  # For debugging
+            messages.error(request, f'Error updating membership: {str(e)}')
+            return render(request, 'membership.html')
+
+    # GET request
+    try:
+        membership = Membership.objects.get(user=request.user)
+        context = {
+            'membership': membership,
+            'interests': json.loads(membership.interests) if membership.interests else []
+        }
+    except Membership.DoesNotExist:
+        context = {'membership': None}
+
+    return render(request, 'membership.html', context)

@@ -69,29 +69,51 @@ body {
 
 .auth-buttons {
     display: flex;
+    align-items: center;
     gap: 15px;
 }
 
-.login-button, .signup-button {
-    padding: 8px 20px;
+.welcome-text {
+    color: white;
+    font-size: 0.9em;
+}
+
+.membership-button,
+.logout-button,
+.login-button,
+.signup-button {
+    padding: 8px 16px;
     border-radius: 5px;
     text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
+}
+
+.membership-button {
+    background-color: #20B2AA;
+    color: white;
+    border: 1px solid white;
+}
+
+.logout-button {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
 }
 
 .login-button {
     background-color: transparent;
     color: white;
-    border: 2px solid white;
+    border: 1px solid white;
 }
 
-.login-button:hover {
+.signup-button {
     background-color: white;
     color: #20B2AA;
 }
 
-.signup-button {
+.membership-button:hover,
+.logout-button:hover,
+.login-button:hover {
     background-color: white;
     color: #20B2AA;
 }
@@ -635,4 +657,131 @@ body {
 .message {
     animation: fadeOut 5s forwards;
     animation-delay: 3s;
+}
+
+/* Membership Page Styles */
+.membership-page {
+    background-color: #20B2AA;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.membership-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.membership-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.membership-header img.logo {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.membership-header h1 {
+    color: #20B2AA;
+    font-size: 24px;
+}
+
+.membership-form .form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.image-upload-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid #20B2AA;
+}
+
+.upload-button {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #20B2AA;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-button:hover {
+    background-color: #1a8f88;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.interests-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    background-color: #gray;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    background-color: #20B2AA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .interests-container {
+        grid-template-columns: 1fr;
+    }
 }
