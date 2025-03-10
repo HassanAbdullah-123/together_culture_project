@@ -53,29 +53,28 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Interests</label>
-                <div class="interests-container">
-                    <label class="checkbox-container">
-                        <input type="checkbox" name="interests" value="caring">
-                        <span class="checkmark"></span>
-                        Caring
-                    </label>
-                    <label class="checkbox-container">
-                        <input type="checkbox" name="interests" value="sharing">
-                        <span class="checkmark"></span>
-                        Sharing
-                    </label>
-                    <label class="checkbox-container">
-                        <input type="checkbox" name="interests" value="experiencing">
-                        <span class="checkmark"></span>
-                        Experiencing
-                    </label>
-                    <label class="checkbox-container">
-                        <input type="checkbox" name="interests" value="working">
-                        <span class="checkmark"></span>
-                        Working
-                    </label>
+            <!-- Interests Section -->
+            <div class="space-y-2">
+                <label class="block text-sm font-medium text-gray-700">Interests</label>
+                <div class="interests-container space-y-2">
+                    <div class="flex flex-wrap gap-2" id="selected-interests">
+                        {% for interest in interests %}
+                            <div class="interest-tag bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center">
+                                <span>{{ interest }}</span>
+                                <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeInterest(this)">×</button>
+                                <input type="hidden" name="interests[]" value="{{ interest }}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="interest-input" 
+                               class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                               placeholder="Add an interest">
+                        <button type="button" onclick="addInterest()" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Add
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -105,5 +104,35 @@ function previewImage(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+function addInterest() {
+    const input = document.getElementById('interest-input');
+    const interest = input.value.trim();
+    
+    if (interest) {
+        const container = document.getElementById('selected-interests');
+        const interestTag = document.createElement('div');
+        interestTag.className = 'interest-tag bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center';
+        interestTag.innerHTML = `
+            <span>${interest}</span>
+            <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeInterest(this)">×</button>
+            <input type="hidden" name="interests[]" value="${interest}">
+        `;
+        container.appendChild(interestTag);
+        input.value = '';
+    }
+}
+
+function removeInterest(button) {
+    button.parentElement.remove();
+}
+
+// Allow adding interests with Enter key
+document.getElementById('interest-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        addInterest();
+    }
+});
 </script>
 {% endblock %}

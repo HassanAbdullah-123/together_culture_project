@@ -1,17 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
 
 # Create your models here.
 from django.db import models
 
 class Testimonial(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='testimonials/')
-    testimonial_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=100, default='Anonymous')
+    role = models.CharField(max_length=100, blank=True, null=True, default='')
+    content = models.TextField()
+    date_added = models.DateTimeField(default=timezone.now)
+    is_featured = models.BooleanField(default=False)
+    image = models.ImageField(upload_to='testimonials/', blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"Testimonial by {self.name}"
 
 class MembershipType(models.Model):
     name = models.CharField(max_length=100)
@@ -64,32 +67,122 @@ class UserProfile(models.Model):
         return f"{self.user.username}'s profile"
 
 class Membership(models.Model):
-    MEMBERSHIP_CHOICES = [
-        ('community', 'Community Member'),
-        ('key_access', 'Key Access Member'),
-        ('workspace', 'Creative Workspace Member'),
-    ]
-
-    INTEREST_CHOICES = [
-        ('caring', 'Caring'),
-        ('sharing', 'Sharing'),
-        ('experiencing', 'Experiencing'),
-        ('working', 'Working'),
+    MEMBERSHIP_TYPES = [
+        ('BASIC', 'Basic'),
+        ('PREMIUM', 'Premium'),
+        ('PRO', 'Professional'),
     ]
 
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
-    email = models.EmailField()
+    membership_type = models.CharField(
+        max_length=10, 
+        choices=MEMBERSHIP_TYPES, 
+        default='BASIC'
+    )
+    full_name = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        default=''
+    )
+    bio = models.TextField(
+        blank=True, 
+        null=True, 
+        default=''
+    )
+    location = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        default=''
+    )
+    phone_number = models.CharField(
+        max_length=20, 
+        blank=True, 
+        null=True, 
+        default=''
+    )
     profile_image = models.ImageField(
-        upload_to='profile_images/',
+        upload_to='profile_images/', 
+        blank=True, 
+        null=True
+    )
+    interests = models.TextField(default='[]', blank=True)
+    join_date = models.DateTimeField(
+        default=timezone.now
+    )
+    expiration_date = models.DateTimeField(
+        null=True, 
+        blank=True
+    )
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    def __str__(self):
+        return f"{self.user.username}'s Membership"
+
+    def get_membership_type_display(self):
+        return dict(self.MEMBERSHIP_TYPES).get(self.membership_type, '')
+
+# If you have an Event model
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        default=''
+    )
+    date = models.DateTimeField()
+    location = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        default=''
+    )
+    image = models.ImageField(
+        upload_to='events/',
+        blank=True,
+        null=True
+    )
+    capacity = models.PositiveIntegerField(
         null=True,
         blank=True
     )
-    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
-    interests = models.JSONField()  # Store multiple interests
-    terms_accepted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(
+        default=True
+    )
 
     def __str__(self):
-        return f"{self.full_name} - {self.membership_type}"
+        return self.title
+
+# If you have a Module model
+class Module(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(
+        blank=True,
+        null=True,
+        default=''
+    )
+    content = models.TextField()
+    order = models.PositiveIntegerField(
+        default=0
+    )
+    is_active = models.BooleanField(
+        default=True
+    )
+    created_at = models.DateTimeField(
+        default=timezone.now
+    )
+    image = models.ImageField(
+        upload_to='modules/',
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['order']
     
