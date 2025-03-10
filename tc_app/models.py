@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
+import json
 
 # Create your models here.
 from django.db import models
@@ -124,6 +125,13 @@ class Membership(models.Model):
 
     def get_membership_type_display(self):
         return dict(self.MEMBERSHIP_TYPES).get(self.membership_type, '')
+
+    def get_interests(self):
+        """Return interests as a list"""
+        try:
+            return json.loads(self.interests)
+        except (json.JSONDecodeError, TypeError):
+            return []
 
 # If you have an Event model
 class Event(models.Model):

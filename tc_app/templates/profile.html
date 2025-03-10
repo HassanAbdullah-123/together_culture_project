@@ -3,106 +3,70 @@
 
 {% block content %}
 <div class="profile-page">
-
-
     <div class="profile-container">
-        <div class="profile-grid">
-            <!-- Left Column -->
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-image">
+                {% if user.membership.profile_image %}
+                    <img src="{{ user.membership.profile_image.url }}" alt="Profile">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="Profile">
+                {% endif %}
+            </div>
             <div class="profile-info">
-                <h2>Set Up Your Profile</h2>
-                <div class="profile-photo-section">
-                    {% if user.membership.profile_image %}
-                        <img src="{{ user.membership.profile_image.url }}" alt="Profile" class="large-profile-pic">
-                    {% else %}
-                        <img src="{% static 'images/default-profile.png' %}" alt="Profile" class="large-profile-pic">
-                    {% endif %}
-                    <button class="upload-btn">Upload New Photo</button>
-                </div>
+                <h1>{{ user.membership.full_name }}</h1>
+                <span class="membership-badge">{{ user.membership.get_membership_type_display }}</span>
+            </div>
+            <a href="{% url 'tc_app:edit_profile' %}" class="edit-profile-btn">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        </div>
 
-                <div class="member-info">
-                    <h3>Member Info</h3>
-                    <div class="info-box">
-                        <div class="info-item">
-                            <i class="fas fa-user"></i>
-                            <p><strong>Full Name:</strong> {{ user.membership.full_name }}</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <p><strong>Email Address:</strong> {{ user.membership.email }}</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <p><strong>Location:</strong> {{ user.membership.location|default:"Not specified" }}</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-calendar"></i>
-                            <p><strong>Joined On:</strong> {{ user.membership.created_at|date:"F j, Y" }}</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-id-card"></i>
-                            <p><strong>Membership Level:</strong> {{ user.membership.get_membership_type_display }}</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-check-circle"></i>
-                            <p><strong>Membership Status:</strong> Active</p>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-clock"></i>
-                            <p><strong>Member Since:</strong> {{ user.membership.created_at|date:"F Y" }}</p>
-                        </div>
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <div class="profile-section">
+                <h2>Personal Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Email</label>
+                        <p>{{ user.membership.email }}</p>
                     </div>
-                    <div class="profile-actions">
-                        <a href="{% url 'tc_app:edit_profile' %}" class="edit-profile-btn">Edit Profile</a>
-                        <a href="{% url 'tc_app:membership' %}" class="membership-btn">Membership Details</a>
+                    <div class="info-item">
+                        <label>Phone</label>
+                        <p>{{ user.membership.phone_number|default:"Not provided" }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Location</label>
+                        <p>{{ user.membership.location|default:"Not provided" }}</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Column -->
-            <div class="profile-activities">
-                <section class="my-events">
-                    <h3>My Events</h3>
-                    <div class="events-grid">
-                        <div class="event-card">
-                            <img src="{% static 'images/event1.jpg' %}" alt="Creative Networking">
-                            <h4>Creative Networking</h4>
-                        </div>
-                        <div class="event-card">
-                            <img src="{% static 'images/event2.jpg' %}" alt="Community Campaign">
-                            <h4>Community Campaign</h4>
-                        </div>
-                        <div class="event-card">
-                            <img src="{% static 'images/event3.jpg' %}" alt="Digital Marketing">
-                            <h4>Digital Marketing</h4>
-                        </div>
-                    </div>
-                </section>
+            <div class="profile-section">
+                <h2>Bio</h2>
+                <p class="bio-text">{{ user.membership.bio|default:"No bio provided" }}</p>
+            </div>
 
-                <section class="my-activities">
-                    <h3>My Activities</h3>
-                    <div class="activities-box">
-                        <!-- Activities will be dynamically loaded -->
-                        <p>No recent activities</p>
-                    </div>
-                </section>
+            <div class="profile-section">
+                <h2>Interests</h2>
+                <div class="interests-tags">
+                    {% for interest in user.membership.get_interests %}
+                        <span class="interest-tag">{{ interest }}</span>
+                    {% empty %}
+                        <p>No interests added yet</p>
+                    {% endfor %}
+                </div>
+            </div>
 
-                <section class="my-modules">
-                    <h3>My Modules</h3>
-                    <div class="modules-grid">
-                        <div class="module-card">
-                            <img src="{% static 'images/module1.jpg' %}" alt="Entrepreneurship 101">
-                            <h4>Entrepreneurship 101</h4>
-                        </div>
-                        <div class="module-card">
-                            <img src="{% static 'images/module2.jpg' %}" alt="Content Creation">
-                            <h4>Content Creation</h4>
-                        </div>
-                        <div class="module-card">
-                            <img src="{% static 'images/module3.jpg' %}" alt="Digital Marketing">
-                            <h4>Digital Marketing</h4>
-                        </div>
-                    </div>
-                </section>
+            <div class="profile-section">
+                <h2>Membership Details</h2>
+                <div class="membership-info">
+                    <p><strong>Type:</strong> {{ user.membership.get_membership_type_display }}</p>
+                    <p><strong>Join Date:</strong> {{ user.membership.join_date|date:"F j, Y" }}</p>
+                    {% if user.membership.expiration_date %}
+                        <p><strong>Expires:</strong> {{ user.membership.expiration_date|date:"F j, Y" }}</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

@@ -5,11 +5,11 @@
 <div class="membership-page">
     <div class="membership-container">
         <div class="membership-header">
-            <img src="{% static 'images/logo.png' %}" alt="Together Culture" class="logo">
-            <h1>Together Culture</h1>
+            <h1>Membership Application</h1>
+            <p>Join our community by completing your membership details</p>
         </div>
 
-        <form method="post" enctype="multipart/form-data" class="membership-form">
+        <form method="post" enctype="multipart/form-data" class="membership-form" id="membershipForm">
             {% csrf_token %}
             
             {% if messages %}
@@ -20,84 +20,185 @@
             </div>
             {% endif %}
 
-            <div class="form-group">
-                <label for="full_name">Full Name</label>
-                <input type="text" id="full_name" name="full_name" value="{{ membership.full_name|default:'' }}" required>
-            </div>
+            <div class="form-grid">
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-group">
+                        <label for="full_name">Full Name*</label>
+                        <input type="text" id="full_name" name="full_name" 
+                               value="{{ membership.full_name|default:'' }}" 
+                               class="{% if form.full_name.errors %}error{% endif %}" required>
+                    </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" value="{{ membership.email|default:'' }}" required>
-            </div>
+                    <div class="form-group">
+                        <label for="email">Email Address*</label>
+                        <input type="email" id="email" name="email" 
+                               value="{{ membership.email|default:'' }}" 
+                               class="{% if form.email.errors %}error{% endif %}" required>
+                    </div>
 
-            <div class="form-group">
-                <label for="profile_image">Profile Image</label>
-                <div class="image-upload-container">
-                    {% if membership.profile_image %}
-                        <img id="preview" src="{{ membership.profile_image.url }}" alt="Profile Preview">
-                    {% else %}
-                        <img id="preview" src="{% static 'images/default-profile.png' %}" alt="Profile Preview">
-                    {% endif %}
-                    <input type="file" id="profile_image" name="profile_image" accept="image/*" onchange="previewImage(this)">
-                    <label for="profile_image" class="upload-button">Choose Image</label>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" 
+                               value="{{ membership.phone_number|default:'' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" 
+                               value="{{ membership.location|default:'' }}">
+                    </div>
+                </div>
+
+                <!-- Profile Image -->
+                <div class="form-section">
+                    <h3>Profile Image</h3>
+                    <div class="profile-upload">
+                        <div class="image-preview">
+                            {% if membership.profile_image %}
+                                <img id="preview" src="{{ membership.profile_image.url }}" alt="Profile Preview">
+                            {% else %}
+                                <img id="preview" src="{% static 'images/default-profile.png' %}" alt="Profile Preview">
+                            {% endif %}
+                        </div>
+                        <div class="upload-controls">
+                            <label for="profile_image" class="upload-btn">
+                                <i class="fas fa-camera"></i> Choose Photo
+                            </label>
+                            <input type="file" id="profile_image" name="profile_image" 
+                                   accept="image/*" onchange="previewImage(this)" class="hidden">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="membership_type">Membership Type</label>
-                <select id="membership_type" name="membership_type" required>
-                    <option value="">Choose Type</option>
-                    <option value="community">Community Member</option>
-                    <option value="key_access">Key Access Member</option>
-                    <option value="workspace">Creative Workspace Member</option>
-                </select>
+            <!-- Membership Type -->
+            <div class="form-section">
+                <h3>Membership Type*</h3>
+                <div class="membership-types">
+                    {% for type in membership_types %}
+                    <div class="membership-option">
+                        <input type="radio" id="{{ type.code|lower }}" 
+                               name="membership_type" 
+                               value="{{ type.code }}"
+                               {% if membership.membership_type == type.code %}checked{% endif %}
+                               required>
+                        <label for="{{ type.code|lower }}">
+                            <div class="type-content">
+                                <span class="type-name">{{ type.name }}</span>
+                                <span class="type-description">{{ type.description }}</span>
+                            </div>
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
             </div>
 
             <!-- Interests Section -->
-            <div class="space-y-2">
-                <label class="block text-sm font-medium text-gray-700">Interests</label>
-                <div class="interests-container space-y-2">
-                    <div class="flex flex-wrap gap-2" id="selected-interests">
-                        {% for interest in interests %}
-                            <div class="interest-tag bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center">
-                                <span>{{ interest }}</span>
-                                <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeInterest(this)">×</button>
-                                <input type="hidden" name="interests[]" value="{{ interest }}">
-                            </div>
-                        {% endfor %}
+            <div class="form-section">
+                <h3>Interests</h3>
+                <div class="interests-container">
+                    <div id="selected-interests" class="selected-interests">
+                        {% if membership.interests %}
+                            {% with interests=membership.interests|safe %}
+                                {% if interests != '[]' %}
+                                    {% for interest in membership.get_interests %}
+                                        <div class="interest-tag">
+                                            <span>{{ interest }}</span>
+                                            <button type="button" onclick="removeInterest(this)">×</button>
+                                            <input type="hidden" name="interests[]" value="{{ interest }}">
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
                     </div>
-                    <div class="flex gap-2">
+                    <div class="interest-input-group">
                         <input type="text" id="interest-input" 
-                               class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                               placeholder="Add an interest">
-                        <button type="button" onclick="addInterest()" 
-                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                            Add
+                               placeholder="Add your interests (e.g., Art, Technology, Music)">
+                        <button type="button" onclick="addInterest()" class="add-interest-btn">
+                            <i class="fas fa-plus"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group terms">
-                <label class="checkbox-container">
-                    <input type="checkbox" name="terms" required>
-                    <span class="checkmark"></span>
-                    Agree Terms and Conditions
-                </label>
+            <div class="form-section terms-section">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the Terms and Conditions*</label>
+                </div>
             </div>
 
             <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="window.history.back()">Cancel</button>
-                <button type="submit" class="submit-btn">Submit</button>
+                <button type="button" class="cancel-btn" onclick="history.back()">Cancel</button>
+                <button type="submit" class="submit-btn">Submit Application</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+// Update the form validation script
+document.getElementById('membershipForm').addEventListener('submit', function(e) {
+    const requiredFields = {
+        'full_name': 'Full Name',
+        'email': 'Email Address',
+        'membership_type': 'Membership Type',
+        'terms': 'Terms and Conditions'
+    };
+    
+    let errors = [];
+    
+    // Check each required field
+    Object.entries(requiredFields).forEach(([fieldId, fieldName]) => {
+        const element = document.getElementById(fieldId);
+        
+        if (element.type === 'radio') {
+            // Check if any radio button in the group is selected
+            const radioGroup = document.getElementsByName(element.name);
+            const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+            if (!isChecked) {
+                errors.push(fieldName);
+                element.closest('.membership-types').classList.add('error');
+            }
+        } else if (element.type === 'checkbox') {
+            if (!element.checked) {
+                errors.push(fieldName);
+                element.closest('.checkbox-group').classList.add('error');
+            }
+        } else {
+            if (!element.value.trim()) {
+                errors.push(fieldName);
+                element.classList.add('error');
+            }
+        }
+    });
+    
+    // If there are errors, prevent form submission and show error message
+    if (errors.length > 0) {
+        e.preventDefault();
+        const errorMessage = `Please fill in the following required fields:\n${errors.join('\n')}`;
+        alert(errorMessage);
+    }
+});
+
+// Clear error styling when field is interacted with
+document.querySelectorAll('input, select, textarea').forEach(element => {
+    element.addEventListener('input', function() {
+        this.classList.remove('error');
+        const group = this.closest('.form-group, .membership-types, .checkbox-group');
+        if (group) {
+            group.classList.remove('error');
+        }
+    });
+});
+
+// Existing functions remain the same
 function previewImage(input) {
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = function(e) {
             document.getElementById('preview').src = e.target.result;
         }
@@ -112,10 +213,10 @@ function addInterest() {
     if (interest) {
         const container = document.getElementById('selected-interests');
         const interestTag = document.createElement('div');
-        interestTag.className = 'interest-tag bg-blue-100 text-blue-800 px-3 py-1 rounded-full flex items-center';
+        interestTag.className = 'interest-tag';
         interestTag.innerHTML = `
             <span>${interest}</span>
-            <button type="button" class="ml-2 text-blue-600 hover:text-blue-800" onclick="removeInterest(this)">×</button>
+            <button type="button" onclick="removeInterest(this)">×</button>
             <input type="hidden" name="interests[]" value="${interest}">
         `;
         container.appendChild(interestTag);
@@ -127,7 +228,6 @@ function removeInterest(button) {
     button.parentElement.remove();
 }
 
-// Allow adding interests with Enter key
 document.getElementById('interest-input').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
