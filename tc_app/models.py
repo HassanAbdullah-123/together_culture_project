@@ -62,4 +62,34 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s profile"
+
+class Membership(models.Model):
+    MEMBERSHIP_CHOICES = [
+        ('community', 'Community Member'),
+        ('key_access', 'Key Access Member'),
+        ('workspace', 'Creative Workspace Member'),
+    ]
+
+    INTEREST_CHOICES = [
+        ('caring', 'Caring'),
+        ('sharing', 'Sharing'),
+        ('experiencing', 'Experiencing'),
+        ('working', 'Working'),
+    ]
+
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        null=True,
+        blank=True
+    )
+    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
+    interests = models.JSONField()  # Store multiple interests
+    terms_accepted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.membership_type}"
     
