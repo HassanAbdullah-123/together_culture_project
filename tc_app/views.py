@@ -36,130 +36,68 @@ def login_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        try:
-            username = request.POST.get('username')
-            email = request.POST.get('email')
-            password = request.POST.get('password')
-            confirm_password = request.POST.get('confirm_password')
-            is_admin = request.POST.get('is_admin') == 'on'
-
-            # Validation
-            if not all([username, email, password, confirm_password]):
-                messages.error(request, 'All fields are required')
-                return render(request, 'signup.html')
-
-            # Check password match first
-            if password != confirm_password:
-                messages.error(request, 'Passwords do not match')
-                return render(request, 'signup.html', {
-                    'username': username,
-                    'email': email,
-                    'is_admin': is_admin
-                })
-
-            # Check if user already exists
-            if CustomUser.objects.filter(username=username).exists():
-                messages.error(request, 'Username already exists')
-                return render(request, 'signup.html', {
-                    'email': email,
-                    'is_admin': is_admin
-                })
-
-            if CustomUser.objects.filter(email=email).exists():
-                messages.error(request, 'Email already exists')
-                return render(request, 'signup.html', {
-                    'username': username,
-                    'is_admin': is_admin
-                })
-
-            # Create user with admin status
-            user = CustomUser.objects.create_user(
-                username=username,
-                email=email,
-                password=password
-            )
-            
-            # Set admin status and permissions
-            if is_admin:
-                user.is_admin = True
-                user.is_staff = True
-                user.is_superuser = True
-                user.save()
-
-            # Create user profile
-            UserProfile.objects.create(user=user)
-
-            # Add success message
-            messages.success(request, 'Registration successful! Please login.')
-            
-            # Redirect to login page
-            return redirect('tc_app:login')
-
-        except Exception as e:
-            print(f"Error during signup: {str(e)}")  # For debugging
-            messages.error(request, 'An error occurred during registration')
-            return render(request, 'signup.html', {
-                'username': username,
-                'email': email,
-                'is_admin': is_admin
-            })
-
-    return render(request, 'signup.html')
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('tc_app:select_membership')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 
 @login_required
 def membership_view(request):
     if request.method == 'POST':
+        # Get or create membership instance
+        membership, created = Membership.objects.get_or_create(user=request.user)
+        
+        # Update membership fields
+        membership.full_name = request.POST.get('full_name')
+        membership.email = request.POST.get('email')
+        membership.phone_number = request.POST.get('phone')
+        membership.location = request.POST.get('location')
+        membership.membership_type = request.POST.get('membership_type')
+        
+        # Handle interests
+        interests = request.POST.getlist('interests[]')
+        membership.interests = json.dumps(interests)
+        
+        # Handle profile image
+        if 'profile_image' in request.FILES:
+            membership.profile_image = request.FILES['profile_image']
+        
         try:
-            # Get form data
-            full_name = request.POST.get('full_name')
-            email = request.POST.get('email')
-            membership_type = request.POST.get('membership_type')
-            interests = request.POST.getlist('interests')
-            terms = request.POST.get('terms') == 'on'
-            
-            # Handle profile image
-            profile_image = request.FILES.get('profile_image')
-
-            # Validate data
-            if not all([full_name, email, membership_type, interests, terms]):
-                messages.error(request, 'All fields are required')
-                return render(request, 'membership.html')
-
-            # Create or update membership
-            membership, created = Membership.objects.update_or_create(
-                user=request.user,
-                defaults={
-                    'full_name': full_name,
-                    'email': email,
-                    'membership_type': membership_type,
-                    'interests': json.dumps(interests),  # Convert list to JSON string
-                    'terms_accepted': terms,
-                }
-            )
-
-            if profile_image:
-                membership.profile_image = profile_image
-                membership.save()
-
-            messages.success(request, 'Membership updated successfully!')
-            return redirect('tc_app:membership')
-
+            membership.save()
+            messages.success(request, 'Membership details updated successfully!')
+            return redirect('tc_app:profile')
         except Exception as e:
-            print(f"Error: {str(e)}")  # For debugging
             messages.error(request, f'Error updating membership: {str(e)}')
-            return render(request, 'membership.html')
-
-    # GET request
+    
+    # Get existing membership data for display
     try:
         membership = Membership.objects.get(user=request.user)
-        context = {
-            'membership': membership,
-            'interests': json.loads(membership.interests) if membership.interests else []
-        }
     except Membership.DoesNotExist:
-        context = {'membership': None}
+        membership = None
 
+    # Get membership types from model choices
+    membership_types = [
+        {'code': code, 'name': name, 'description': get_membership_description(code)}
+        for code, name in Membership.MEMBERSHIP_TYPES
+    ]
+
+    context = {
+        'membership': membership,
+        'membership_types': membership_types
+    }
     return render(request, 'membership.html', context)
+
+def get_membership_description(membership_type):
+    descriptions = {
+        'BASIC': 'Access to community events and basic resources',
+        'PREMIUM': 'Additional access to premium resources and workshops',
+        'PRO': 'Full access to all resources and exclusive events'
+    }
+    return descriptions.get(membership_type, '')
 
 @login_required
 def profile_view(request):
@@ -174,25 +112,44 @@ def profile_view(request):
     return render(request, 'profile.html', context)
 
 @login_required
+def select_membership(request):
+    if request.method == 'POST':
+        membership_type = request.POST.get('membership_type')
+        membership, created = Membership.objects.get_or_create(user=request.user)
+        membership.membership_type = membership_type
+        membership.save()
+        
+        if created:
+            return redirect('tc_app:edit_profile')
+        return redirect('tc_app:profile')
+    
+    membership_types = MembershipType.objects.all()
+    return render(request, 'membership_plans.html', {'membership_types': membership_types})
+
+@login_required
 def edit_profile(request):
     if request.method == 'POST':
-        # Get the membership instance
         membership = request.user.membership
-
-        # Update profile fields
+        
+        # Update all profile fields
         membership.full_name = request.POST.get('full_name', '')
-        membership.bio = request.POST.get('bio', '')
-        membership.location = request.POST.get('location', '')
+        membership.email = request.POST.get('email', '')
         membership.phone_number = request.POST.get('phone_number', '')
-
-        # Handle profile image upload
+        membership.location = request.POST.get('location', '')
+        membership.bio = request.POST.get('bio', '')
+        
+        # Handle profile image
         if 'profile_image' in request.FILES:
             membership.profile_image = request.FILES['profile_image']
-
+            
+        # Handle interests
+        interests = request.POST.getlist('interests[]')
+        membership.interests = json.dumps(interests)
+        
         membership.save()
         messages.success(request, 'Profile updated successfully!')
         return redirect('tc_app:profile')
-
+        
     return render(request, 'edit_profile.html', {
         'membership': request.user.membership
     })
