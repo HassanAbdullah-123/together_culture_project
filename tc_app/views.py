@@ -165,3 +165,31 @@ def logout_view(request):
 
 def home(request):
     return render(request, 'home.html')
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        try:
+            # Here you would typically send an email
+            # For now, we'll just show a success message
+            messages.success(request, 'Thank you for your message! We will get back to you soon.')
+            return redirect('tc_app:contact')
+        except Exception as e:
+            messages.error(request, 'Sorry, there was an error sending your message. Please try again.')
+    
+    return render(request, 'contact.html')
+
+@login_required
+def dashboard_view(request):
+    # Add your dashboard logic here
+    return render(request, 'dashboard.html')
+
+def about_view(request):
+    return render(request, 'about.html')
+
+def events_view(request):
+    return render(request, 'events.html')
