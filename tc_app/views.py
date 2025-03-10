@@ -6,10 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 import json
 from django.urls import reverse
+from django.core.mail import send_mail
+from django.conf import settings
 
 # Create your views here.
 from django.views.generic import TemplateView
-from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership
+from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -174,18 +176,50 @@ def contact_view(request):
         message = request.POST.get('message')
         
         try:
-            # Here you would typically send an email
-            # For now, we'll just show a success message
+            # Save to database
+            Contact.objects.create(
+                name=name,
+                email=email,
+                subject=subject,
+                message=message
+            )
+
+            # Optional: Send email notification to admin
+            admin_message = f"""
+            New contact form submission:
+            
+            From: {name}
+            Email: {email}
+            Subject: {subject}
+            Message: {message}
+            """
+
+            try:
+                send_mail(
+                    subject=f'New Contact Form Submission: {subject}',
+                    message=admin_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[settings.ADMIN_EMAIL],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                # Log the email error but don't stop the process
+                print(f"Email notification failed: {str(e)}")
+
             messages.success(request, 'Thank you for your message! We will get back to you soon.')
             return redirect('tc_app:contact')
+            
         except Exception as e:
             messages.error(request, 'Sorry, there was an error sending your message. Please try again.')
+            print(f"Contact form error: {str(e)}")
     
     return render(request, 'contact.html')
 
 @login_required
 def dashboard_view(request):
-    # Add your dashboard logic here
+    """
+    Temporary dashboard view showing coming soon message
+    """
     return render(request, 'dashboard.html')
 
 def about_view(request):

@@ -142,3 +142,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'tc_app:login'
 LOGIN_REDIRECT_URL = 'tc_app:home'
 LOGOUT_REDIRECT_URL = 'tc_app:home'
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Or your email host
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@gmail.com'  # Your email
+EMAIL_HOST_PASSWORD = 'your-app-password'  # Your email password or app password
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
+ADMIN_EMAIL = 'admin@togetherculture.com'  # Admin email to receive notifications

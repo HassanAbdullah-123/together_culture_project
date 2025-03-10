@@ -2,21 +2,52 @@
 {% load static %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1>Join the Movement - Build a Creative and Equitable Future!</h1>
-            <p>Together Culture is a vibrant community where creators, entrepreneurs, and changemakers 
-               connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, 
-               and make a real impact.</p>
-            <a href="#" class="join-now-btn">Join Now</a>
-        </div>
-        <div class="hero-image">
-            <img src="{% static 'images/hero-image.jpg' %}" alt="Together Culture Community">
-        </div>
+<div class="hero-section">
+    <!-- Background Video -->
+    <div class="hero-background">
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="{% static 'videos/community.mp4' %}" type="video/mp4">
+            <!-- Fallback background image if video fails to load -->
+            <img src="{% static 'images/community-bg.jpg' %}" alt="Community Background">
+        </video>
+        <div class="overlay"></div>
     </div>
-</section>
+
+    <div class="hero-content">
+        <h1 class="hero-title">Join the Movement - <br>Build a Creative and<br>Equitable Future!</h1>
+        
+        <p class="hero-description">
+            Together Culture is a vibrant community where creators, entrepreneurs, and changemakers connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, and make a real impact.
+        </p>
+
+        {% if user.is_authenticated %}
+            <div class="member-actions">
+                <div class="welcome-message">
+                    <h2>Welcome, {{ user.username }}!</h2>
+                    <p>Ready to make an impact?</p>
+                </div>
+                <div class="action-buttons">
+                    <a href="{% url 'tc_app:profile' %}" class="action-btn primary">
+                        <i class="fas fa-user"></i>
+                        View Profile
+                    </a>
+                    <a href="{% url 'tc_app:events' %}" class="action-btn secondary">
+                        <i class="fas fa-calendar-alt"></i>
+                        Explore Events
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="cta-section">
+                <a href="{% url 'tc_app:signup' %}" class="cta-button">
+                    Join Now
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <p class="cta-subtext">Already a member? <a href="{% url 'tc_app:login' %}">Log In</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
 <!-- Features Section -->
 <section class="features">
