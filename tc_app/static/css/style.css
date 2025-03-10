@@ -1,0 +1,638 @@
+:root {
+    --primary-color: #20B2AA;
+    --neon-green: #00FF00;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Navigation */
+.navbar {
+    background-color: #20B2AA;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    padding: 15px 0;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-container img {
+    height: 40px;
+    width: auto;
+}
+
+.logo-text {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.login-button, .signup-button {
+    padding: 8px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.login-button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.login-button:hover {
+    background-color: white;
+    color: #20B2AA;
+}
+
+.signup-button {
+    background-color: white;
+    color: #20B2AA;
+}
+
+.signup-button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Hero Section */
+.hero {
+    background-color: var(--primary-color);
+    padding: 80px 0;
+    color: var(--white);
+}
+
+.hero-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.hero-content h1 {
+    font-size: 3em;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.join-now-btn {
+    display: inline-block;
+    background-color: var(--neon-green);
+    color: var(--white);
+    padding: 15px 50px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.join-now-btn:hover {
+    transform: scale(1.05);
+}
+
+.hero-image {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+}
+
+/* Features Section */
+.features {
+    padding: 60px 0;
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2.5em;
+    margin-bottom: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5em;
+    }
+}
+
+/* Add these styles after your existing CSS */
+
+/* Features Section */
+.features {
+    background-color: var(--primary-color);
+    padding: 60px 0;
+    color: var(--white);
+}
+
+.features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.features h2 {
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.features-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.features-text h3 {
+    font-size: 2em;
+    margin-bottom: 30px;
+}
+
+.features-list {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.features-list li {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    line-height: 1.5;
+}
+
+.feature-icon {
+    color: #ff4444;
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+.features-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.explore-btn {
+    display: inline-block;
+    background-color: #4a4a4a;
+    color: var(--white);
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.explore-btn:hover {
+    background-color: #333333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .features-content {
+        grid-template-columns: 1fr;
+    }
+
+    .features h2 {
+        font-size: 2.5em;
+    }
+
+    .features-text h3 {
+        font-size: 1.8em;
+    }
+
+    .features-image {
+        order: -1; /* Shows image before text on mobile */
+    }
+}
+
+/* Testimonials Section */
+.testimonials {
+    background-color: var(--primary-color);
+    padding: 80px 0;
+    color: var(--white);
+    text-align: center;
+}
+
+.testimonials-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.testimonials h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.testimonials .subtitle {
+    font-size: 1.2em;
+    margin-bottom: 50px;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.testimonial-card {
+    background-color: var(--white);
+    border-radius: 10px;
+    padding: 30px;
+    position: relative;
+    padding-top: 60px;
+}
+
+.testimonial-image-container {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.testimonial-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--white);
+}
+
+.testimonial-name {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.testimonial-text {
+    color: #666;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--white);
+    padding: 60px 0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 30px;
+}
+
+.footer-section h3 {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li {
+    margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+    color: #666;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: var(--primary-color);
+}
+
+.brand img {
+    width: 80px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+}
+
+.email-input {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    flex-grow: 1;
+}
+
+.submit-btn {
+    background-color: #00FF00;
+    color: var(--white);
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Login Page Styles */
+.login-page {
+    background-color: #20B2AA;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.login-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.login-logo h1 {
+    color: #20B2AA;
+    font-size: 24px;
+    margin: 0;
+}
+
+.login-form {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #666;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    border-color: #20B2AA;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.2);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #4a4a4a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.login-btn:hover {
+    background-color: #333333;
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.signup-link p {
+    color: #666;
+    margin: 0;
+}
+
+.signup-link a {
+    color: #20B2AA;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+/* Checkbox styles */
+.admin-checkbox {
+    margin-bottom: 20px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #fff;
+    border: 2px solid #20B2AA;
+    border-radius: 4px;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    background-color: #f0f0f0;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #20B2AA;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-container .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-label {
+    margin-left: 5px;
+    color: #666;
+}
+
+/* Message styles */
+.messages {
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.message {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Fade out animation for messages */
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+
+.message {
+    animation: fadeOut 5s forwards;
+    animation-delay: 3s;
+}
