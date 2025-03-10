@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Logout Confirmation - Together Culture{% endblock %}
+
+{% block content %}
+<div class="logout-confirm-container">
+    <div class="logout-confirm-box">
+        <i class="fas fa-sign-out-alt logout-icon"></i>
+        <h2>Confirm Logout</h2>
+        <p>Are you sure you want to log out?</p>
+        
+        <div class="logout-buttons">
+            <form method="post" action="{% url 'tc_app:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="confirm-logout-btn">Confirm Logout</button>
+            </form>
+            <a href="{% url 'tc_app:home' %}" class="cancel-logout-btn">Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

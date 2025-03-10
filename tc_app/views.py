@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 import json
+from django.urls import reverse
 
 # Create your views here.
 from django.views.generic import TemplateView
@@ -28,7 +30,7 @@ def login_view(request):
             login(request, user)
             return redirect('tc_app:home')
         else:
-            messages.error(request, 'Invalid username or password')
+            messages.error(request, 'Invalid username or password.')
     
     return render(request, 'login.html')
 
@@ -158,3 +160,51 @@ def membership_view(request):
         context = {'membership': None}
 
     return render(request, 'membership.html', context)
+
+@login_required
+def profile_view(request):
+    try:
+        membership = request.user.membership
+        context = {
+            'membership': membership,
+        }
+    except:
+        context = {}
+    
+    return render(request, 'profile.html', context)
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        # Get the membership instance
+        membership = request.user.membership
+
+        # Update profile fields
+        membership.full_name = request.POST.get('full_name', '')
+        membership.bio = request.POST.get('bio', '')
+        membership.location = request.POST.get('location', '')
+        membership.phone_number = request.POST.get('phone_number', '')
+
+        # Handle profile image upload
+        if 'profile_image' in request.FILES:
+            membership.profile_image = request.FILES['profile_image']
+
+        membership.save()
+        messages.success(request, 'Profile updated successfully!')
+        return redirect('tc_app:profile')
+
+    return render(request, 'edit_profile.html', {
+        'membership': request.user.membership
+    })
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def logout_view(request):
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, 'You have been successfully logged out.')
+        return redirect('tc_app:home')
+    return render(request, 'logout_confirm.html')
+
+def home(request):
+    return render(request, 'home.html')
