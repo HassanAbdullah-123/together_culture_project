@@ -8,13 +8,21 @@
     <div class="edit-profile-container">
         <h1>Edit Profile</h1>
         
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
         <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
             {% csrf_token %}
             
             <!-- Profile Image Section -->
             <div class="profile-image-section">
-                {% if user.membership.profile_image %}
-                    <img src="{{ user.membership.profile_image.url }}" alt="Profile" id="profile-preview">
+                {% if membership.profile_image %}
+                    <img src="{{ membership.profile_image.url }}" alt="Profile" id="profile-preview">
                 {% else %}
                     <img src="{% static 'images/default-profile.png' %}" alt="Profile" id="profile-preview">
                 {% endif %}
@@ -31,19 +39,13 @@
                 <div class="form-group">
                     <label for="full_name">Full Name</label>
                     <input type="text" id="full_name" name="full_name" 
-                           value="{{ membership.full_name|default:'' }}" required>
+                           value="{{ membership.full_name|default:'' }}">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" 
-                           value="{{ membership.email|default:'' }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" 
-                           value="{{ membership.location|default:'' }}">
+                           value="{{ membership.email|default:'' }}">
                 </div>
 
                 <div class="form-group">
@@ -51,16 +53,16 @@
                     <input type="tel" id="phone_number" name="phone_number" 
                            value="{{ membership.phone_number|default:'' }}">
                 </div>
-            </div>
 
-            <div class="form-group full-width">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" rows="4">{{ membership.bio|default:'' }}</textarea>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="4">{{ membership.bio|default:'' }}</textarea>
+                </div>
             </div>
 
             <div class="form-actions">
-                <a href="{% url 'tc_app:profile' %}" class="cancel-btn">Cancel</a>
                 <button type="submit" class="save-btn">Save Changes</button>
+                <a href="{% url 'tc_app:profile' %}" class="cancel-btn">Cancel</a>
             </div>
         </form>
     </div>

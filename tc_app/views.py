@@ -11,7 +11,7 @@ from django.conf import settings
 
 # Create your views here.
 from django.views.generic import TemplateView
-from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact
+from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact, MembershipBenefit
 from django import forms
 
 class HomeView(TemplateView):
@@ -66,50 +66,20 @@ def signup_view(request):
     
     return render(request, 'signup.html', {'form': form})
 
-@login_required
 def membership_view(request):
-    if request.method == 'POST':
-        # Get or create membership instance
-        membership, created = Membership.objects.get_or_create(user=request.user)
-        
-        # Update membership fields
-        membership.full_name = request.POST.get('full_name')
-        membership.email = request.POST.get('email')
-        membership.phone_number = request.POST.get('phone')
-        membership.location = request.POST.get('location')
-        membership.membership_type = request.POST.get('membership_type')
-        
-        # Handle interests
-        interests = request.POST.getlist('interests[]')
-        membership.interests = json.dumps(interests)
-        
-        # Handle profile image
-        if 'profile_image' in request.FILES:
-            membership.profile_image = request.FILES['profile_image']
-        
-        try:
-            membership.save()
-            messages.success(request, 'Membership details updated successfully!')
-            return redirect('tc_app:profile')
-        except Exception as e:
-            messages.error(request, f'Error updating membership: {str(e)}')
+    # Get all active membership types with their benefits
+    membership_types = MembershipType.objects.filter(is_active=True).prefetch_related('benefits').order_by('order', 'price')
     
-    # Get existing membership data for display
-    try:
-        membership = Membership.objects.get(user=request.user)
-    except Membership.DoesNotExist:
-        membership = None
-
-    # Get membership types from model choices
-    membership_types = [
-        {'code': code, 'name': name, 'description': get_membership_description(code)}
-        for code, name in Membership.MEMBERSHIP_TYPES
-    ]
-
+    # Get current user's membership if logged in
+    current_membership = None
+    if request.user.is_authenticated:
+        current_membership = request.user.membership
+    
     context = {
-        'membership': membership,
-        'membership_types': membership_types
+        'membership_types': membership_types,
+        'current_membership': current_membership,
     }
+    
     return render(request, 'membership.html', context)
 
 def get_membership_description(membership_type):
@@ -149,31 +119,31 @@ def select_membership(request):
 
 @login_required
 def edit_profile(request):
+    # Get or create membership
+    membership, created = Membership.objects.get_or_create(user=request.user)
+    
     if request.method == 'POST':
-        membership = request.user.membership
+        # Handle profile image upload
+        if 'profile_image' in request.FILES:
+            membership.profile_image = request.FILES['profile_image']
         
-        # Update all profile fields
+        # Update other fields
         membership.full_name = request.POST.get('full_name', '')
         membership.email = request.POST.get('email', '')
         membership.phone_number = request.POST.get('phone_number', '')
-        membership.location = request.POST.get('location', '')
         membership.bio = request.POST.get('bio', '')
         
-        # Handle profile image
-        if 'profile_image' in request.FILES:
-            membership.profile_image = request.FILES['profile_image']
-            
-        # Handle interests
-        interests = request.POST.getlist('interests[]')
-        membership.interests = json.dumps(interests)
-        
-        membership.save()
-        messages.success(request, 'Profile updated successfully!')
-        return redirect('tc_app:profile')
-        
-    return render(request, 'edit_profile.html', {
-        'membership': request.user.membership
-    })
+        try:
+            membership.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('tc_app:profile')
+        except Exception as e:
+            messages.error(request, 'Error updating profile. Please try again.')
+    
+    context = {
+        'membership': membership
+    }
+    return render(request, 'edit_profile.html', context)
 
 @login_required
 @require_http_methods(["GET", "POST"])
