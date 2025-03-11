@@ -45,6 +45,8 @@ class CustomUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
     is_admin = models.BooleanField(default=False)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    bio = models.TextField(max_length=500, blank=True)
     
     objects = CustomUserManager()
     

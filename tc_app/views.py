@@ -12,6 +12,7 @@ from django.conf import settings
 # Create your views here.
 from django.views.generic import TemplateView
 from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact
+from django import forms
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -36,15 +37,33 @@ def login_view(request):
     
     return render(request, 'login.html')
 
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email", "password1", "password2")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
+
 def signup_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('tc_app:select_membership')
+            messages.success(request, 'Account created successfully!')
+            return redirect('tc_app:home')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
+    
     return render(request, 'signup.html', {'form': form})
 
 @login_required
