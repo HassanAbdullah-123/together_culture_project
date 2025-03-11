@@ -22,30 +22,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Membership card selection
-    const membershipCards = document.querySelectorAll('.membership-card');
+    const membershipCards = document.querySelectorAll('.membership-option label');
+    
     membershipCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const radio = this.querySelector('input[type="radio"]');
-            radio.checked = true;
-            
-            // Remove active class from all cards
-            membershipCards.forEach(c => c.classList.remove('active'));
-            // Add active class to selected card
-            this.classList.add('active');
+        card.addEventListener('click', function(e) {
+            const radio = this.previousElementSibling;
+            if (radio) {
+                radio.checked = true;
+            }
         });
     });
 
-    // Handle form submission
+    // Form submission handling
     const membershipForm = document.getElementById('membershipForm');
     if (membershipForm) {
         membershipForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Validate membership selection
+            const selectedMembership = document.querySelector('input[name="membership_type"]:checked');
+            if (!selectedMembership) {
+                showMessage('Please select a membership type', 'error');
+                return;
+            }
+            
             // Validate required fields
             const requiredFields = {
                 'full_name': 'Full Name',
                 'email': 'Email Address',
-                'membership_type': 'Membership Type',
                 'terms': 'Terms and Conditions'
             };
             
@@ -58,6 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     isValid = false;
                     errors.push(fieldName);
                     element.classList.add('error');
+                } else {
+                    element.classList.remove('error');
                 }
             });
             
@@ -65,26 +71,68 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('Please fill in all required fields: ' + errors.join(', '), 'error');
                 return;
             }
+
+            // Show loading message
+            showMessage('Updating your membership...', 'info');
             
-            // Submit the form if validation passes
-            membershipForm.submit();
+            // Submit the form
+            this.submit();
         });
     }
+});
+
+// Enhanced message display function
+function showMessage(message, type = 'info') {
+    // Create messages container if it doesn't exist
+    let messagesContainer = document.querySelector('.messages');
+    if (!messagesContainer) {
+        messagesContainer = document.createElement('div');
+        messagesContainer.className = 'messages';
+        const formElement = document.querySelector('.membership-form');
+        formElement.insertBefore(messagesContainer, formElement.firstChild);
+    }
     
-    // Show messages function
-    function showMessage(message, type) {
-        const messagesContainer = document.querySelector('.messages');
-        if (!messagesContainer) return;
-        
-        const messageElement = document.createElement('div');
-        messageElement.className = `message ${type}`;
-        messageElement.textContent = message;
-        
-        messagesContainer.appendChild(messageElement);
-        
-        // Auto-remove message after 5 seconds
+    // Create message element
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${type}`;
+    
+    // Add icon based on message type
+    const icon = getMessageIcon(type);
+    messageElement.innerHTML = `
+        <div class="message-content">
+            <span class="message-icon">${icon}</span>
+            <span class="message-text">${message}</span>
+        </div>
+        <button class="message-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // Add to container
+    messagesContainer.appendChild(messageElement);
+    
+    // Animate in
+    setTimeout(() => messageElement.classList.add('show'), 10);
+    
+    // Auto-remove after delay (except for errors)
+    if (type !== 'error') {
         setTimeout(() => {
-            messageElement.remove();
+            messageElement.classList.remove('show');
+            setTimeout(() => messageElement.remove(), 300);
         }, 5000);
     }
-});
+}
+
+// Helper function to get message icons
+function getMessageIcon(type) {
+    switch(type) {
+        case 'success':
+            return '✓';
+        case 'error':
+            return '!';
+        case 'info':
+            return 'i';
+        case 'warning':
+            return '⚠';
+        default:
+            return '';
+    }
+}

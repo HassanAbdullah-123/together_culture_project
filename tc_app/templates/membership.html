@@ -78,24 +78,68 @@
             </div>
 
             <!-- Membership Type -->
-            <div class="form-section">
-                <h3>Membership Type*</h3>
+            <div class="form-section membership-types-section">
+                <h3><i class="fas fa-star"></i> Choose Your Membership</h3>
                 <div class="membership-types">
-                    {% for type in membership_types %}
                     <div class="membership-option">
-                        <input type="radio" id="{{ type.code|lower }}" 
-                               name="membership_type" 
-                               value="{{ type.code }}"
-                               {% if membership.membership_type == type.code %}checked{% endif %}
-                               required>
-                        <label for="{{ type.code|lower }}">
+                        <input type="radio" id="free" name="membership_type" value="FREE">
+                        <label for="free" class="membership-card free">
+                            <div class="card-badge">Free</div>
                             <div class="type-content">
-                                <span class="type-name">{{ type.name }}</span>
-                                <span class="type-description">{{ type.description }}</span>
+                                <span class="type-name">Basic Member</span>
+                                <span class="type-price">$0/month</span>
+                                <div class="type-features">
+                                    <ul>
+                                        <li><i class="fas fa-check"></i> Access to community forums</li>
+                                        <li><i class="fas fa-check"></i> Basic resources</li>
+                                        <li><i class="fas fa-check"></i> Monthly newsletter</li>
+                                        <li><i class="fas fa-check"></i> Public events access</li>
+                                    </ul>
+                                </div>
                             </div>
                         </label>
                     </div>
-                    {% endfor %}
+
+                    <div class="membership-option">
+                        <input type="radio" id="basic" name="membership_type" value="BASIC">
+                        <label for="basic" class="membership-card basic">
+                            <div class="card-badge">Popular</div>
+                            <div class="type-content">
+                                <span class="type-name">Premium Member</span>
+                                <span class="type-price">$9.99/month</span>
+                                <div class="type-features">
+                                    <ul>
+                                        <li><i class="fas fa-check"></i> All Free features</li>
+                                        <li><i class="fas fa-check"></i> Premium resources</li>
+                                        <li><i class="fas fa-check"></i> Member directory access</li>
+                                        <li><i class="fas fa-check"></i> Exclusive workshops</li>
+                                        <li><i class="fas fa-check"></i> Priority support</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="membership-option">
+                        <input type="radio" id="pro" name="membership_type" value="PRO">
+                        <label for="pro" class="membership-card pro">
+                            <div class="card-badge">Professional</div>
+                            <div class="type-content">
+                                <span class="type-name">Pro Member</span>
+                                <span class="type-price">$19.99/month</span>
+                                <div class="type-features">
+                                    <ul>
+                                        <li><i class="fas fa-check"></i> All Premium features</li>
+                                        <li><i class="fas fa-check"></i> 1-on-1 mentoring</li>
+                                        <li><i class="fas fa-check"></i> Professional networking</li>
+                                        <li><i class="fas fa-check"></i> Certified courses</li>
+                                        <li><i class="fas fa-check"></i> VIP event access</li>
+                                        <li><i class="fas fa-check"></i> Custom profile badge</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
