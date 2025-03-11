@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/membership.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="membership-page">
     <div class="membership-container">

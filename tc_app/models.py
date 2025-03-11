@@ -159,6 +159,8 @@ class Membership(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     expiration_date = models.DateTimeField(null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    interests = models.JSONField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Membership'
@@ -181,6 +183,9 @@ class Membership(models.Model):
         if not self.full_name and (self.user.first_name or self.user.last_name):
             self.full_name = f"{self.user.first_name} {self.user.last_name}".strip()
         super().save(*args, **kwargs)
+
+    def get_interests(self):
+        return self.interests if self.interests else []
 
 # Signal to create membership when user is created
 @receiver(post_save, sender=CustomUser)

@@ -66,18 +66,45 @@ def signup_view(request):
     
     return render(request, 'signup.html', {'form': form})
 
+@login_required
 def membership_view(request):
-    # Get all active membership types with their benefits
-    membership_types = MembershipType.objects.filter(is_active=True).prefetch_related('benefits').order_by('order', 'price')
+    if request.method == 'POST':
+        try:
+            membership, created = Membership.objects.get_or_create(user=request.user)
+            
+            # Update membership details
+            membership.full_name = request.POST.get('full_name')
+            membership.email = request.POST.get('email')
+            membership.phone_number = request.POST.get('phone')
+            membership.location = request.POST.get('location')
+            membership.membership_type = request.POST.get('membership_type')
+            membership.bio = request.POST.get('bio', '')
+            
+            # Handle profile image
+            if request.FILES.get('profile_image'):
+                membership.profile_image = request.FILES['profile_image']
+            
+            # Handle interests
+            interests = request.POST.getlist('interests[]')
+            if interests:
+                membership.interests = interests
+            
+            membership.save()
+            
+            messages.success(request, 'Membership details updated successfully!')
+            return redirect('tc_app:profile')
+            
+        except Exception as e:
+            messages.error(request, f'Error updating membership: {str(e)}')
+            return redirect('tc_app:membership')
     
-    # Get current user's membership if logged in
-    current_membership = None
-    if request.user.is_authenticated:
-        current_membership = request.user.membership
+    # Get current membership data
+    membership = Membership.objects.filter(user=request.user).first()
+    membership_types = MembershipType.objects.filter(is_active=True)
     
     context = {
+        'membership': membership,
         'membership_types': membership_types,
-        'current_membership': current_membership,
     }
     
     return render(request, 'membership.html', context)
@@ -96,11 +123,12 @@ def profile_view(request):
         membership = request.user.membership
         context = {
             'membership': membership,
+            'interests': membership.interests if membership.interests else [],
         }
-    except:
-        context = {}
-    
-    return render(request, 'profile.html', context)
+        return render(request, 'profile.html', context)
+    except Membership.DoesNotExist:
+        messages.warning(request, 'Please complete your membership details first.')
+        return redirect('tc_app:membership')
 
 @login_required
 def select_membership(request):

@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="profile-page">
     <div class="profile-container">
@@ -39,6 +43,10 @@
                         <label>Location</label>
                         <p>{{ user.membership.location|default:"Not provided" }}</p>
                     </div>
+                    <div class="info-item">
+                        <label>Membership Type</label>
+                        <p>{{ user.membership.get_membership_type_display }}</p>
+                    </div>
                 </div>
             </div>
 
@@ -47,16 +55,16 @@
                 <p class="bio-text">{{ user.membership.bio|default:"No bio provided" }}</p>
             </div>
 
+            {% if user.membership.interests %}
             <div class="profile-section">
                 <h2>Interests</h2>
                 <div class="interests-tags">
-                    {% for interest in user.membership.get_interests %}
+                    {% for interest in user.membership.interests %}
                         <span class="interest-tag">{{ interest }}</span>
-                    {% empty %}
-                        <p>No interests added yet</p>
                     {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <div class="profile-section">
                 <h2>Membership Details</h2>
