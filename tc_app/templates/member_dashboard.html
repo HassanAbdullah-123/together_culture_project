@@ -126,9 +126,9 @@
                                             <i class="fas fa-check"></i> Completed
                                         </button>
                                     {% else %}
-                                        <button onclick="continueModule('{{ module.id }}')" class="btn-continue">
+                                        <a href="{% url 'tc_app:module_content' module.id %}" class="btn-continue">
                                             <i class="fas fa-play"></i> Continue Learning
-                                        </button>
+                                        </a>
                                     {% endif %}
                                 {% else %}
                                     <button onclick="enrollModule('{{ module.id }}')" class="btn-enroll">
@@ -236,19 +236,6 @@ function enrollModule(moduleId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the module card
-            const moduleCard = document.querySelector(`[data-module-id="${moduleId}"]`);
-            const actionDiv = moduleCard.querySelector('.module-actions');
-            actionDiv.innerHTML = `
-                <div class="progress-bar">
-                    <div class="progress" style="width: 0%"></div>
-                </div>
-                <a href="/modules/${moduleId}" class="btn-continue">
-                    <i class="fas fa-play"></i> Start Learning
-                </a>
-            `;
-            
-            // Show success message with more details
             Swal.fire({
                 title: 'Successfully Enrolled!',
                 html: `
@@ -261,6 +248,8 @@ function enrollModule(moduleId) {
                 icon: 'success',
                 confirmButtonText: 'Start Learning',
                 confirmButtonColor: '#20B2AA'
+            }).then(() => {
+                window.location.href = `/modules/${moduleId}/`;
             });
         } else {
             Swal.fire({

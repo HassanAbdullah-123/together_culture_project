@@ -33,11 +33,17 @@
         {% endif %}
 
         <div class="module-navigation">
-            <button onclick="updateProgress('{{ module.id }}')" class="btn-mark-complete">
-                Mark as Complete
-            </button>
+            {% if enrollment.status != 'completed' %}
+                <button onclick="updateProgress('{{ module.id }}')" class="btn-mark-complete">
+                    <i class="fas fa-check-circle"></i> Mark as Complete
+                </button>
+            {% else %}
+                <button class="btn-completed" disabled>
+                    <i class="fas fa-check-circle"></i> Completed
+                </button>
+            {% endif %}
             <a href="{% url 'tc_app:member_dashboard' %}" class="btn-back">
-                Back to Dashboard
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
             </a>
         </div>
     </div>
@@ -104,38 +110,58 @@
 
 .module-navigation {
     display: flex;
-    gap: 15px;
     justify-content: flex-end;
+    gap: 15px;
     margin-top: 30px;
 }
 
-.btn-mark-complete,
-.btn-back {
+.btn-mark-complete {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
     padding: 12px 24px;
     border-radius: 6px;
-    border: none;
     cursor: pointer;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     transition: all 0.3s ease;
 }
 
-.btn-mark-complete {
-    background: var(--primary-color);
+.btn-mark-complete:hover {
+    background-color: #1a9090;
+    transform: translateY(-2px);
+}
+
+.btn-completed {
+    background-color: #28a745;
     color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.8;
+    cursor: not-allowed;
 }
 
 .btn-back {
-    background: #f0f0f0;
+    background-color: #f0f0f0;
     color: #333;
     text-decoration: none;
-}
-
-.btn-mark-complete:hover {
-    background: #1a9090;
+    padding: 12px 24px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
 }
 
 .btn-back:hover {
-    background: #e0e0e0;
+    background-color: #e0e0e0;
 }
 </style>
 
@@ -148,19 +174,27 @@ function updateProgress(moduleId) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            progress: 100
+            progress: 100,
+            status: 'completed'
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             Swal.fire({
-                title: 'Congratulations!',
-                text: 'You have completed this module!',
+                title: 'Congratulations! 🎉',
+                text: 'You have completed this module successfully!',
                 icon: 'success',
                 confirmButtonColor: '#20B2AA'
             }).then(() => {
                 window.location.href = "{% url 'tc_app:member_dashboard' %}";
+            });
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: data.error || 'Something went wrong',
+                icon: 'error',
+                confirmButtonColor: '#20B2AA'
             });
         }
     });
@@ -181,4 +215,6 @@ function getCookie(name) {
     return cookieValue;
 }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %} 

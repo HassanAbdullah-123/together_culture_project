@@ -2902,3 +2902,45 @@ main {
         grid-template-columns: 1fr;
     }
 }
+
+/* Add these styles for module content */
+.learning-content {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.learning-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.learning-content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.btn-continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-continue:hover {
+    background: #1a9090;
+    transform: translateY(-2px);
+}
+
+.btn-completed {
+    background: #28a745;
+    color: white;
+    cursor: not-allowed;
+    opacity: 0.8;
+}

@@ -472,17 +472,32 @@ def module_content_view(request, module_id):
 @require_POST
 def update_module_progress(request, module_id):
     try:
+        # Parse the JSON data from request body
+        data = json.loads(request.body)
+        progress = data.get('progress', 0)
+        status = data.get('status', 'in_progress')
+        
+        # Get the module and enrollment
         module = Module.objects.get(id=module_id)
         enrollment = ModuleEnrollment.objects.get(user=request.user, module=module)
         
-        progress = request.POST.get('progress', 0)
+        # Update progress and status
         enrollment.progress = progress
-        if int(progress) == 100:
-            enrollment.status = 'completed'
-        else:
-            enrollment.status = 'in_progress'
+        enrollment.status = status
         enrollment.save()
         
-        return JsonResponse({'success': True})
+        return JsonResponse({
+            'success': True,
+            'message': 'Module completed successfully!'
+        })
+        
     except (Module.DoesNotExist, ModuleEnrollment.DoesNotExist):
-        return JsonResponse({'error': 'Module or enrollment not found'}, status=404)
+        return JsonResponse({
+            'success': False,
+            'error': 'Module or enrollment not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
