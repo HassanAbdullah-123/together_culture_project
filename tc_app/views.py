@@ -45,7 +45,6 @@ def login_view(request):
         try:
             user = authenticate(request, username=username, password=password)
             if user is not None:
-<<<<<<< HEAD
                 if login_type == 'admin' and not user.is_staff:
                     messages.error(request, 'You are not authorized as an admin.')
                     return render(request, 'login_form.html', context)
@@ -56,16 +55,6 @@ def login_view(request):
                     return redirect('admin:index')
                 else:
                     return redirect('tc_app:member_dashboard')
-=======
-                # Check for admin access if trying to login as admin
-                if login_type == 'admin' and not user.is_staff:
-                    messages.error(request, 'You do not have admin privileges.')
-                    return render(request, 'login_form.html', context)
-                
-                login(request, user)
-                messages.success(request, f'Welcome back, {user.username}!')
-                return redirect('tc_app:dashboard')
->>>>>>> 0c155f930a151737be22c0200df991343ce10e14
             else:
                 messages.error(request, 'Invalid username or password.')
                 return render(request, 'login_form.html', context)
