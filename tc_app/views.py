@@ -24,10 +24,10 @@ class HomeView(TemplateView):
         return context
 
 def login_choice(request):
-    return render(request, 'login.html')
+    return render(request, 'login_choice.html')
 
 def login_view(request):
-    login_type = request.GET.get('type', 'member')
+    login_type = request.GET.get('type')
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -35,14 +35,20 @@ def login_view(request):
         login_type = request.POST.get('login_type')
         
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
-            if login_type == 'admin' and user.is_staff:
-                login(request, user)
-                return redirect('admin:index')
-            elif login_type == 'member':
-                login(request, user)
-                return redirect('tc_app:member_dashboard')
-                
+            # For admin login, check if user is staff
+            if login_type == 'admin' and not user.is_staff:
+                messages.error(request, 'You are not authorized as an admin.')
+                return redirect('tc_app:login_choice')
+            
+            login(request, user)
+            return redirect('tc_app:dashboard')
+        else:
+            messages.error(request, 'Invalid username or password.')
+            return redirect('tc_app:login')
+    
+    # For GET requests, show the login form
     return render(request, 'login_form.html', {'login_type': login_type})
 
 class CustomUserCreationForm(UserCreationForm):
@@ -192,8 +198,8 @@ def logout_view(request):
         return redirect('tc_app:login_choice')
     return render(request, 'logout_confirm.html')
 
-def home(request):
-    return render(request, 'home.html')
+def home_view(request):
+    return render(request, 'index.html')
 
 def contact_view(request):
     if request.method == 'POST':

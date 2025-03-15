@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="hero-section">
+    <!-- Background Video -->
+    <div class="hero-background">
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="{% static 'videos/community.mp4' %}" type="video/mp4">
+            <!-- Fallback background image if video fails to load -->
+            <img src="{% static 'images/community-bg.jpg' %}" alt="Community Background">
+        </video>
+        <div class="overlay"></div>
+    </div>
+
+    <div class="hero-content">
+        <h1 class="hero-title">Join the Movement - <br>Build a Creative and<br>Equitable Future!</h1>
+        
+        <p class="hero-description">
+            Together Culture is a vibrant community where creators, entrepreneurs, and changemakers connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, and make a real impact.
+        </p>
+
+        {% if user.is_authenticated %}
+            <div class="member-actions">
+                <div class="welcome-message">
+                    <h2>Welcome, {{ user.username }}!</h2>
+                    <p>Ready to make an impact?</p>
+                </div>
+                <div class="action-buttons">
+                    <a href="{% url 'tc_app:profile' %}" class="action-btn primary">
+                        <i class="fas fa-user"></i>
+                        View Profile
+                    </a>
+                    <a href="{% url 'tc_app:events' %}" class="action-btn secondary">
+                        <i class="fas fa-calendar-alt"></i>
+                        Explore Events
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="cta-section">
+                <a href="{% url 'tc_app:signup' %}" class="cta-button">
+                    Join Now
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+                <p class="cta-subtext">Already a member? <a href="{% url 'tc_app:login_choice' %}">Log In</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="features-container">
+        <h2>Features</h2>
+        
+        <div class="features-content">
+            <div class="features-text">
+                <h3>Why Become a Member?</h3>
+                <ul class="features-list">
+                    <li>
+                        <span class="feature-icon">📍</span>
+                        Community Engagement – Connect with like-minded individuals who share your vision.
+                    </li>
+                    <li>
+                        <span class="feature-icon">📍</span>
+                        Digital Content Modules – Access exclusive courses and skill-building resources.
+                    </li>
+                    <li>
+                        <span class="feature-icon">📍</span>
+                        Event Participation – Attend live and virtual events that inspire and educate.
+                    </li>
+                    <li>
+                        <span class="feature-icon">📍</span>
+                        Personalized Dashboard – Track your progress, explore new opportunities, and manage your membership with ease.
+                    </li>
+                </ul>
+                <a href="#" class="explore-btn">Explore Membership Options →</a>
+            </div>
+            <div class="features-image">
+                <img src="{% static 'images/features-image.jpg' %}" alt="Members collaborating">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials">
+    <div class="testimonials-container">
+        <h2>Testimonials</h2>
+        <p class="subtitle">Read What Others Have to Say</p>
+        
+        <div class="testimonials-grid">
+            <!-- First Testimonial -->
+            <div class="testimonial-card">
+                <div class="testimonial-image-container">
+                    <img src="{% static 'images/Sarah.jpg' %}" alt="Olivia Cole" class="testimonial-image">
+                </div>
+                <div class="testimonial-content">
+                    <h3 class="testimonial-name">Sarah Johnson</h3>
+                    <p class="testimonial-text">"Together Culture has given me a space to grow my creative business and connect with amazing people. It's more than a membership – it's a movement!"</p>
+                </div>
+            </div>
+
+            <!-- Second Testimonial -->
+            <div class="testimonial-card">
+                <div class="testimonial-image-container">
+                    <img src="{% static 'images/Michael.jpg' %}" alt="Olivia Cole" class="testimonial-image">
+                </div>
+                <div class="testimonial-content">
+                    <h3 class="testimonial-name">Michael Chen</h3>
+                    <p class="testimonial-text">"The resources and connections I've made through Together Culture have been invaluable. The community support has helped me take my creative projects to the next level."</p>
+                </div>
+            </div>
+
+            <!-- Third Testimonial -->
+            <div class="testimonial-card">
+                <div class="testimonial-image-container">
+                    <img src="{% static 'images/Emma.jpg' %}" alt="Olivia Cole" class="testimonial-image">
+                </div>
+                <div class="testimonial-content">
+                    <h3 class="testimonial-name">Emma Rodriguez</h3>
+                    <p class="testimonial-text">"Being part of Together Culture has opened up so many opportunities. The workshops and events have helped me develop both personally and professionally."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section brand">
+            <h3>Together Culture</h3>
+            <img src="{% static 'images/logo.png' %}" alt="Together Culture Logo">
+        </div>
+
+        <div class="footer-section">
+            <h3>Navigation</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">contact</a></li>
+                <li><a href="#">Events</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>Market</h3>
+            <ul>
+                <li><a href="#">Trending</a></li>
+                <li><a href="#">New Arrivals</a></li>
+                <li><a href="#">Top Creators</a></li>
+                <li><a href="#">Twitter</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h3>contact</h3>
+            <ul>
+                <li><a href="#">Email</a></li>
+                <li><a href="#">LinkedIn</a></li>
+                <li><a href="#">Instagram</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section newsletter">
+            <h3>join our newsletter</h3>
+            <div class="newsletter-form">
+                <input type="email" placeholder="Email Address" class="email-input">
+                <button type="submit" class="submit-btn">submit</button>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
