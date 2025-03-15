@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 import json
@@ -10,6 +10,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 # Create your views here.
 from django.views.generic import TemplateView
@@ -123,47 +125,39 @@ def signup_view(request):
 
 @login_required
 def membership_view(request):
+    membership_types = MembershipType.objects.all()
+    current_membership = Membership.objects.filter(user=request.user).first()
+
     if request.method == 'POST':
-        # Get or create membership instance
-        membership, created = Membership.objects.get_or_create(user=request.user)
-        
-        # Update membership fields
-        membership.full_name = request.POST.get('full_name')
-        membership.email = request.POST.get('email')
-        membership.phone_number = request.POST.get('phone')
-        membership.location = request.POST.get('location')
-        membership.membership_type = request.POST.get('membership_type')
-        
-        # Handle interests
-        interests = request.POST.getlist('interests[]')
-        membership.interests = json.dumps(interests)
-        
-        # Handle profile image
-        if 'profile_image' in request.FILES:
-            membership.profile_image = request.FILES['profile_image']
-        
+        membership_type_id = request.POST.get('membership_type')
         try:
-            membership.save()
-            messages.success(request, 'Membership details updated successfully!')
+            # Convert to integer since we're expecting an ID
+            membership_type = MembershipType.objects.get(id=int(membership_type_id))
+            
+            # Calculate end date based on membership duration
+            start_date = timezone.now()
+            end_date = start_date + relativedelta(months=membership_type.duration)
+            
+            # Update or create membership
+            membership, created = Membership.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'membership_type': membership_type,
+                    'start_date': start_date,
+                    'end_date': end_date,
+                    'status': 'pending'
+                }
+            )
+            
+            messages.success(request, 'Your membership application has been submitted successfully! Our team will review it shortly.')
             return redirect('tc_app:profile')
-        except Exception as e:
-            messages.error(request, f'Error updating membership: {str(e)}')
+            
+        except (MembershipType.DoesNotExist, ValueError) as e:
+            messages.error(request, 'Invalid membership type selected. Please try again.')
     
-    # Get existing membership data for display
-    try:
-        membership = Membership.objects.get(user=request.user)
-    except Membership.DoesNotExist:
-        membership = None
-
-    # Get membership types from model choices
-    membership_types = [
-        {'code': code, 'name': name, 'description': get_membership_description(code)}
-        for code, name in Membership.MEMBERSHIP_TYPES
-    ]
-
     context = {
-        'membership': membership,
-        'membership_types': membership_types
+        'membership_types': membership_types,
+        'current_membership': current_membership
     }
     return render(request, 'membership.html', context)
 
@@ -179,56 +173,90 @@ def get_membership_description(membership_type):
 def profile_view(request):
     try:
         membership = request.user.membership
-        context = {
-            'membership': membership,
-        }
-    except:
-        context = {}
-    
+    except Membership.DoesNotExist:
+        membership = None
+
+    context = {
+        'user': request.user,
+        'membership': membership
+    }
     return render(request, 'profile.html', context)
 
 @login_required
 def select_membership(request):
     if request.method == 'POST':
-        membership_type = request.POST.get('membership_type')
-        membership, created = Membership.objects.get_or_create(user=request.user)
-        membership.membership_type = membership_type
-        membership.save()
-        
-        if created:
-            return redirect('tc_app:edit_profile')
-        return redirect('tc_app:profile')
-    
-    membership_types = MembershipType.objects.all()
-    return render(request, 'membership_plans.html', {'membership_types': membership_types})
+        membership_type_id = request.POST.get('membership_type')
+        try:
+            membership_type = MembershipType.objects.get(id=membership_type_id)
+            
+            # Calculate end date based on membership duration
+            end_date = timezone.now() + timezone.timedelta(days=30 * membership_type.duration)
+            
+            # Update or create membership
+            Membership.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'membership_type': membership_type,
+                    'end_date': end_date,
+                    'status': 'active'
+                }
+            )
+            
+            messages.success(request, f'Successfully subscribed to {membership_type.name} plan!')
+            return redirect('tc_app:membership')
+            
+        except MembershipType.DoesNotExist:
+            messages.error(request, 'Invalid membership type selected.')
+            
+    return redirect('tc_app:membership')
 
 @login_required
-def edit_profile(request):
+def edit_profile_view(request):
     if request.method == 'POST':
-        membership = request.user.membership
-        
-        # Update all profile fields
-        membership.full_name = request.POST.get('full_name', '')
-        membership.email = request.POST.get('email', '')
-        membership.phone_number = request.POST.get('phone_number', '')
-        membership.location = request.POST.get('location', '')
-        membership.bio = request.POST.get('bio', '')
-        
-        # Handle profile image
+        # Handle profile image upload
         if 'profile_image' in request.FILES:
-            membership.profile_image = request.FILES['profile_image']
-            
-        # Handle interests
-        interests = request.POST.getlist('interests[]')
-        membership.interests = json.dumps(interests)
-        
-        membership.save()
+            if request.user.membership:
+                # Delete old image if it exists
+                if request.user.membership.profile_image:
+                    try:
+                        request.user.membership.profile_image.delete()
+                    except:
+                        pass
+                request.user.membership.profile_image = request.FILES['profile_image']
+                request.user.membership.save()
+            else:
+                # Create new membership if it doesn't exist
+                request.user.membership = Membership.objects.create(
+                    user=request.user,
+                    profile_image=request.FILES['profile_image']
+                )
+
+        # Handle password update
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if current_password and new_password and confirm_password:
+            if new_password == confirm_password:
+                # Verify current password
+                if request.user.check_password(current_password):
+                    request.user.set_password(new_password)
+                    request.user.save()
+                    # Update session to prevent logout
+                    update_session_auth_hash(request, request.user)
+                    messages.success(request, 'Password updated successfully!')
+                else:
+                    messages.error(request, 'Current password is incorrect!')
+            else:
+                messages.error(request, 'New passwords do not match!')
+
         messages.success(request, 'Profile updated successfully!')
         return redirect('tc_app:profile')
-        
-    return render(request, 'edit_profile.html', {
-        'membership': request.user.membership
-    })
+
+    context = {
+        'membership': request.user.membership if hasattr(request.user, 'membership') else None
+    }
+    return render(request, 'edit_profile.html', context)
 
 @login_required
 @require_http_methods(["GET", "POST"])

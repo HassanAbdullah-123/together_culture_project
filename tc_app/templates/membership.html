@@ -79,14 +79,15 @@
                 <div class="membership-types">
                     {% for type in membership_types %}
                     <div class="membership-option">
-                        <input type="radio" id="{{ type.code|lower }}" 
+                        <input type="radio" id="type_{{ type.id }}" 
                                name="membership_type" 
-                               value="{{ type.code }}"
-                               {% if membership.membership_type == type.code %}checked{% endif %}
+                               value="{{ type.id }}"
+                               {% if membership.membership_type_id == type.id %}checked{% endif %}
                                required>
-                        <label for="{{ type.code|lower }}">
+                        <label for="type_{{ type.id }}">
                             <div class="type-content">
                                 <span class="type-name">{{ type.name }}</span>
+                                <span class="type-price">${{ type.price }}/month</span>
                                 <span class="type-description">{{ type.description }}</span>
                             </div>
                         </label>

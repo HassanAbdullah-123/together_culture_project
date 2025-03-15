@@ -11,7 +11,7 @@ urlpatterns = [
     path('signup/', views.signup_view, name='signup'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/edit/', views.edit_profile_view, name='edit_profile'),
     path('membership/', views.membership_view, name='membership'),
     path('contact/', views.contact_view, name='contact'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
@@ -25,4 +25,5 @@ urlpatterns = [
     path('modules/<int:module_id>/', views.module_content_view, name='module_content'),
     path('api/modules/<int:module_id>/progress/', views.update_module_progress, name='update_module_progress'),
     path('modules/all/', views.all_modules_view, name='all_modules'),
+    path('select-membership/', views.select_membership, name='select_membership'),
 ]
