@@ -28,6 +28,11 @@
             
             {% if not show_form %}
             <div class="login-options">
+                <script>
+                function redirectToLogin(type) {
+                    window.location.href = "{% url 'tc_app:login' %}?type=" + type;
+                }
+                </script>
                 <button onclick="window.location.href='{% url 'tc_app:login' %}?type=admin'" class="login-btn admin-btn">
                     Login as Admin
                 </button>

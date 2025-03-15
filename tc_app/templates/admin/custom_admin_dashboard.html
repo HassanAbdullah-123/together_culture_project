@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
 {% load static %}
 
 {% block extrastyle %}
@@ -6,62 +6,88 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}
 
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+
 {% block content %}
 <div class="custom-admin-dashboard">
-    <!-- Sidebar Navigation -->
+    <!-- Single top header -->
+    <div class="top-header">
+        <div class="header-brand">
+            <h1>Together Culture Administration</h1>
+        </div>
+        <div class="header-controls">
+            <div class="header-actions">
+                <a href="/" class="header-link">VIEW SITE</a>
+                <span class="separator">/</span>
+                <a href="{% url 'admin:password_change' %}" class="header-link">CHANGE PASSWORD</a>
+                <span class="separator">/</span>
+                <a href="{% url 'admin:logout' %}" class="header-link">LOG OUT</a>
+                <span class="separator">/</span>
+                <button id="theme-switch" class="theme-switch-btn" title="Toggle dark mode">
+                    <i class="fas fa-moon dark-icon"></i>
+                    <i class="fas fa-sun light-icon" style="display: none;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
     <div class="admin-sidebar">
-        <div class="admin-brand">
-            <img src="{% static 'images/logo.png' %}" alt="Together Culture" class="admin-logo">
+        <div class="sidebar-header">
+            <img src="{% static 'images/logo.png' %}" alt="Together Culture" class="logo">
             <h2>Together Culture</h2>
         </div>
-        <div class="sidebar-menu">
-            <div class="menu-section">
-                <h3>Member Management</h3>
-                <a href="{% url 'admin:tc_app_membership_changelist' %}" class="menu-item">
-                    <i class="fas fa-users"></i>
-                    View All Members
-                    <span class="count">{{ total_members }}</span>
-                </a>
-                <a href="{% url 'admin:tc_app_membership_add' %}" class="menu-item">
-                    <i class="fas fa-user-plus"></i>
-                    Add New Members
-                </a>
-                <a href="{% url 'admin:tc_app_membership_changelist' %}?status__exact=pending" class="menu-item">
-                    <i class="fas fa-user-check"></i>
-                    Pending Approvals
-                    <span class="count">{{ pending_approvals }}</span>
-                </a>
-            </div>
 
-            <div class="menu-section">
-                <h3>Event Management</h3>
-                <a href="{% url 'admin:tc_app_event_changelist' %}" class="menu-item">
-                    <i class="fas fa-calendar"></i>
-                    All Events
-                </a>
-                <a href="{% url 'admin:tc_app_event_add' %}" class="menu-item">
-                    <i class="fas fa-calendar-plus"></i>
-                    Add Event
-                </a>
-            </div>
+        <!-- Member Management Section -->
+        <div class="sidebar-section">
+            <h3>MEMBER MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_membership_changelist' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                View All Members
+                <span class="count">{{ total_members }}</span>
+            </a>
+            <a href="{% url 'admin:tc_app_membership_add' %}" class="menu-item">
+                <i class="fas fa-user-plus"></i>
+                Add New Members
+            </a>
+            <a href="{% url 'admin:tc_app_membership_changelist' %}?status__exact=pending" class="menu-item">
+                <i class="fas fa-user-check"></i>
+                Pending Approvals
+                <span class="count">{{ pending_approvals }}</span>
+            </a>
+        </div>
 
-            <div class="menu-section">
-                <h3>Module Management</h3>
-                <a href="{% url 'admin:tc_app_module_changelist' %}" class="menu-item">
-                    <i class="fas fa-book"></i>
-                    All Modules
-                </a>
-                <a href="{% url 'admin:tc_app_module_add' %}" class="menu-item">
-                    <i class="fas fa-plus-circle"></i>
-                    Add Module
-                </a>
-            </div>
+        <!-- Event Management Section -->
+        <div class="sidebar-section">
+            <h3>EVENT MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_event_changelist' %}" class="menu-item">
+                <i class="fas fa-calendar"></i>
+                All Events
+            </a>
+            <a href="{% url 'admin:tc_app_event_add' %}" class="menu-item">
+                <i class="fas fa-calendar-plus"></i>
+                Add Event
+            </a>
+        </div>
+
+        <!-- Module Management Section -->
+        <div class="sidebar-section">
+            <h3>MODULE MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_module_changelist' %}" class="menu-item">
+                <i class="fas fa-book"></i>
+                All Modules
+            </a>
+            <a href="{% url 'admin:tc_app_module_add' %}" class="menu-item">
+                <i class="fas fa-plus-circle"></i>
+                Add Module
+            </a>
         </div>
     </div>
 
     <!-- Main Content Area -->
     <div class="admin-main">
-        <!-- Top Stats Cards -->
+        <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stats-card">
                 <i class="fas fa-users"></i>
@@ -215,7 +241,7 @@
             </div>
         </div>
 
-        <!-- Modules Section -->
+        <!-- Active Modules Section -->
         <div class="modules-section">
             <div class="section-header">
                 <h2>Active Modules</h2>
@@ -333,4 +359,9 @@ document.addEventListener('keydown', function(event) {
     }
 });
 </script>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="{% static 'js/admin.js' %}"></script>
 {% endblock %} 

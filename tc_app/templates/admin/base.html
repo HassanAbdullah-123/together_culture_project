@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block usertools %}
+<div class="admin-user-tools">
+    {% if has_permission %}
+    <div class="user-tools-container">
+        <div class="welcome-msg">
+            Welcome, 
+            <strong>{% firstof user.get_short_name user.get_username %}</strong>
+        </div>
+        <div class="user-actions">
+            <div class="dropdown">
+                <button class="dropbtn">
+                    <i class="fas fa-user-circle"></i>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="{% url 'admin:password_change' %}">
+                        <i class="fas fa-key"></i> Change Password
+                    </a>
+                    <a href="{% url 'admin:auth_user_change' user.id %}">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </a>
+                    <a href="{% url 'admin:view_site' %}" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> View Site
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{% url 'admin:logout' %}" class="logout-link">
+                        <i class="fas fa-sign-out-alt"></i> Log Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

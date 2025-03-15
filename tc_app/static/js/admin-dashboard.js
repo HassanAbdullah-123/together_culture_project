@@ -15,6 +15,19 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(tabId).classList.add('active');
         });
     });
+
+    const themeSwitch = document.getElementById('theme-switch');
+    
+    themeSwitch.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        // Save preference to localStorage
+        localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+
+    // Check for saved theme preference
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
+    }
 });
 
 // Event removal function

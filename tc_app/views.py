@@ -23,23 +23,27 @@ class HomeView(TemplateView):
         context['membership_types'] = MembershipType.objects.all()
         return context
 
+def login_choice(request):
+    return render(request, 'login.html')
+
 def login_view(request):
+    login_type = request.GET.get('type', 'member')
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
+        login_type = request.POST.get('login_type')
         
+        user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            # Redirect admin users to admin dashboard
-            if user.is_staff:
-                return redirect('/admin/')
-            # Redirect regular users to home page
-            return redirect('tc_app:home')
-        else:
-            messages.error(request, 'Invalid username or password.')
-    
-    return render(request, 'login.html')
+            if login_type == 'admin' and user.is_staff:
+                login(request, user)
+                return redirect('admin:index')
+            elif login_type == 'member':
+                login(request, user)
+                return redirect('tc_app:member_dashboard')
+                
+    return render(request, 'login_form.html', {'login_type': login_type})
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
