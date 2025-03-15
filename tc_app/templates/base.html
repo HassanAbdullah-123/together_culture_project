@@ -28,7 +28,7 @@
                     {% if user.is_staff %}
                         <a href="/admin/" class="nav-link">Admin Dashboard</a>
                     {% else %}
-                        <a href="{% url 'tc_app:dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'tc_app:member_dashboard' %}" class="nav-link">Dashboard</a>
                     {% endif %}
                 {% endif %}
                 <a href="{% url 'tc_app:about' %}" class="nav-link">About</a>

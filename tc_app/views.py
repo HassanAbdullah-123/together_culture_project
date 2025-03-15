@@ -8,11 +8,14 @@ import json
 from django.urls import reverse
 from django.core.mail import send_mail
 from django.conf import settings
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 from django.views.generic import TemplateView
-from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact
+from .models import Testimonial, MembershipType, CustomUser, UserProfile, Membership, Contact, Event, Module, EventBooking, ModuleEnrollment
 from django import forms
+from django.db.models import Count
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -42,14 +45,16 @@ def login_view(request):
         try:
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                # Check for admin access if trying to login as admin
                 if login_type == 'admin' and not user.is_staff:
-                    messages.error(request, 'You do not have admin privileges.')
+                    messages.error(request, 'You are not authorized as an admin.')
                     return render(request, 'login_form.html', context)
                 
                 login(request, user)
-                messages.success(request, f'Welcome back, {user.username}!')
-                return redirect('tc_app:dashboard')
+                
+                if user.is_staff and login_type == 'admin':
+                    return redirect('admin:index')
+                else:
+                    return redirect('tc_app:member_dashboard')
             else:
                 messages.error(request, 'Invalid username or password.')
                 return render(request, 'login_form.html', context)
@@ -336,3 +341,148 @@ def admin_dashboard(request):
         ]
     }
     return render(request, 'admin_dashboard.html', context)
+
+@login_required
+def member_dashboard(request):
+    # Get user's membership details
+    try:
+        membership = Membership.objects.get(user=request.user)
+    except Membership.DoesNotExist:
+        membership = None
+
+    # Get upcoming events with booking status
+    upcoming_events = Event.objects.filter(status='upcoming').order_by('date')[:3]
+    
+    # Add booking status for each event
+    for event in upcoming_events:
+        event.is_booked = EventBooking.objects.filter(
+            user=request.user,
+            event=event,
+            status='confirmed'
+        ).exists()
+
+    # Get active modules with enrollment status
+    active_modules = Module.objects.filter(status='active').order_by('-created_at')[:4]
+    
+    # Add enrollment status for each module
+    for module in active_modules:
+        enrollment = ModuleEnrollment.objects.filter(
+            user=request.user,
+            module=module
+        ).first()
+        module.is_enrolled = enrollment is not None
+        module.progress = enrollment.progress if enrollment else 0
+        module.enrollment_status = enrollment.status if enrollment else None
+
+    context = {
+        'membership': membership,
+        'upcoming_events': upcoming_events,
+        'active_modules': active_modules,
+        'member_stats': {
+            'total_members': Membership.objects.count(),
+            'total_events': Event.objects.count(),
+            'active_modules': Module.objects.filter(status='active').count(),
+        }
+    }
+    
+    return render(request, 'member_dashboard.html', context)
+
+@login_required
+def event_detail_api(request, event_id):
+    try:
+        event = Event.objects.get(id=event_id)
+        is_booked = EventBooking.objects.filter(
+            user=request.user,
+            event=event,
+            status='confirmed'
+        ).exists()
+        
+        return JsonResponse({
+            'id': event.id,
+            'title': event.title,
+            'date': event.date.strftime('%B %d, %Y'),
+            'location': event.location,
+            'description': event.description,
+            'is_booked': is_booked
+        })
+    except Event.DoesNotExist:
+        return JsonResponse({'error': 'Event not found'}, status=404)
+
+@login_required
+@require_POST
+def book_event(request, event_id):
+    try:
+        event = Event.objects.get(id=event_id)
+        
+        # Check if already booked
+        if EventBooking.objects.filter(user=request.user, event=event).exists():
+            return JsonResponse({'error': 'You have already booked this event'}, status=400)
+        
+        # Create booking
+        EventBooking.objects.create(
+            user=request.user,
+            event=event,
+            status='confirmed'
+        )
+        
+        return JsonResponse({'success': True})
+    except Event.DoesNotExist:
+        return JsonResponse({'error': 'Event not found'}, status=404)
+
+@login_required
+@require_POST
+def enroll_module(request, module_id):
+    try:
+        module = Module.objects.get(id=module_id)
+        
+        # Check if already enrolled
+        if ModuleEnrollment.objects.filter(user=request.user, module=module).exists():
+            return JsonResponse({'error': 'You are already enrolled in this module'}, status=400)
+        
+        # Create enrollment
+        ModuleEnrollment.objects.create(
+            user=request.user,
+            module=module,
+            status='enrolled'
+        )
+        
+        return JsonResponse({'success': True})
+    except Module.DoesNotExist:
+        return JsonResponse({'error': 'Module not found'}, status=404)
+
+@login_required
+def module_content_view(request, module_id):
+    try:
+        module = Module.objects.get(id=module_id)
+        enrollment = ModuleEnrollment.objects.get(user=request.user, module=module)
+        
+        context = {
+            'module': module,
+            'enrollment': enrollment,
+        }
+        return render(request, 'module_content.html', context)
+    except Module.DoesNotExist:
+        messages.error(request, 'Module not found.')
+        return redirect('tc_app:member_dashboard')
+    except ModuleEnrollment.DoesNotExist:
+        messages.error(request, 'You are not enrolled in this module.')
+        return redirect('tc_app:member_dashboard')
+
+@login_required
+@require_POST
+def update_module_progress(request, module_id):
+    try:
+        module = Module.objects.get(id=module_id)
+        enrollment = ModuleEnrollment.objects.get(user=request.user, module=module)
+        
+        progress = request.POST.get('progress', 0)
+        enrollment.progress = progress
+        if int(progress) == 100:
+            enrollment.status = 'completed'
+        else:
+            enrollment.status = 'in_progress'
+        enrollment.save()
+        
+        return JsonResponse({'success': True})
+    except (Module.DoesNotExist, ModuleEnrollment.DoesNotExist):
+        return JsonResponse({'error': 'Module or enrollment not found'}, status=404)

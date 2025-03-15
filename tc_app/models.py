@@ -126,4 +126,31 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.name or 'Anonymous'} - {self.subject or 'No Subject'}"
+
+class EventBooking(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    event = models.ForeignKey('Event', on_delete=models.CASCADE)
+    booking_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+    
+    class Meta:
+        unique_together = ('user', 'event')
+
+class ModuleEnrollment(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    module = models.ForeignKey('Module', on_delete=models.CASCADE)
+    enrollment_date = models.DateTimeField(default=timezone.now)
+    progress = models.IntegerField(default=0)
+    status = models.CharField(max_length=20, choices=[
+        ('enrolled', 'Enrolled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], default='enrolled')
+
+    class Meta:
+        unique_together = ('user', 'module')
     

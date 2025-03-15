@@ -18,4 +18,10 @@ urlpatterns = [
     path('about/', views.about_view, name='about'),
     path('events/', views.events_view, name='events'),
     path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('member-dashboard/', views.member_dashboard, name='member_dashboard'),
+    path('api/events/<int:event_id>/', views.event_detail_api, name='event_detail_api'),
+    path('api/events/<int:event_id>/book/', views.book_event, name='book_event'),
+    path('api/modules/<int:module_id>/enroll/', views.enroll_module, name='enroll_module'),
+    path('modules/<int:module_id>/', views.module_content_view, name='module_content'),
+    path('api/modules/<int:module_id>/progress/', views.update_module_progress, name='update_module_progress'),
 ]
