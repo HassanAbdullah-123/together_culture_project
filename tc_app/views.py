@@ -344,7 +344,6 @@ def admin_dashboard(request):
 
 @login_required
 def member_dashboard(request):
-    # Get user's membership details
     try:
         membership = Membership.objects.get(user=request.user)
     except Membership.DoesNotExist:
@@ -374,15 +373,23 @@ def member_dashboard(request):
         module.progress = enrollment.progress if enrollment else 0
         module.enrollment_status = enrollment.status if enrollment else None
 
+    # Get user stats
+    completed_modules_count = ModuleEnrollment.objects.filter(
+        user=request.user,
+        status='completed'
+    ).count()
+
+    booked_events_count = EventBooking.objects.filter(
+        user=request.user,
+        status='confirmed'
+    ).count()
+
     context = {
         'membership': membership,
         'upcoming_events': upcoming_events,
         'active_modules': active_modules,
-        'member_stats': {
-            'total_members': Membership.objects.count(),
-            'total_events': Event.objects.count(),
-            'active_modules': Module.objects.filter(status='active').count(),
-        }
+        'completed_modules_count': completed_modules_count,
+        'booked_events_count': booked_events_count,
     }
     
     return render(request, 'member_dashboard.html', context)
@@ -501,3 +508,24 @@ def update_module_progress(request, module_id):
             'success': False,
             'error': str(e)
         }, status=500)
+
+@login_required
+def all_modules_view(request):
+    # Get all active modules
+    modules = Module.objects.filter(status='active').order_by('-created_at')
+    
+    # Add enrollment status for each module
+    for module in modules:
+        enrollment = ModuleEnrollment.objects.filter(
+            user=request.user,
+            module=module
+        ).first()
+        module.is_enrolled = enrollment is not None
+        module.progress = enrollment.progress if enrollment else 0
+        module.enrollment_status = enrollment.status if enrollment else None
+
+    context = {
+        'modules': modules
+    }
+    
+    return render(request, 'all_modules.html', context)

@@ -24,4 +24,5 @@ urlpatterns = [
     path('api/modules/<int:module_id>/enroll/', views.enroll_module, name='enroll_module'),
     path('modules/<int:module_id>/', views.module_content_view, name='module_content'),
     path('api/modules/<int:module_id>/progress/', views.update_module_progress, name='update_module_progress'),
+    path('modules/all/', views.all_modules_view, name='all_modules'),
 ]
