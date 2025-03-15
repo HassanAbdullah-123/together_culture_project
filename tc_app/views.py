@@ -189,7 +189,7 @@ def logout_view(request):
     if request.method == "POST":
         logout(request)
         messages.success(request, 'You have been successfully logged out.')
-        return redirect('tc_app:home')
+        return redirect('tc_app:login_choice')
     return render(request, 'logout_confirm.html')
 
 def home(request):
