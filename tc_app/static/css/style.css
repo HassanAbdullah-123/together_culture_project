@@ -2690,3 +2690,62 @@ main {
     background: #28a745;
     width: 100%;
 }
+
+/* Add these styles to your existing CSS */
+.login-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.admin-btn, .member-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-btn {
+    background-color: #4a4a4a;
+    color: white;
+}
+
+.member-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.admin-btn:hover {
+    background-color: #333;
+}
+
+.member-btn:hover {
+    background-color: #1a8f88;
+}
+
+.login-type-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.back-to-options {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.back-to-options a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back-to-options a:hover {
+    text-decoration: underline;
+}

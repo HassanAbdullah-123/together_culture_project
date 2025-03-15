@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_http_methods
 import json
 from django.urls import reverse
@@ -31,6 +31,10 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
+            # Redirect admin users to admin dashboard
+            if user.is_staff:
+                return redirect('/admin/')
+            # Redirect regular users to home page
             return redirect('tc_app:home')
         else:
             messages.error(request, 'Invalid username or password.')
@@ -234,11 +238,15 @@ def contact_view(request):
     
     return render(request, 'contact.html')
 
-@login_required
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+@user_passes_test(is_admin, login_url='tc_app:login')
 def dashboard_view(request):
-    """
-    Temporary dashboard view showing coming soon message
-    """
+    # If user is admin, redirect to admin dashboard
+    if request.user.is_staff:
+        return redirect('/admin/')  # Redirect to Django admin
+    # For regular users, show regular dashboard
     return render(request, 'dashboard.html')
 
 def about_view(request):
@@ -246,3 +254,39 @@ def about_view(request):
 
 def events_view(request):
     return render(request, 'events.html')
+
+@user_passes_test(is_admin, login_url='tc_app:login')
+def admin_dashboard(request):
+    context = {
+        'total_members': 3000,  # Replace with actual count from database
+        'total_events': 1000,   # Replace with actual count from database
+        'modules': [
+            {
+                'name': 'Entrepreneurship 101',
+                'image': 'images/entrepreneurship.jpg'
+            },
+            {
+                'name': 'Engaged Communities',
+                'image': 'images/engaged-communities.jpg'
+            },
+            {
+                'name': 'Digital StoryTelling',
+                'image': 'images/digital-storytelling.jpg'
+            }
+        ],
+        'upcoming_events': [
+            {
+                'name': 'Creative Networking',
+                'image': 'images/networking.jpg'
+            },
+            {
+                'name': 'Digital Marketing',
+                'image': 'images/digital-marketing.jpg'
+            },
+            {
+                'name': 'Community Campaign',
+                'image': 'images/community-campaign.jpg'
+            }
+        ]
+    }
+    return render(request, 'admin_dashboard.html', context)
