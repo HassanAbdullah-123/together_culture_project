@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>My Modules</h1>
+    <div class="row">
+        {% for enrollment in enrolled_modules %}
+            <div class="col-md-4 mb-4">
+                {% include 'includes/module_card.html' with module=enrollment.module %}
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p>You haven't enrolled in any modules yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Modules - Together Culture{% endblock %}
+
+{% block content %}
+<div class="all-modules-page">
+    <div class="page-header">
+        <h1>All Learning Modules</h1>
+        <div class="module-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="not-enrolled">Not Enrolled</button>
+            <button class="filter-btn" data-filter="in-progress">In Progress</button>
+            <button class="filter-btn" data-filter="completed">Completed</button>
+        </div>
+    </div>
+
+    <div class="modules-grid">
+        {% for module in modules %}
+        <div class="module-card" 
+             data-status="{% if module.is_enrolled %}{% if module.enrollment_status == 'completed' %}completed{% else %}in-progress{% endif %}{% else %}not-enrolled{% endif %}">
+            <div class="module-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="module-details">
+                <h3>{{ module.title }}</h3>
+                <p>{{ module.description }}</p>
+                {% if module.is_enrolled %}
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{ module.progress }}%"></div>
+                    </div>
+                    <div class="progress-text">{{ module.progress }}% Complete</div>
+                    {% if module.enrollment_status == 'completed' %}
+                        <button class="btn-completed" disabled>
+                            <i class="fas fa-check"></i> Completed
+                        </button>
+                    {% else %}
+                        <a href="{% url 'tc_app:module_content' module.id %}" class="btn-continue">
+                            <i class="fas fa-play"></i> Continue Learning
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <button onclick="enrollModule('{{ module.id }}')" class="btn-enroll">
+                        <i class="fas fa-graduation-cap"></i> Start Learning
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.all-modules-page {
+    padding: 80px 30px 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.page-header h1 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.module-filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    padding: 8px 20px;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn.active, .filter-btn:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Rest of your existing module card styles */
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const moduleCards = document.querySelectorAll('.module-card');
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remove active class from all buttons
+            filterBtns.forEach(b => b.classList.remove('active'));
+            // Add active class to clicked button
+            btn.classList.add('active');
+            
+            const filter = btn.dataset.filter;
+            
+            moduleCards.forEach(card => {
+                if (filter === 'all' || card.dataset.status === filter) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+
+// Your existing enrollModule function
+</script>
+{% endblock %} 

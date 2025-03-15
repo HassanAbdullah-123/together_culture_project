@@ -1,0 +1,31 @@
+<div class="event-card" data-event-id="{{ event.id }}">
+    {% if event.image %}
+        <div class="event-image">
+            <img src="{{ event.image.url }}" alt="{{ event.title }}">
+        </div>
+    {% endif %}
+    <div class="event-content">
+        <div class="event-date">
+            <span class="date">{{ event.date|date:"d" }}</span>
+            <span class="month">{{ event.date|date:"M" }}</span>
+        </div>
+        <h3>{{ event.title }}</h3>
+        <p class="event-location">
+            <i class="fas fa-map-marker-alt"></i> {{ event.location }}
+        </p>
+        <div class="event-footer">
+            {% if event.is_booked %}
+                <button class="btn-booked" disabled>
+                    <i class="fas fa-check"></i> Booked
+                </button>
+            {% else %}
+                <button onclick="bookEvent('{{ event.id }}')" class="btn-book">
+                    Book Now
+                </button>
+            {% endif %}
+            <button onclick="showEventDetails('{{ event.id }}')" class="btn-details">
+                Details
+            </button>
+        </div>
+    </div>
+</div> 

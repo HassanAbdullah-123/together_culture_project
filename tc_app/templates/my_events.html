@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>My Events</h1>
+    <div class="row">
+        {% for booking in booked_events %}
+            <div class="col-md-4 mb-4">
+                {% include 'includes/event_card.html' with event=booking.event %}
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <p>You haven't booked any events yet.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 import json
 
 # Create your models here.
@@ -22,13 +23,35 @@ class Testimonial(models.Model):
     def __str__(self):
         return f"{self.name or 'Anonymous'} - {self.role or 'No Role'}"
 
-class MembershipType(models.Model):
-    name = models.CharField(max_length=100, null=True, blank=True, default='Basic')
-    description = models.TextField(null=True, blank=True, default='Basic membership type')
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+def get_default_end_date():
+    return timezone.now() + relativedelta(months=1)
 
+class MembershipType(models.Model):
+    MEMBERSHIP_CODES = [
+        ('community', 'Community Member'),
+        ('key_access', 'Key Access Member'),
+        ('workspace', 'Creative Workspace Member')
+    ]
+
+    name = models.CharField(max_length=100)
+    code = models.CharField(
+        max_length=50,
+        choices=MEMBERSHIP_CODES,
+        default='community'  # Set default value
+    )
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.IntegerField(
+        help_text="Duration in months",
+        default=1
+    )
+    
     def __str__(self):
-        return self.name or 'Unnamed Type'
+        return self.name
+
+    class Meta:
+        verbose_name = "Membership Type"
+        verbose_name_plural = "Membership Types"
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -64,24 +87,48 @@ class Membership(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected')
     ]
-    
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=255, null=True, blank=True, default='')
-    email = models.EmailField(null=True, blank=True)
-    phone_number = models.CharField(max_length=20, null=True, blank=True, default='')
-    membership_type = models.ForeignKey(MembershipType, on_delete=models.SET_NULL, null=True, blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
-    created_at = models.DateTimeField(default=timezone.now)
 
-    def __str__(self):
-        return self.full_name or self.user.username
+    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE)
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        null=True,
+        blank=True,
+        default=None  # Add default value
+    )
+    full_name = models.CharField(
+        max_length=100,
+        null=True,  # Make it optional initially
+        blank=True
+    )
+    email = models.EmailField(null=True, blank=True)
+    phone_number = models.CharField(
+        max_length=20, 
+        null=True, 
+        blank=True
+    )
+    membership_type = models.ForeignKey(
+        MembershipType, 
+        on_delete=models.PROTECT
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
 
     def save(self, *args, **kwargs):
-        if not self.email and self.user:
-            self.email = self.user.email
-        if not self.full_name and self.user:
-            self.full_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
+        if not self.pk:  # Only for new memberships
+            self.end_date = self.start_date + relativedelta(months=self.membership_type.duration)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username}'s Membership"
+
+    class Meta:
+        verbose_name_plural = "Memberships"
 
 class Event(models.Model):
     STATUS_CHOICES = [
@@ -126,4 +173,31 @@ class Contact(models.Model):
 
     def __str__(self):
         return f"{self.name or 'Anonymous'} - {self.subject or 'No Subject'}"
+
+class EventBooking(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    event = models.ForeignKey('Event', on_delete=models.CASCADE)
+    booking_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+    
+    class Meta:
+        unique_together = ('user', 'event')
+
+class ModuleEnrollment(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    module = models.ForeignKey('Module', on_delete=models.CASCADE)
+    enrollment_date = models.DateTimeField(default=timezone.now)
+    progress = models.IntegerField(default=0)
+    status = models.CharField(max_length=20, choices=[
+        ('enrolled', 'Enrolled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], default='enrolled')
+
+    class Meta:
+        unique_together = ('user', 'module')
     

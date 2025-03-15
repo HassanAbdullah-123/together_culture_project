@@ -1,0 +1,663 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Member Dashboard - Together Culture{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+/* Additional styles for confirmations */
+.booking-confirmation,
+.enrollment-confirmation {
+    padding: 20px;
+    text-align: left;
+}
+
+.booking-confirmation p,
+.enrollment-confirmation p {
+    margin: 10px 0;
+    color: #666;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="member-dashboard">
+    <!-- Welcome Section -->
+    <div class="dashboard-header">
+        <div class="welcome-section">
+            <h1>Welcome, {{ user.username }}!</h1>
+            {% if membership %}
+                <p class="membership-status">{{ membership.membership_type.name }} Member</p>
+            {% else %}
+                <p class="membership-status">No active membership</p>
+            {% endif %}
+        </div>
+        <div class="quick-stats">
+            <div class="stat-card">
+                <i class="fas fa-medal"></i>
+                <h3>{{ completed_modules_count }}</h3>
+                <p>Completed Modules</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-check"></i>
+                <h3>{{ booked_events_count }}</h3>
+                <p>My Events</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-book-reader"></i>
+                <h3>{{ active_modules|length }}</h3>
+                <p>Active Modules</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="dashboard-content">
+        <!-- Upcoming Events Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>Upcoming Events</h2>
+                <a href="{% url 'tc_app:events' %}" class="view-all">View All</a>
+            </div>
+            <div class="events-grid">
+                {% if upcoming_events %}
+                    {% for event in upcoming_events %}
+                    <div class="event-card" data-event-id="{{ event.id }}">
+                        {% if event.image %}
+                            <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                        {% endif %}
+                        <div class="event-details">
+                            <h3>{{ event.title }}</h3>
+                            <p class="event-date">
+                                <i class="fas fa-calendar"></i>
+                                {{ event.date|date:"M d, Y" }}
+                            </p>
+                            <p class="event-description">{{ event.description|truncatewords:20 }}</p>
+                            <div class="event-actions">
+                                <button onclick="showEventDetails('{{ event.id }}')" class="btn-details">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </button>
+                                {% if event.is_booked %}
+                                    <button class="btn-booked" disabled>
+                                        <i class="fas fa-check"></i> Booked
+                                    </button>
+                                {% else %}
+                                    <button onclick="bookEvent('{{ event.id }}')" class="btn-book">
+                                        <i class="fas fa-calendar-plus"></i> Book Now
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-data">No upcoming events scheduled</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Active Modules Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>Active Modules</h2>
+                <a href="{% url 'tc_app:all_modules' %}" class="view-all">
+                    <span>View All</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="modules-grid">
+                {% if active_modules %}
+                    {% for module in active_modules %}
+                    <div class="module-card" data-module-id="{{ module.id }}">
+                        <div class="module-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="module-details">
+                            <h3>{{ module.title }}</h3>
+                            <p>{{ module.description|truncatewords:15 }}</p>
+                            <div class="module-actions">
+                                {% if module.is_enrolled %}
+                                    <div class="progress-bar">
+                                        <div class="progress" style="width: {{ module.progress }}%"></div>
+                                    </div>
+                                    {% if module.enrollment_status == 'completed' %}
+                                        <button class="btn-completed" disabled>
+                                            <i class="fas fa-check"></i> Completed
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'tc_app:module_content' module.id %}" class="btn-continue">
+                                            <i class="fas fa-play"></i> Continue Learning
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <button onclick="enrollModule('{{ module.id }}')" class="btn-enroll">
+                                        <i class="fas fa-graduation-cap"></i> Start Learning
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-data">No active modules available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal for Event Details -->
+<div id="eventModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="eventDetailsContent"></div>
+    </div>
+</div>
+
+<script>
+// Event Details Modal
+function showEventDetails(eventId) {
+    fetch(`/api/events/${eventId}/`)
+        .then(response => response.json())
+        .then(data => {
+            const modal = document.getElementById('eventModal');
+            const content = document.getElementById('eventDetailsContent');
+            content.innerHTML = `
+                <h2>${data.title}</h2>
+                <p class="event-date"><i class="fas fa-calendar"></i> ${data.date}</p>
+                <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${data.location}</p>
+                <div class="event-description">${data.description}</div>
+                ${!data.is_booked ? `
+                    <button onclick="bookEvent('${eventId}')" class="btn-book">
+                        <i class="fas fa-calendar-plus"></i> Book Now
+                    </button>
+                ` : ''}
+            `;
+            modal.style.display = "block";
+        });
+}
+
+// Book Event
+function bookEvent(eventId) {
+    fetch(`/api/events/${eventId}/book/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the button in the event card
+            const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+            const actionDiv = eventCard.querySelector('.event-actions');
+            actionDiv.innerHTML = `
+                <button class="btn-booked" disabled>
+                    <i class="fas fa-check"></i> Booked
+                </button>
+            `;
+            
+            // Show success message with more details
+            Swal.fire({
+                title: 'Event Booked Successfully!',
+                html: `
+                    <div class="booking-confirmation">
+                        <p>You have successfully booked this event.</p>
+                        <p>Check your email for confirmation details.</p>
+                        <p>You can view your bookings in your profile.</p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Great!',
+                confirmButtonColor: '#20B2AA'
+            });
+        } else {
+            Swal.fire({
+                title: 'Booking Failed',
+                text: data.error,
+                icon: 'error',
+                confirmButtonColor: '#20B2AA'
+            });
+        }
+    });
+}
+
+// Enroll Module
+function enrollModule(moduleId) {
+    fetch(`/api/modules/${moduleId}/enroll/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Successfully Enrolled!',
+                html: `
+                    <div class="enrollment-confirmation">
+                        <p>You have successfully enrolled in this module.</p>
+                        <p>You can start learning right away.</p>
+                        <p>Track your progress in your dashboard.</p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Start Learning',
+                confirmButtonColor: '#20B2AA'
+            }).then(() => {
+                window.location.href = `/modules/${moduleId}/`;
+            });
+        } else {
+            Swal.fire({
+                title: 'Enrollment Failed',
+                text: data.error,
+                icon: 'error',
+                confirmButtonColor: '#20B2AA'
+            });
+        }
+    });
+}
+
+// Get CSRF Token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Close Modal
+const modal = document.getElementById('eventModal');
+const span = document.getElementsByClassName("close")[0];
+span.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+</script>
+
+<style>
+/* Member Dashboard Styles */
+.member-dashboard {
+    padding: 80px 30px 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-header {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.welcome-section h1 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+
+.membership-status {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    margin-left: 10px;
+    background: var(--primary-color);
+    color: white;
+}
+
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card i {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.stat-card h3 {
+    font-size: 28px;
+    color: #333;
+    margin: 10px 0;
+}
+
+.stat-card p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.welcome-section {
+    text-align: left;
+}
+
+.welcome-section h1 {
+    color: var(--primary-color);
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+.membership-status {
+    color: #666;
+    font-size: 1.1em;
+}
+
+.dashboard-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.4rem;
+    color: #333;
+}
+
+.view-all {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.event-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+.event-image {
+    height: 160px;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-details {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-details h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.event-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.event-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.module-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+}
+
+.module-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.module-icon i {
+    color: white;
+    font-size: 18px;
+}
+
+.module-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.module-details h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.module-details p {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    flex: 1;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+    .events-grid, .modules-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .welcome-section {
+        text-align: center;
+    }
+    
+    .quick-stats {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        width: 100%;
+    }
+    
+    .events-grid, .modules-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Add these styles to your existing CSS */
+.event-actions, .module-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-details, .btn-book, .btn-booked, .btn-enroll, .btn-continue {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-details {
+    background: #f8f9fa;
+    color: #666;
+}
+
+.btn-book, .btn-enroll {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-booked {
+    background: #28a745;
+    color: white;
+    cursor: default;
+}
+
+.btn-continue {
+    background: #007bff;
+    color: white;
+    text-decoration: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress {
+    height: 100%;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+#eventDetailsContent {
+    padding: 20px;
+}
+</style>
+{% endblock %}
