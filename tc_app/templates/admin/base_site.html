@@ -1,0 +1,71 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Together Culture Admin{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block branding %}
+<div class="admin-branding">
+    <h1>Together Culture Administration</h1>
+</div>
+{% endblock %}
+
+{% block usertools %}
+<div class="admin-header-tools">
+    <div class="admin-profile-menu">
+        <button class="profile-button" onclick="toggleProfileMenu()">
+            <div class="admin-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <span>{{ request.user.username }}</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown">
+            <a href="{% url 'admin:password_change' %}">
+                <i class="fas fa-key"></i>
+                Change Password
+            </a>
+            <a href="{% url 'admin:auth_user_change' request.user.id %}">
+                <i class="fas fa-user-edit"></i>
+                Edit Profile
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'admin:logout' %}" class="logout-link">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleProfileMenu() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const isClickInside = event.target.closest('.admin-profile-menu');
+    const dropdown = document.getElementById('profileDropdown');
+    
+    if (!isClickInside && dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+    }
+});
+
+// Close dropdown when pressing escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    }
+});
+</script>
+{% endblock %} 

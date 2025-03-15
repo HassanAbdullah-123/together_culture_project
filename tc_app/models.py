@@ -1,26 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils import timezone
+import json
 
 # Create your models here.
 from django.db import models
 
 class Testimonial(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='testimonials/')
-    testimonial_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
+    ]
+    
+    name = models.CharField(max_length=100, null=True, blank=True, default='Anonymous')
+    role = models.CharField(max_length=100, null=True, blank=True, default='Member')
+    content = models.TextField(null=True, blank=True, default='No content provided')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    image = models.ImageField(upload_to='testimonials/', null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.name
+        return f"{self.name or 'Anonymous'} - {self.role or 'No Role'}"
 
 class MembershipType(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    features = models.JSONField()
+    name = models.CharField(max_length=100, null=True, blank=True, default='Basic')
+    description = models.TextField(null=True, blank=True, default='Basic membership type')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return self.name
+        return self.name or 'Unnamed Type'
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -39,21 +47,8 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    is_admin = models.BooleanField(default=False)
-    
-    objects = CustomUserManager()
-    
-    REQUIRED_FIELDS = ['email']
-
-    def save(self, *args, **kwargs):
-        if self.is_admin:
-            self.is_staff = True
-            self.is_superuser = True
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
+    # Already inherits username, email, is_staff, date_joined from AbstractUser
+    pass
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -64,32 +59,71 @@ class UserProfile(models.Model):
         return f"{self.user.username}'s profile"
 
 class Membership(models.Model):
-    MEMBERSHIP_CHOICES = [
-        ('community', 'Community Member'),
-        ('key_access', 'Key Access Member'),
-        ('workspace', 'Creative Workspace Member'),
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
     ]
-
-    INTEREST_CHOICES = [
-        ('caring', 'Caring'),
-        ('sharing', 'Sharing'),
-        ('experiencing', 'Experiencing'),
-        ('working', 'Working'),
-    ]
-
+    
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    profile_image = models.ImageField(
-        upload_to='profile_images/',
-        null=True,
-        blank=True
-    )
-    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
-    interests = models.JSONField()  # Store multiple interests
-    terms_accepted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+    full_name = models.CharField(max_length=255, null=True, blank=True, default='')
+    email = models.EmailField(null=True, blank=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True, default='')
+    membership_type = models.ForeignKey(MembershipType, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"{self.full_name} - {self.membership_type}"
+        return self.full_name or self.user.username
+
+    def save(self, *args, **kwargs):
+        if not self.email and self.user:
+            self.email = self.user.email
+        if not self.full_name and self.user:
+            self.full_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.username
+        super().save(*args, **kwargs)
+
+class Event(models.Model):
+    STATUS_CHOICES = [
+        ('upcoming', 'Upcoming'),
+        ('ongoing', 'Ongoing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ]
+    
+    title = models.CharField(max_length=200, null=True, blank=True, default='Untitled Event')
+    description = models.TextField(null=True, blank=True, default='No description provided')
+    date = models.DateTimeField(default=timezone.now)
+    location = models.CharField(max_length=200, null=True, blank=True, default='TBD')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming')
+    image = models.ImageField(upload_to='events/', null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.title or 'Untitled Event'
+
+class Module(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
+    ]
+    
+    title = models.CharField(max_length=200, null=True, blank=True, default='Untitled Module')
+    description = models.TextField(null=True, blank=True, default='No description provided')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    created_at = models.DateTimeField(default=timezone.now)
+    image = models.ImageField(upload_to='modules/', null=True, blank=True)
+
+    def __str__(self):
+        return self.title or 'Untitled Module'
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, default='Anonymous')
+    email = models.EmailField(null=True, blank=True)
+    subject = models.CharField(max_length=200, null=True, blank=True, default='General Inquiry')
+    message = models.TextField(null=True, blank=True, default='No message provided')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.name or 'Anonymous'} - {self.subject or 'No Subject'}"
     

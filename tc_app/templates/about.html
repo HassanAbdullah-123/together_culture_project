@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Together Culture{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <!-- Hero Section -->
+    <div class="about-hero">
+        <div class="about-hero-content">
+            <h1>Empowering Communities,<br>Connecting Creators</h1>
+            <p class="hero-description">
+                Together Culture is a community-driven platform designed to foster creativity, 
+                collaboration, and sustainability through technology and innovation
+            </p>
+        </div>
+    </div>
+
+    <!-- Mission Section -->
+    <div class="about-section mission-section">
+        <div class="section-container">
+            <div class="section-grid">
+                <div class="section-content">
+                    <h2>Our Mission</h2>
+                    <p>At Together Culture, we believe in creating a fair, sustainable, and creative 
+                    economy where individuals can collaborate, share knowledge, and grow together. 
+                    Our platform serves as a bridge connecting diverse creators and fostering meaningful 
+                    partnerships.</p>
+                    <a href="{% url 'tc_app:membership' %}" class="get-involved-btn">Get Involved</a>
+                </div>
+                <div class="section-image">
+                    <img src="{% static 'images/about-mission.jpg' %}" alt="Our Mission">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Values Section -->
+    <div class="about-section values-section">
+        <div class="section-container">
+            <h2>Our Core Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community First</h3>
+                    <p>Building strong, supportive networks where everyone's voice matters</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>Embracing new ideas and creative solutions for tomorrow's challenges</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3>Collaboration</h3>
+                    <p>Fostering partnerships that create meaningful impact</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Sustainability</h3>
+                    <p>Promoting practices that benefit both people and planet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impact Section -->
+    <div class="about-section impact-section">
+        <div class="section-container">
+            <h2>Our Impact</h2>
+            <div class="impact-grid">
+                <div class="impact-stat">
+                    <span class="stat-number">1000+</span>
+                    <span class="stat-label">Community Members</span>
+                </div>
+                <div class="impact-stat">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Creative Projects</span>
+                </div>
+                <div class="impact-stat">
+                    <span class="stat-number">100+</span>
+                    <span class="stat-label">Events Hosted</span>
+                </div>
+                <div class="impact-stat">
+                    <span class="stat-number">20+</span>
+                    <span class="stat-label">Partner Organizations</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Join Us Section -->
+    <div class="about-section join-section">
+        <div class="section-container">
+            <div class="join-content">
+                <h2>Join Our Community</h2>
+                <p>Be part of a growing network of creators, innovators, and change-makers</p>
+                <div class="join-buttons">
+                    <a href="{% url 'tc_app:signup' %}" class="join-btn primary">Sign Up Now</a>
+                    <a href="{% url 'tc_app:contact' %}" class="join-btn secondary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

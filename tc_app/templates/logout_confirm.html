@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Logout - Together Culture</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #20B2AA;
+            font-family: Arial, sans-serif;
+        }
+
+        .logout-confirm-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logout-icon {
+            font-size: 48px;
+            color: #20B2AA;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .logout-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .confirm-logout-btn, .cancel-logout-btn {
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .confirm-logout-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .confirm-logout-btn:hover {
+            background-color: #c82333;
+        }
+
+        .cancel-logout-btn {
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cancel-logout-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="logout-confirm-container">
+        <i class="fas fa-sign-out-alt logout-icon"></i>
+        <h2>Confirm Logout</h2>
+        <p>Are you sure you want to log out?</p>
+        
+        <div class="logout-buttons">
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="confirm-logout-btn">Confirm Logout</button>
+            </form>
+            {% if user.is_staff %}
+                <a href="/admin/" class="cancel-logout-btn">Cancel</a>
+            {% else %}
+                <a href="/" class="cancel-logout-btn">Cancel</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> 

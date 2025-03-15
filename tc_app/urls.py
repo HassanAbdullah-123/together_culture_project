@@ -5,9 +5,16 @@ from . import views
 app_name = 'tc_app'
 
 urlpatterns = [
-    path('', views.HomeView.as_view(), name='home'),
+    path('', views.login_choice, name='login_choice'),
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
+    path('logout/', views.logout_view, name='logout'),
+    path('profile/', views.profile_view, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('membership/', views.membership_view, name='membership'),
-    path('logout/', LogoutView.as_view(next_page='tc_app:home'), name='logout'),
+    path('contact/', views.contact_view, name='contact'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('about/', views.about_view, name='about'),
+    path('events/', views.events_view, name='events'),
+    path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
 ]

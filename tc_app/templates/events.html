@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Events - Together Culture{% endblock %}
+
+{% block content %}
+<div class="events-coming-soon">
+    <div class="events-container">
+        <div class="events-content">
+            <div class="events-header">
+                <i class="fas fa-calendar-alt events-icon"></i>
+                <h1>Exciting Events Coming Soon!</h1>
+                <p class="subtitle">We're planning amazing cultural experiences and community gatherings.</p>
+            </div>
+
+            <div class="features-preview">
+                <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <h3>Community Meetups</h3>
+                    <p>Connect with like-minded individuals</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-theater-masks"></i>
+                    <h3>Cultural Festivals</h3>
+                    <p>Celebrate diversity and traditions</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3>Workshops</h3>
+                    <p>Learn and grow together</p>
+                </div>
+            </div>
+
+            <div class="notification-signup">
+                <h3>Get Notified</h3>
+                <p>Be the first to know when we launch our events!</p>
+                <form class="notify-form">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Notify Me</button>
+                </form>
+            </div>
+
+            <div class="back-home">
+                <a href="{% url 'tc_app:home' %}" class="back-home-btn">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

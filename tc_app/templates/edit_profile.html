@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile - Together Culture{% endblock %}
+
+{% block content %}
+<div class="edit-profile-page">
+    <div class="edit-profile-container">
+        <h1>Edit Profile</h1>
+        
+        <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
+            {% csrf_token %}
+            
+            <!-- Profile Image Section -->
+            <div class="profile-image-section">
+                {% if user.membership.profile_image %}
+                    <img src="{{ user.membership.profile_image.url }}" alt="Profile" id="profile-preview">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="Profile" id="profile-preview">
+                {% endif %}
+                <div class="image-upload-controls">
+                    <label for="profile_image" class="upload-btn">
+                        <i class="fas fa-camera"></i> Change Photo
+                    </label>
+                    <input type="file" id="profile_image" name="profile_image" accept="image/*" class="hidden">
+                </div>
+            </div>
+
+            <!-- Profile Information -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name" 
+                           value="{{ membership.full_name|default:'' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" 
+                           value="{{ membership.email|default:'' }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" 
+                           value="{{ membership.location|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number" 
+                           value="{{ membership.phone_number|default:'' }}">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" rows="4">{{ membership.bio|default:'' }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'tc_app:profile' %}" class="cancel-btn">Cancel</a>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('profile_image').addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profile-preview').src = e.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+{% endblock %}
+

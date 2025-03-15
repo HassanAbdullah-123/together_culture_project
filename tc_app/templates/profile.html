@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-image">
+                {% if user.membership.profile_image %}
+                    <img src="{{ user.membership.profile_image.url }}" alt="Profile">
+                {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="Profile">
+                {% endif %}
+            </div>
+            <div class="profile-info">
+                <h1>{{ user.membership.full_name }}</h1>
+                <span class="membership-badge">{{ user.membership.get_membership_type_display }}</span>
+            </div>
+            <a href="{% url 'tc_app:edit_profile' %}" class="edit-profile-btn">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <div class="profile-section">
+                <h2>Personal Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Email</label>
+                        <p>{{ user.membership.email }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Phone</label>
+                        <p>{{ user.membership.phone_number|default:"Not provided" }}</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Location</label>
+                        <p>{{ user.membership.location|default:"Not provided" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Bio</h2>
+                <p class="bio-text">{{ user.membership.bio|default:"No bio provided" }}</p>
+            </div>
+
+            <div class="profile-section">
+                <h2>Interests</h2>
+                <div class="interests-tags">
+                    {% for interest in user.membership.get_interests %}
+                        <span class="interest-tag">{{ interest }}</span>
+                    {% empty %}
+                        <p>No interests added yet</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h2>Membership Details</h2>
+                <div class="membership-info">
+                    <p><strong>Type:</strong> {{ user.membership.get_membership_type_display }}</p>
+                    <p><strong>Join Date:</strong> {{ user.membership.join_date|date:"F j, Y" }}</p>
+                    {% if user.membership.expiration_date %}
+                        <p><strong>Expires:</strong> {{ user.membership.expiration_date|date:"F j, Y" }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
