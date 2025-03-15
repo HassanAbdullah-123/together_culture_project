@@ -28,28 +28,37 @@ def login_choice(request):
 
 def login_view(request):
     login_type = request.GET.get('type')
+    context = {'login_type': login_type}
     
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
         login_type = request.POST.get('login_type')
         
-        user = authenticate(request, username=username, password=password)
+        if not username or not password:
+            messages.error(request, 'Please fill in all fields.')
+            return render(request, 'login_form.html', context)
         
-        if user is not None:
-            # For admin login, check if user is staff
-            if login_type == 'admin' and not user.is_staff:
-                messages.error(request, 'You are not authorized as an admin.')
-                return redirect('tc_app:login_choice')
-            
-            login(request, user)
-            return redirect('tc_app:dashboard')
-        else:
-            messages.error(request, 'Invalid username or password.')
-            return redirect('tc_app:login')
+        try:
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                # Check for admin access if trying to login as admin
+                if login_type == 'admin' and not user.is_staff:
+                    messages.error(request, 'You do not have admin privileges.')
+                    return render(request, 'login_form.html', context)
+                
+                login(request, user)
+                messages.success(request, f'Welcome back, {user.username}!')
+                return redirect('tc_app:dashboard')
+            else:
+                messages.error(request, 'Invalid username or password.')
+                return render(request, 'login_form.html', context)
+                
+        except Exception as e:
+            messages.error(request, 'An error occurred during login. Please try again.')
+            return render(request, 'login_form.html', context)
     
-    # For GET requests, show the login form
-    return render(request, 'login_form.html', {'login_type': login_type})
+    return render(request, 'login_form.html', context)
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -67,18 +76,45 @@ class CustomUserCreationForm(UserCreationForm):
 
 def signup_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Account created successfully!')
-            return redirect('tc_app:home')
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = CustomUserCreationForm()
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        
+        # Validation
+        if not all([username, email, password1, password2]):
+            messages.error(request, 'Please fill in all fields.')
+            return render(request, 'signup.html')
+            
+        if password1 != password2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'signup.html')
+            
+        try:
+            # Check if username exists
+            if CustomUser.objects.filter(username=username).exists():
+                messages.error(request, 'Username is already taken.')
+                return render(request, 'signup.html')
+                
+            # Check if email exists
+            if CustomUser.objects.filter(email=email).exists():
+                messages.error(request, 'Email is already registered.')
+                return render(request, 'signup.html')
+                
+            # Create user
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password1
+            )
+            messages.success(request, 'Account created successfully! Please log in.')
+            return redirect('tc_app:login_choice')
+            
+        except Exception as e:
+            messages.error(request, 'An error occurred during signup. Please try again.')
+            return render(request, 'signup.html')
     
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'signup.html')
 
 @login_required
 def membership_view(request):
