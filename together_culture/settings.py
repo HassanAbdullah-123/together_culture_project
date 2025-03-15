@@ -139,7 +139,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Add these settings
-LOGIN_URL = 'tc_app:login'
+LOGIN_URL = 'tc_app:login_choice'
 LOGIN_REDIRECT_URL = 'tc_app:home'
 LOGOUT_REDIRECT_URL = 'tc_app:home'
 
