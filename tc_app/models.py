@@ -131,23 +131,41 @@ class Membership(models.Model):
         verbose_name_plural = "Memberships"
 
 class Event(models.Model):
-    STATUS_CHOICES = [
+    EVENT_STATUS_CHOICES = [
         ('upcoming', 'Upcoming'),
         ('ongoing', 'Ongoing'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled')
+        ('cancelled', 'Cancelled'),
+    ]
+
+    EVENT_CATEGORIES = [
+        ('community_meetup', 'Community Meetup'),
+        ('cultural_festival', 'Cultural Festival'),
+        ('workshop', 'Workshop'),
     ]
     
-    title = models.CharField(max_length=200, null=True, blank=True, default='Untitled Event')
-    description = models.TextField(null=True, blank=True, default='No description provided')
+    title = models.CharField(max_length=200, default='Untitled Event')
+    description = models.TextField(default='Event description coming soon.')
     date = models.DateTimeField(default=timezone.now)
-    location = models.CharField(max_length=200, null=True, blank=True, default='TBD')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming')
     image = models.ImageField(upload_to='events/', null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    location = models.CharField(max_length=200, default='To be announced')
+    status = models.CharField(
+        max_length=20, 
+        choices=EVENT_STATUS_CHOICES,
+        default='upcoming'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(
+        max_length=50, 
+        choices=EVENT_CATEGORIES,
+        default='community_meetup'
+    )
 
     def __str__(self):
-        return self.title or 'Untitled Event'
+        return self.title
+
+    class Meta:
+        ordering = ['-date']
 
 class Module(models.Model):
     STATUS_CHOICES = [

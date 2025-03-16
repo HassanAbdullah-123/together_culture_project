@@ -339,41 +339,30 @@ def about_view(request):
     return render(request, 'about.html')
 
 def events_view(request):
-    return render(request, 'events.html')
+    # Just get all upcoming events without categorization
+    upcoming_events = Event.objects.filter(status='upcoming').order_by('date')
+    
+    context = {
+        'upcoming_events': upcoming_events
+    }
+    return render(request, 'events.html', context)
 
 @user_passes_test(is_admin, login_url='tc_app:login')
 def admin_dashboard(request):
+    # Get actual counts from database
     context = {
-        'total_members': 3000,  # Replace with actual count from database
-        'total_events': 1000,   # Replace with actual count from database
-        'modules': [
-            {
-                'name': 'Entrepreneurship 101',
-                'image': 'images/entrepreneurship.jpg'
-            },
-            {
-                'name': 'Engaged Communities',
-                'image': 'images/engaged-communities.jpg'
-            },
-            {
-                'name': 'Digital StoryTelling',
-                'image': 'images/digital-storytelling.jpg'
-            }
-        ],
-        'upcoming_events': [
-            {
-                'name': 'Creative Networking',
-                'image': 'images/networking.jpg'
-            },
-            {
-                'name': 'Digital Marketing',
-                'image': 'images/digital-marketing.jpg'
-            },
-            {
-                'name': 'Community Campaign',
-                'image': 'images/community-campaign.jpg'
-            }
-        ]
+        'total_members': Membership.objects.count(),
+        'total_events': Event.objects.count(),
+        'modules': Module.objects.filter(status='active').order_by('-created_at')[:3],
+        'upcoming_events': Event.objects.filter(
+            status='upcoming'
+        ).order_by('date')[:3],
+        'ongoing_events': Event.objects.filter(
+            status='ongoing'
+        ).order_by('date')[:3],
+        'completed_events': Event.objects.filter(
+            status='completed'
+        ).order_by('-date')[:3]
     }
     return render(request, 'admin_dashboard.html', context)
 
