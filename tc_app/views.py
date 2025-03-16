@@ -267,8 +267,15 @@ def logout_view(request):
         return redirect('tc_app:login_choice')
     return render(request, 'logout_confirm.html')
 
-def home_view(request):
-    return render(request, 'index.html')
+def home(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('admin:index')
+        context = {
+            'user': request.user,
+        }
+        return render(request, 'home.html', context)
+    return render(request, 'home.html')
 
 def contact_view(request):
     if request.method == 'POST':

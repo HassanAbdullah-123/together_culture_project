@@ -5,7 +5,16 @@ from .models import CustomUser, Membership, MembershipType, Event, Module, Conta
 class CustomAdminSite(admin.AdminSite):
     site_header = 'Together Culture Administration'
     site_title = 'Together Culture Admin'
-    index_title = 'Dashboard'  # This will be shown at the top of the dashboard
+    index_title = 'Dashboard'
+    
+    def get_app_list(self, request):
+        app_list = super().get_app_list(request)
+        return app_list
+
+    def each_context(self, request):
+        context = super().each_context(request)
+        context['site_url'] = '/admin/'  # Override the site_url to point to admin
+        return context
 
     def index(self, request, extra_context=None):
         # Get all the counts and data for the dashboard
@@ -19,7 +28,7 @@ class CustomAdminSite(admin.AdminSite):
             'completed_events': Event.objects.filter(status='completed'),
             'modules_list': Module.objects.filter(status='active'),
             'has_permission': True,
-            'site_url': '/',
+            'site_url': '/admin/',  # Set site_url here as well
             **(extra_context or {})
         }
         

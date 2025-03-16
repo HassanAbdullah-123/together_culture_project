@@ -21,29 +21,27 @@
         </p>
 
         {% if user.is_authenticated %}
-            <div class="member-actions">
-                <div class="welcome-message">
+            {% if user.is_superuser %}
+                <div class="admin-actions">
+                    <h2>Admin Controls</h2>
+                    <div class="admin-buttons">
+                        <a href="{% url 'admin:index' %}" class="admin-btn">Go to Admin Dashboard</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="member-welcome">
                     <h2>Welcome, {{ user.username }}!</h2>
                     <p>Ready to make an impact?</p>
+                    <div class="action-buttons">
+                        <a href="{% url 'tc_app:profile' %}" class="btn btn-primary">View Profile</a>
+                        <a href="{% url 'tc_app:events' %}" class="btn btn-secondary">Explore Events</a>
+                    </div>
                 </div>
-                <div class="action-buttons">
-                    <a href="{% url 'tc_app:profile' %}" class="action-btn primary">
-                        <i class="fas fa-user"></i>
-                        View Profile
-                    </a>
-                    <a href="{% url 'tc_app:events' %}" class="action-btn secondary">
-                        <i class="fas fa-calendar-alt"></i>
-                        Explore Events
-                    </a>
-                </div>
-            </div>
+            {% endif %}
         {% else %}
-            <div class="cta-section">
-                <a href="{% url 'tc_app:signup' %}" class="cta-button">
-                    Join Now
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                <p class="cta-subtext">Already a member? <a href="{% url 'tc_app:login' %}">Log In</a></p>
+            <div class="cta-buttons">
+                <a href="{% url 'tc_app:login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'tc_app:register' %}" class="btn btn-secondary">Join Now</a>
             </div>
         {% endif %}
     </div>
@@ -173,4 +171,33 @@
         </div>
     </div>
 </footer>
+
+<style>
+.admin-actions {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.admin-buttons {
+    margin-top: 1rem;
+}
+
+.admin-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #20B2AA;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.admin-btn:hover {
+    background-color: #1a8f89;
+}
+</style>
 {% endblock %}

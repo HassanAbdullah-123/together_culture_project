@@ -1,0 +1,92 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div class="module">
+    <h2>Pending Membership Approvals</h2>
+    
+    {% if pending_memberships %}
+    <div class="results">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Membership Type</th>
+                    <th>Start Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for membership in pending_memberships %}
+                <tr>
+                    <td>{{ membership.user.username }}</td>
+                    <td>{{ membership.membership_type.name }}</td>
+                    <td>{{ membership.start_date|date:"F j, Y" }}</td>
+                    <td class="action-buttons">
+                        <a href="{% url 'admin:approve-membership' membership.id %}" 
+                           class="approve-btn">Approve</a>
+                        <a href="{% url 'admin:reject-membership' membership.id %}" 
+                           class="reject-btn">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No pending approvals.</p>
+    {% endif %}
+</div>
+
+<style>
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.approve-btn, .reject-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+</style>
+{% endblock %} 

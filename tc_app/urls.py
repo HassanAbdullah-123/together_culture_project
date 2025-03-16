@@ -5,7 +5,7 @@ from . import views
 app_name = 'tc_app'
 
 urlpatterns = [
-    path('', views.home_view, name='home'),
+    path('', views.home, name='home'),
     path('login-choice/', views.login_choice, name='login_choice'),
     path('login/', views.login_view, name='login'),
     path('signup/', views.signup_view, name='signup'),
