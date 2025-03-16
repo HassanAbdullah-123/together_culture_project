@@ -271,6 +271,48 @@
                 {% endfor %}
             </div>
         </div>
+
+        <!-- After the stats-overview section, add this: -->
+        {% if pending_approvals > 0 %}
+        <div class="pending-approvals-section">
+            <div class="section-header">
+                <h2>Pending Membership Approvals</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Membership Type</th>
+                            <th>Applied Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for membership in pending_memberships %}
+                        <tr>
+                            <td>{{ membership.user.username }}</td>
+                            <td>{{ membership.membership_type.name }}</td>
+                            <td>{{ membership.created_at|date:"M d, Y" }}</td>
+                            <td class="action-buttons">
+                                <a href="{% url 'admin:approve-membership' membership.id %}" 
+                                   class="approve-btn"
+                                   onclick="return confirm('Are you sure you want to approve this membership?')">
+                                    Approve
+                                </a>
+                                <a href="{% url 'admin:reject-membership' membership.id %}" 
+                                   class="reject-btn"
+                                   onclick="return confirm('Are you sure you want to reject this membership?')">
+                                    Reject
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -359,6 +401,62 @@ document.addEventListener('keydown', function(event) {
     }
 });
 </script>
+
+<style>
+/* Add only the necessary styles for pending approvals */
+.pending-approvals-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.approve-btn, .reject-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+</style>
 {% endblock %}
 
 {% block extrahead %}

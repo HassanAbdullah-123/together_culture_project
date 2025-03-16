@@ -1,6 +1,9 @@
 from django.contrib import admin
 from django.shortcuts import render
 from .models import CustomUser, Membership, MembershipType, Event, Module, Contact, Testimonial
+from django.urls import path
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 
 class CustomAdminSite(admin.AdminSite):
     site_header = 'Together Culture Administration'
@@ -21,6 +24,7 @@ class CustomAdminSite(admin.AdminSite):
         context = {
             'total_members': Membership.objects.count(),
             'pending_approvals': Membership.objects.filter(status='pending').count(),
+            'pending_memberships': Membership.objects.filter(status='pending'),
             'active_events': Event.objects.filter(status__in=['upcoming', 'ongoing']).count(),
             'active_modules': Module.objects.filter(status='active').count(),
             'upcoming_events': Event.objects.filter(status='upcoming'),
@@ -34,6 +38,38 @@ class CustomAdminSite(admin.AdminSite):
         
         # Use your existing custom dashboard template
         return render(request, 'admin/custom_admin_dashboard.html', context)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('membership/<int:membership_id>/approve/',
+                 self.admin_view(self.approve_membership),
+                 name='approve-membership'),
+            path('membership/<int:membership_id>/reject/',
+                 self.admin_view(self.reject_membership),
+                 name='reject-membership'),
+        ]
+        return custom_urls + urls
+
+    def approve_membership(self, request, membership_id):
+        try:
+            membership = Membership.objects.get(id=membership_id)
+            membership.status = 'approved'
+            membership.save()
+            messages.success(request, f'Membership for {membership.user.username} has been approved.')
+        except Membership.DoesNotExist:
+            messages.error(request, 'Membership not found.')
+        return HttpResponseRedirect('/admin/')
+
+    def reject_membership(self, request, membership_id):
+        try:
+            membership = Membership.objects.get(id=membership_id)
+            membership.status = 'rejected'
+            membership.save()
+            messages.success(request, f'Membership for {membership.user.username} has been rejected.')
+        except Membership.DoesNotExist:
+            messages.error(request, 'Membership not found.')
+        return HttpResponseRedirect('/admin/')
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'is_staff', 'date_joined')
