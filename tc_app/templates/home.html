@@ -30,9 +30,9 @@
                 </div>
             {% else %}
                 <div class="member-welcome">
-                    <h2>Welcome, {{ user.username }}!</h2>
-                    <p>Ready to make an impact?</p>
-                    <div class="action-buttons">
+                    <h2 class="welcome-text">Welcome, {{ user.username }}!</h2>
+                    <p class="impact-text">Ready to make an impact?</p>
+                    <div class="action-links">
                         <a href="{% url 'tc_app:profile' %}" class="btn btn-primary">View Profile</a>
                         <a href="{% url 'tc_app:events' %}" class="btn btn-secondary">Explore Events</a>
                     </div>
@@ -41,7 +41,7 @@
         {% else %}
             <div class="cta-buttons">
                 <a href="{% url 'tc_app:login' %}" class="btn btn-primary">Login</a>
-                <a href="{% url 'tc_app:register' %}" class="btn btn-secondary">Join Now</a>
+                <a href="{% url 'tc_app:signup' %}" class="btn btn-secondary">Join Now</a>
             </div>
         {% endif %}
     </div>
