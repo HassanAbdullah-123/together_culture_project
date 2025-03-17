@@ -1,0 +1,33 @@
+<div class="module-card" data-module-id="{{ module.id }}">
+    <div class="module-header">
+        <div class="module-icon">
+            <i class="fas fa-book"></i>
+        </div>
+        <div class="module-progress">
+            <div class="progress-ring">
+                <svg width="40" height="40">
+                    <circle r="15" cx="20" cy="20" fill="none" stroke="#eee" stroke-width="3"/>
+                    <circle r="15" cx="20" cy="20" fill="none" stroke="var(--primary-color)" 
+                            stroke-width="3" stroke-dasharray="{{ module.progress|multiply:94.2,94.2 }}" 
+                            transform="rotate(-90 20 20)"/>
+                </svg>
+                <span>{{ module.progress }}%</span>
+            </div>
+        </div>
+    </div>
+    <div class="module-content">
+        <h3>{{ module.title }}</h3>
+        <p>{{ module.description|truncatewords:15 }}</p>
+    </div>
+    <div class="module-footer">
+        {% if module.is_enrolled %}
+            <a href="{% url 'tc_app:module_content' module.id %}" class="btn-continue">
+                Continue Learning
+            </a>
+        {% else %}
+            <button onclick="enrollModule('{{ module.id }}')" class="btn-enroll">
+                Start Learning
+            </button>
+        {% endif %}
+    </div>
+</div> 

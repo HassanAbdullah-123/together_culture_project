@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Together Culture - Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #20B2AA;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .site-title {
+            color: #20B2AA;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .login-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .admin-login {
+            background-color: #4a4a4a;
+            color: white;
+        }
+
+        .admin-login:hover {
+            background-color: #333333;
+        }
+
+        .member-login {
+            background-color: #20B2AA;
+            color: white;
+        }
+
+        .member-login:hover {
+            background-color: #1a8f88;
+        }
+
+        .signup-text {
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .signup-link {
+            color: #20B2AA;
+            text-decoration: none;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="{% static 'images/logo.png' %}" alt="Together Culture Logo" class="logo">
+        <h1 class="site-title">Together Culture</h1>
+        
+        <button onclick="window.location.href='{% url 'tc_app:login' %}?type=admin'" class="login-button admin-login">
+            Login as Admin
+        </button>
+        
+        <button onclick="window.location.href='{% url 'tc_app:login' %}?type=member'" class="login-button member-login">
+            Login as Member
+        </button>
+
+        <p class="signup-text">
+            Don't have an account? 
+            <a href="{% url 'tc_app:signup' %}" class="signup-link">Sign up here</a>
+        </p>
+    </div>
+</body>
+</html> 

@@ -6,69 +6,335 @@
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
-            <div class="profile-image">
-                {% if user.membership.profile_image %}
-                    <img src="{{ user.membership.profile_image.url }}" alt="Profile">
-                {% else %}
-                    <img src="{% static 'images/default-profile.png' %}" alt="Profile">
-                {% endif %}
-            </div>
-            <div class="profile-info">
-                <h1>{{ user.membership.full_name }}</h1>
-                <span class="membership-badge">{{ user.membership.get_membership_type_display }}</span>
+            <div class="profile-header-content">
+                <div class="profile-avatar">
+                    {% if user.membership.profile_image %}
+                        <img src="{{ user.membership.profile_image.url }}" alt="Profile">
+                    {% else %}
+                        <div class="avatar-placeholder">{{ user.username|make_list|first|upper }}</div>
+                    {% endif %}
+                </div>
+                <div class="profile-title">
+                    <h1>{{ user.get_full_name|default:user.username }}'s Profile</h1>
+                    <span class="member-since">Member since {{ user.date_joined|date:"F Y" }}</span>
+                </div>
             </div>
             <a href="{% url 'tc_app:edit_profile' %}" class="edit-profile-btn">
                 <i class="fas fa-edit"></i> Edit Profile
             </a>
         </div>
 
-        <!-- Profile Content -->
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="profile-content">
-            <div class="profile-section">
-                <h2>Personal Information</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Email</label>
-                        <p>{{ user.membership.email }}</p>
-                    </div>
-                    <div class="info-item">
-                        <label>Phone</label>
-                        <p>{{ user.membership.phone_number|default:"Not provided" }}</p>
-                    </div>
-                    <div class="info-item">
-                        <label>Location</label>
-                        <p>{{ user.membership.location|default:"Not provided" }}</p>
+            <!-- Personal Information Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-user"></i>
+                    <h2>Personal Information</h2>
+                </div>
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Username</label>
+                            <p>{{ user.username }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p>{{ user.email }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="profile-section">
-                <h2>Bio</h2>
-                <p class="bio-text">{{ user.membership.bio|default:"No bio provided" }}</p>
-            </div>
-
-            <div class="profile-section">
-                <h2>Interests</h2>
-                <div class="interests-tags">
-                    {% for interest in user.membership.get_interests %}
-                        <span class="interest-tag">{{ interest }}</span>
-                    {% empty %}
-                        <p>No interests added yet</p>
-                    {% endfor %}
+            <!-- Membership Details Card -->
+            <div class="profile-card">
+                <div class="card-header">
+                    <i class="fas fa-id-card"></i>
+                    <h2>Membership Details</h2>
                 </div>
-            </div>
-
-            <div class="profile-section">
-                <h2>Membership Details</h2>
-                <div class="membership-info">
-                    <p><strong>Type:</strong> {{ user.membership.get_membership_type_display }}</p>
-                    <p><strong>Join Date:</strong> {{ user.membership.join_date|date:"F j, Y" }}</p>
-                    {% if user.membership.expiration_date %}
-                        <p><strong>Expires:</strong> {{ user.membership.expiration_date|date:"F j, Y" }}</p>
+                <div class="card-content">
+                    {% if membership %}
+                        <div class="membership-info">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Membership Type</label>
+                                    <p class="membership-type">{{ membership.membership_type.name }}</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Status</label>
+                                    <p class="status-badge {{ membership.status }}">
+                                        {{ membership.get_status_display }}
+                                    </p>
+                                </div>
+                                <div class="info-item">
+                                    <label>Start Date</label>
+                                    <p>{{ membership.start_date|date:"F j, Y" }}</p>
+                                </div>
+                                <div class="info-item">
+                                    <label>End Date</label>
+                                    <p>{{ membership.end_date|date:"F j, Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="no-membership">
+                            <p>No active membership</p>
+                            <a href="{% url 'tc_app:membership' %}" class="apply-btn">
+                                <i class="fas fa-plus"></i> Apply for membership
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.profile-page {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #f8f9fa;
+    min-height: calc(100vh - 60px);
+}
+
+.profile-container {
+    background: transparent;
+}
+
+/* Profile Header Styles */
+.profile-header {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-placeholder {
+    font-size: 2.5rem;
+    color: white;
+    font-weight: bold;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-title h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #2c3e50;
+}
+
+.member-since {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.edit-profile-btn {
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.edit-profile-btn:hover {
+    background: #1a9090;
+    transform: translateY(-2px);
+}
+
+/* Profile Cards */
+.profile-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.card-header i {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    margin-bottom: 1rem;
+}
+
+.info-item label {
+    display: block;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.info-item p {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    align-items: center;
+}
+
+.status-badge.pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.membership-type {
+    color: var(--primary-color) !important;
+    font-weight: 500;
+}
+
+/* No Membership State */
+.no-membership {
+    text-align: center;
+    padding: 2rem;
+}
+
+.no-membership p {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.apply-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+    background: #1a9090;
+    transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-page {
+        padding: 1rem;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profile-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-content {
+        grid-template-columns: 1fr;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 {% endblock %}

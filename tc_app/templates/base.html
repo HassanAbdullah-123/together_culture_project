@@ -6,7 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Together Culture{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    :root {
+        --primary-color: #20B2AA;
+    }
 </head>
 <body>
     <!-- Navigation -->
@@ -20,13 +25,23 @@
             </div>
 
             <div class="nav-center">
-                <a href="{% url 'tc_app:home' %}" class="nav-link">Home</a>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'tc_app:dashboard' %}" class="nav-link">Dashboard</a>
+                {% if user.is_superuser %}
+                    <a href="{% url 'admin:index' %}" class="nav-link">Admin Dashboard</a>
+                    <a href="/admin/auth/user/{{ user.id }}/change/" class="nav-link">Admin Profile</a>
+                    <a href="{% url 'tc_app:about' %}" class="nav-link">About</a>
+                    <a href="{% url 'tc_app:events' %}" class="nav-link">Events</a>
+                    <a href="{% url 'tc_app:contact' %}" class="nav-link">Contact</a>
+                {% else %}
+                    <a href="{% url 'tc_app:home' %}" class="nav-link">Home</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'tc_app:member_dashboard' %}" class="nav-link">Dashboard</a>
+                        <a href="{% url 'tc_app:profile' %}" class="nav-link">Profile</a>
+                    {% endif %}
+                    <a href="{% url 'tc_app:about' %}" class="nav-link">About</a>
+                    <a href="{% url 'tc_app:events' %}" class="nav-link">Events</a>
+                    <a href="{% url 'tc_app:contact' %}" class="nav-link">Contact</a>
+                    <a href="{% url 'tc_app:membership' %}" class="nav-link">Membership</a>
                 {% endif %}
-                <a href="{% url 'tc_app:about' %}" class="nav-link">About</a>
-                <a href="{% url 'tc_app:events' %}" class="nav-link">Events</a>
-                <a href="{% url 'tc_app:contact' %}" class="nav-link">Contact</a>
             </div>
 
             <div class="nav-right">
@@ -56,7 +71,7 @@
                     </div>
                 {% else %}
                     <div class="auth-buttons">
-                        <a href="{% url 'tc_app:login' %}" class="login-button">Login</a>
+                        <a href="{% url 'tc_app:login_choice' %}" class="login-button">Login</a>
                         <a href="{% url 'tc_app:signup' %}" class="signup-button">Sign Up</a>
                     </div>
                 {% endif %}
@@ -67,7 +82,7 @@
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
-        <div class="message {{ message.tags }}">
+        <div class="alert alert-{{ message.tags }}">
             {{ message }}
         </div>
         {% endfor %}

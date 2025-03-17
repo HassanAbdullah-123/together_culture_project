@@ -4,82 +4,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signup - Together Culture</title>
+    <title>Sign Up - Together Culture</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
-<body class="login-page">
-    <div class="login-container">
-        <div class="login-box">
-            <div class="login-logo">
+<body class="signup-page">
+    <div class="signup-container">
+        <div class="signup-box">
+            <div class="signup-logo">
                 <img src="{% static 'images/logo.png' %}" alt="Together Culture">
                 <h1>Together Culture</h1>
             </div>
-            
-            <form method="post" class="login-form" action="{% url 'tc_app:signup' %}">
+
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form method="post" class="signup-form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" 
-                           value="{{ username|default:'' }}"
-                           placeholder="Enter Username" required>
+                    <input type="text" id="username" name="username" required>
+                    <small>Letters, digits and @/./+/-/_ only.</small>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" 
-                           value="{{ email|default:'' }}"
-                           placeholder="Enter Email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" 
-                           placeholder="Enter Password" required>
+                    <label for="password1">Password</label>
+                    <input type="password" id="password1" name="password1" required>
+                    <small>Must be at least 8 characters</small>
                 </div>
 
                 <div class="form-group">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" 
-                           placeholder="Confirm Password" required>
+                    <label for="password2">Confirm Password</label>
+                    <input type="password" id="password2" name="password2" required>
                 </div>
 
-                <div class="admin-checkbox">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="is_admin" name="is_admin" 
-                               {% if is_admin %}checked{% endif %}>
-                        <span class="checkmark"></span>
-                        <span class="checkbox-label">is Admin</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="login-btn">Register</button>
+                <button type="submit" class="signup-btn">Create Account</button>
             </form>
 
-            <div class="signup-link">
-                <p>Already have an account? <a href="{% url 'tc_app:login' %}">Login here</a></p>
+            <div class="login-link">
+                <p>Already have an account? <a href="{% url 'tc_app:login_choice' %}">Log In</a></p>
             </div>
         </div>
     </div>
-    <script>
-        // Auto-hide messages after 5 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                const messages = document.querySelectorAll('.message');
-                messages.forEach(function(message) {
-                    message.style.display = 'none';
-                });
-            }, 5000);
-        });
-
-        document.querySelector('.login-form').addEventListener('submit', function(e) {
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm_password').value;
-            
-            if (password !== confirmPassword) {
-                e.preventDefault();
-                alert('Passwords do not match!');
-            }
-        });
-    </script>
 </body>
 </html>

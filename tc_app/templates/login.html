@@ -26,8 +26,26 @@
             </div>
             {% endif %}
             
+            {% if not show_form %}
+            <div class="login-options">
+                <script>
+                function redirectToLogin(type) {
+                    window.location.href = "{% url 'tc_app:login' %}?type=" + type;
+                }
+                </script>
+                <button onclick="window.location.href='{% url 'tc_app:login' %}?type=admin'" class="login-btn admin-btn">
+                    Login as Admin
+                </button>
+                <button onclick="window.location.href='{% url 'tc_app:login' %}?type=member'" class="login-btn member-btn">
+                    Login as Member
+                </button>
+            </div>
+            {% else %}
             <form method="post" class="login-form" action="{% url 'tc_app:login' %}">
                 {% csrf_token %}
+                <input type="hidden" name="login_type" value="{{ login_type }}">
+                <h2 class="login-type-title">{{ login_type|title }} Login</h2>
+                
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter Username" required>
@@ -39,7 +57,12 @@
                 </div>
 
                 <button type="submit" class="login-btn">Login</button>
+                
+                <div class="back-to-options">
+                    <a href="{% url 'tc_app:login' %}">← Back to login options</a>
+                </div>
             </form>
+            {% endif %}
 
             <div class="signup-link">
                 <p>Don't have an account? <a href="{% url 'tc_app:signup' %}">Sign up here</a></p>

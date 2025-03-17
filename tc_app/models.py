@@ -1,30 +1,57 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 import json
 
 # Create your models here.
 from django.db import models
 
 class Testimonial(models.Model):
-    name = models.CharField(max_length=100, default='Anonymous')
-    role = models.CharField(max_length=100, blank=True, null=True, default='')
-    content = models.TextField()
-    date_added = models.DateTimeField(default=timezone.now)
-    is_featured = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='testimonials/', blank=True, null=True)
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
+    ]
+    
+    name = models.CharField(max_length=100, null=True, blank=True, default='Anonymous')
+    role = models.CharField(max_length=100, null=True, blank=True, default='Member')
+    content = models.TextField(null=True, blank=True, default='No content provided')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    image = models.ImageField(upload_to='testimonials/', null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f"Testimonial by {self.name}"
+        return f"{self.name or 'Anonymous'} - {self.role or 'No Role'}"
+
+def get_default_end_date():
+    return timezone.now() + relativedelta(months=1)
 
 class MembershipType(models.Model):
+    MEMBERSHIP_CODES = [
+        ('community', 'Community Member'),
+        ('key_access', 'Key Access Member'),
+        ('workspace', 'Creative Workspace Member')
+    ]
+
     name = models.CharField(max_length=100)
+    code = models.CharField(
+        max_length=50,
+        choices=MEMBERSHIP_CODES,
+        default='community'  # Set default value
+    )
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    features = models.JSONField()
-
+    duration = models.IntegerField(
+        help_text="Duration in months",
+        default=1
+    )
+    
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Membership Type"
+        verbose_name_plural = "Membership Types"
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -43,21 +70,8 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 
 class CustomUser(AbstractUser):
-    email = models.EmailField(unique=True)
-    is_admin = models.BooleanField(default=False)
-    
-    objects = CustomUserManager()
-    
-    REQUIRED_FIELDS = ['email']
-
-    def save(self, *args, **kwargs):
-        if self.is_admin:
-            self.is_staff = True
-            self.is_superuser = True
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
+    # Already inherits username, email, is_staff, date_joined from AbstractUser
+    pass
 
 class UserProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -68,129 +82,140 @@ class UserProfile(models.Model):
         return f"{self.user.username}'s profile"
 
 class Membership(models.Model):
-    MEMBERSHIP_TYPES = [
-        ('BASIC', 'Basic'),
-        ('PREMIUM', 'Premium'),
-        ('PRO', 'Professional'),
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected')
     ]
 
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    membership_type = models.CharField(
-        max_length=10, 
-        choices=MEMBERSHIP_TYPES, 
-        default='BASIC'
+    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE)
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        null=True,
+        blank=True,
+        default=None  # Add default value
     )
     full_name = models.CharField(
-        max_length=100, 
-        blank=True, 
-        null=True, 
-        default=''
+        max_length=100,
+        null=True,  # Make it optional initially
+        blank=True
     )
-    bio = models.TextField(
-        blank=True, 
-        null=True, 
-        default=''
-    )
-    location = models.CharField(
-        max_length=100, 
-        blank=True, 
-        null=True, 
-        default=''
-    )
+    email = models.EmailField(null=True, blank=True)
     phone_number = models.CharField(
         max_length=20, 
-        blank=True, 
-        null=True, 
-        default=''
-    )
-    profile_image = models.ImageField(
-        upload_to='profile_images/', 
-        blank=True, 
-        null=True
-    )
-    interests = models.TextField(default='[]', blank=True)
-    join_date = models.DateTimeField(
-        default=timezone.now
-    )
-    expiration_date = models.DateTimeField(
         null=True, 
         blank=True
     )
-    is_active = models.BooleanField(
-        default=True
+    membership_type = models.ForeignKey(
+        MembershipType, 
+        on_delete=models.PROTECT
     )
+    created_at = models.DateTimeField(auto_now_add=True)
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES,
+        default='pending'
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # Only for new memberships
+            self.end_date = self.start_date + relativedelta(months=self.membership_type.duration)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username}'s Membership"
 
-    def get_membership_type_display(self):
-        return dict(self.MEMBERSHIP_TYPES).get(self.membership_type, '')
+    class Meta:
+        verbose_name_plural = "Memberships"
 
-    def get_interests(self):
-        """Return interests as a list"""
-        try:
-            return json.loads(self.interests)
-        except (json.JSONDecodeError, TypeError):
-            return []
-
-# If you have an Event model
 class Event(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(
-        blank=True,
-        null=True,
-        default=''
-    )
-    date = models.DateTimeField()
-    location = models.CharField(
-        max_length=200,
-        blank=True,
-        null=True,
-        default=''
-    )
-    image = models.ImageField(
-        upload_to='events/',
-        blank=True,
-        null=True
-    )
-    capacity = models.PositiveIntegerField(
-        null=True,
-        blank=True
-    )
-    is_active = models.BooleanField(
-        default=True
-    )
+    EVENT_STATUS_CHOICES = [
+        ('upcoming', 'Upcoming'),
+        ('ongoing', 'Ongoing'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
 
-    def __str__(self):
-        return self.title
-
-# If you have a Module model
-class Module(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(
-        blank=True,
-        null=True,
-        default=''
+    EVENT_CATEGORIES = [
+        ('community_meetup', 'Community Meetup'),
+        ('cultural_festival', 'Cultural Festival'),
+        ('workshop', 'Workshop'),
+    ]
+    
+    title = models.CharField(max_length=200, default='Untitled Event')
+    description = models.TextField(default='Event description coming soon.')
+    date = models.DateTimeField(default=timezone.now)
+    image = models.ImageField(upload_to='events/', null=True, blank=True)
+    location = models.CharField(max_length=200, default='To be announced')
+    status = models.CharField(
+        max_length=20, 
+        choices=EVENT_STATUS_CHOICES,
+        default='upcoming'
     )
-    content = models.TextField()
-    order = models.PositiveIntegerField(
-        default=0
-    )
-    is_active = models.BooleanField(
-        default=True
-    )
-    created_at = models.DateTimeField(
-        default=timezone.now
-    )
-    image = models.ImageField(
-        upload_to='modules/',
-        blank=True,
-        null=True
+    created_at = models.DateTimeField(auto_now_add=True)
+    category = models.CharField(
+        max_length=50, 
+        choices=EVENT_CATEGORIES,
+        default='community_meetup'
     )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        ordering = ['order']
+        ordering = ['-date']
+
+class Module(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive')
+    ]
+    
+    title = models.CharField(max_length=200, null=True, blank=True, default='Untitled Module')
+    description = models.TextField(null=True, blank=True, default='No description provided')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    created_at = models.DateTimeField(default=timezone.now)
+    image = models.ImageField(upload_to='modules/', null=True, blank=True)
+
+    def __str__(self):
+        return self.title or 'Untitled Module'
+
+class Contact(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, default='Anonymous')
+    email = models.EmailField(null=True, blank=True)
+    subject = models.CharField(max_length=200, null=True, blank=True, default='General Inquiry')
+    message = models.TextField(null=True, blank=True, default='No message provided')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.name or 'Anonymous'} - {self.subject or 'No Subject'}"
+
+class EventBooking(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    event = models.ForeignKey('Event', on_delete=models.CASCADE)
+    booking_date = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+    
+    class Meta:
+        unique_together = ('user', 'event')
+
+class ModuleEnrollment(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE)
+    module = models.ForeignKey('Module', on_delete=models.CASCADE)
+    enrollment_date = models.DateTimeField(default=timezone.now)
+    progress = models.IntegerField(default=0)
+    status = models.CharField(max_length=20, choices=[
+        ('enrolled', 'Enrolled'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed')
+    ], default='enrolled')
+
+    class Meta:
+        unique_together = ('user', 'module')
     

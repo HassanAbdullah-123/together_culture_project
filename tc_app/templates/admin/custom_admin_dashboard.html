@@ -1,0 +1,465 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block usertools %}{% endblock %}
+{% block nav-global %}{% endblock %}
+
+{% block content %}
+<div class="custom-admin-dashboard">
+    <!-- Single top header -->
+    <div class="top-header">
+        <div class="header-brand">
+            <h1>Together Culture Administration</h1>
+        </div>
+        <div class="header-controls">
+            <div class="header-actions">
+                <a href="/" class="header-link">VIEW SITE</a>
+                <span class="separator">/</span>
+                <a href="{% url 'admin:password_change' %}" class="header-link">CHANGE PASSWORD</a>
+                <span class="separator">/</span>
+                <a href="{% url 'tc_app:logout' %}" class="header-link">LOG OUT</a>
+                <span class="separator">/</span>
+                <button id="theme-switch" class="theme-switch-btn" title="Toggle dark mode">
+                    <i class="fas fa-moon dark-icon"></i>
+                    <i class="fas fa-sun light-icon" style="display: none;"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+        <div class="sidebar-header">
+            <img src="{% static 'images/logo.png' %}" alt="Together Culture" class="logo">
+            <h2>Together Culture</h2>
+        </div>
+
+        <!-- Member Management Section -->
+        <div class="sidebar-section">
+            <h3>MEMBER MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_membership_changelist' %}" class="menu-item">
+                <i class="fas fa-users"></i>
+                View All Members
+                <span class="count">{{ total_members }}</span>
+            </a>
+            <a href="{% url 'admin:tc_app_membership_add' %}" class="menu-item">
+                <i class="fas fa-user-plus"></i>
+                Add New Members
+            </a>
+            <a href="{% url 'admin:tc_app_membership_changelist' %}?status__exact=pending" class="menu-item">
+                <i class="fas fa-user-check"></i>
+                Pending Approvals
+                <span class="count">{{ pending_approvals }}</span>
+            </a>
+        </div>
+
+        <!-- Event Management Section -->
+        <div class="sidebar-section">
+            <h3>EVENT MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_event_changelist' %}" class="menu-item">
+                <i class="fas fa-calendar"></i>
+                All Events
+            </a>
+            <a href="{% url 'admin:tc_app_event_add' %}" class="menu-item">
+                <i class="fas fa-calendar-plus"></i>
+                Add Event
+            </a>
+        </div>
+
+        <!-- Module Management Section -->
+        <div class="sidebar-section">
+            <h3>MODULE MANAGEMENT</h3>
+            <a href="{% url 'admin:tc_app_module_changelist' %}" class="menu-item">
+                <i class="fas fa-book"></i>
+                All Modules
+            </a>
+            <a href="{% url 'admin:tc_app_module_add' %}" class="menu-item">
+                <i class="fas fa-plus-circle"></i>
+                Add Module
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="admin-main">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stats-card">
+                <i class="fas fa-users"></i>
+                <div class="stats-info">
+                    <h3>Total Members</h3>
+                    <div class="stats-number">{{ total_members }}</div>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <i class="fas fa-calendar-check"></i>
+                <div class="stats-info">
+                    <h3>Active Events</h3>
+                    <div class="stats-number">{{ active_events }}</div>
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <i class="fas fa-book-open"></i>
+                <div class="stats-info">
+                    <h3>Active Modules</h3>
+                    <div class="stats-number">{{ active_modules }}</div>
+                </div>
+            </div>
+
+            <div class="stats-card">
+                <i class="fas fa-user-clock"></i>
+                <div class="stats-info">
+                    <h3>Pending Approvals</h3>
+                    <div class="stats-number">{{ pending_approvals }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Overview Section -->
+        <div class="events-section">
+            <div class="section-header">
+                <h2>Events Overview</h2>
+                <a href="{% url 'admin:tc_app_event_add' %}" class="add-btn">Add New Event</a>
+            </div>
+
+            <div class="events-tabs">
+                <button class="tab-btn" onclick="showEventTab('upcoming')">
+                    Upcoming ({{ upcoming_events.count }})
+                </button>
+                <button class="tab-btn" onclick="showEventTab('ongoing')">
+                    Ongoing ({{ ongoing_events.count }})
+                </button>
+                <button class="tab-btn" onclick="showEventTab('completed')">
+                    Completed ({{ completed_events.count }})
+                </button>
+            </div>
+
+            <!-- Events Container -->
+            <div id="events-container">
+                <!-- Upcoming Events -->
+                <div id="upcoming" class="event-tab-content" style="display: none;">
+                    {% if upcoming_events %}
+                        <div class="events-grid">
+                            {% for event in upcoming_events %}
+                            <div class="event-card">
+                                <div class="event-image">
+                                    {% if event.image %}
+                                        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="event-details">
+                                    <h4>{{ event.title }}</h4>
+                                    <p class="event-date"><i class="far fa-calendar"></i> {{ event.date|date:"M d, Y" }}</p>
+                                    <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                                    <div class="event-actions">
+                                        <a href="{% url 'admin:tc_app_event_change' event.id %}" class="edit-btn">Edit</a>
+                                        <button class="remove-btn" onclick="removeEvent({{ event.id }})">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-events">No upcoming events</div>
+                    {% endif %}
+                </div>
+
+                <!-- Ongoing Events -->
+                <div id="ongoing" class="event-tab-content" style="display: none;">
+                    {% if ongoing_events %}
+                        <div class="events-grid">
+                            {% for event in ongoing_events %}
+                            <div class="event-card">
+                                <div class="event-image">
+                                    {% if event.image %}
+                                        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="event-details">
+                                    <h4>{{ event.title }}</h4>
+                                    <p class="event-date"><i class="far fa-calendar"></i> {{ event.date|date:"M d, Y" }}</p>
+                                    <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                                    <div class="event-actions">
+                                        <a href="{% url 'admin:tc_app_event_change' event.id %}" class="edit-btn">Edit</a>
+                                        <button class="remove-btn" onclick="removeEvent({{ event.id }})">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-events">No ongoing events</div>
+                    {% endif %}
+                </div>
+
+                <!-- Completed Events -->
+                <div id="completed" class="event-tab-content" style="display: none;">
+                    {% if completed_events %}
+                        <div class="events-grid">
+                            {% for event in completed_events %}
+                            <div class="event-card">
+                                <div class="event-image">
+                                    {% if event.image %}
+                                        <img src="{{ event.image.url }}" alt="{{ event.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="event-details">
+                                    <h4>{{ event.title }}</h4>
+                                    <p class="event-date"><i class="far fa-calendar"></i> {{ event.date|date:"M d, Y" }}</p>
+                                    <p class="event-location"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+                                    <div class="event-actions">
+                                        <a href="{% url 'admin:tc_app_event_change' event.id %}" class="edit-btn">Edit</a>
+                                        <button class="remove-btn" onclick="removeEvent({{ event.id }})">Remove</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="no-events">No completed events</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Modules Section -->
+        <div class="modules-section">
+            <div class="section-header">
+                <h2>Active Modules</h2>
+                <a href="{% url 'admin:tc_app_module_add' %}" class="add-btn">Add New Module</a>
+            </div>
+            <div class="modules-grid">
+                {% for module in modules_list %}
+                <div class="module-card">
+                    <div class="module-image">
+                        {% if module.image %}
+                            <img src="{{ module.image.url }}" alt="{{ module.title }}">
+                        {% else %}
+                            <div class="placeholder-image">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="module-details">
+                        <h4>{{ module.title }}</h4>
+                        <p>{{ module.description|truncatewords:20 }}</p>
+                        <div class="module-actions">
+                            <a href="{% url 'admin:tc_app_module_change' module.id %}" class="edit-btn">Edit</a>
+                            <button class="remove-btn" onclick="removeModule({{ module.id }})">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- After the stats-overview section, add this: -->
+        {% if pending_approvals > 0 %}
+        <div class="pending-approvals-section">
+            <div class="section-header">
+                <h2>Pending Membership Approvals</h2>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Membership Type</th>
+                            <th>Applied Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for membership in pending_memberships %}
+                        <tr>
+                            <td>{{ membership.user.username }}</td>
+                            <td>{{ membership.membership_type.name }}</td>
+                            <td>{{ membership.created_at|date:"M d, Y" }}</td>
+                            <td class="action-buttons">
+                                <a href="{% url 'admin:approve-membership' membership.id %}" 
+                                   class="approve-btn"
+                                   onclick="return confirm('Are you sure you want to approve this membership?')">
+                                    Approve
+                                </a>
+                                <a href="{% url 'admin:reject-membership' membership.id %}" 
+                                   class="reject-btn"
+                                   onclick="return confirm('Are you sure you want to reject this membership?')">
+                                    Reject
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show ongoing events by default since there's one ongoing event
+    showEventTab('ongoing');
+});
+
+function showEventTab(tabName) {
+    // Hide all event content
+    const eventContents = document.getElementsByClassName('event-tab-content');
+    for (let content of eventContents) {
+        content.style.display = 'none';
+    }
+
+    // Remove active class from all tabs
+    const tabs = document.getElementsByClassName('tab-btn');
+    for (let tab of tabs) {
+        tab.classList.remove('active');
+    }
+
+    // Show selected tab content and activate the tab
+    document.getElementById(tabName).style.display = 'block';
+    document.querySelector(`button[onclick="showEventTab('${tabName}')"]`).classList.add('active');
+}
+
+function removeEvent(eventId) {
+    if (confirm('Are you sure you want to remove this event?')) {
+        fetch(`/admin/tc_app/event/${eventId}/delete/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        }).then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    }
+}
+
+function removeModule(moduleId) {
+    if (confirm('Are you sure you want to remove this module?')) {
+        // Add removal logic
+    }
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function toggleProfileMenu() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('show');
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInside = event.target.closest('.admin-profile-menu');
+        const dropdown = document.getElementById('profileDropdown');
+        
+        if (!isClickInside && dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+// Close dropdown when pressing escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const dropdown = document.getElementById('profileDropdown');
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
+    }
+});
+</script>
+
+<style>
+/* Add only the necessary styles for pending approvals */
+.pending-approvals-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.approve-btn, .reject-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+</style>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="{% static 'js/admin.js' %}"></script>
+{% endblock %} 

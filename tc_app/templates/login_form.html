@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if login_type == 'admin' %}Admin Login{% else %}Member Login{% endif %} - Together Culture</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #20B2AA;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+
+        .site-title {
+            color: #20B2AA;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #20B2AA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #1a8f88;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #20B2AA;
+        }
+
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form-container">
+            <!-- Messages Section -->
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <img src="{% static 'images/logo.png' %}" alt="Together Culture Logo" class="logo">
+            <h1 class="site-title">Together Culture</h1>
+            
+            {% if login_type == 'admin' %}
+                <h2>Admin Login</h2>
+            {% else %}
+                <h2>Member Login</h2>
+            {% endif %}
+            
+            <form method="post" action="{% url 'tc_app:login' %}">
+                {% csrf_token %}
+                <input type="hidden" name="login_type" value="{{ login_type }}">
+                
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                
+                <button type="submit" class="login-btn member-btn">Login</button>
+                
+                <div class="back-link">
+                    <a href="{% url 'tc_app:login_choice' %}" class="back-btn">← Back to Login Choice</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html> 

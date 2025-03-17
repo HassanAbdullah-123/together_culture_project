@@ -2,21 +2,50 @@
 {% load static %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1>Join the Movement - Build a Creative and Equitable Future!</h1>
-            <p>Together Culture is a vibrant community where creators, entrepreneurs, and changemakers 
-               connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, 
-               and make a real impact.</p>
-            <a href="#" class="join-now-btn">Join Now</a>
-        </div>
-        <div class="hero-image">
-            <img src="{% static 'images/hero-image.jpg' %}" alt="Together Culture Community">
-        </div>
+<div class="hero-section">
+    <!-- Background Video -->
+    <div class="hero-background">
+        <video autoplay muted loop playsinline class="background-video">
+            <source src="{% static 'videos/community.mp4' %}" type="video/mp4">
+            <!-- Fallback background image if video fails to load -->
+            <img src="{% static 'images/community-bg.jpg' %}" alt="Community Background">
+        </video>
+        <div class="overlay"></div>
     </div>
-</section>
+
+    <div class="hero-content">
+        <h1 class="hero-title">Join the Movement - <br>Build a Creative and<br>Equitable Future!</h1>
+        
+        <p class="hero-description">
+            Together Culture is a vibrant community where creators, entrepreneurs, and changemakers connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, and make a real impact.
+        </p>
+
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                <div class="admin-actions">
+                    <h2>Admin Controls</h2>
+                    <div class="admin-buttons">
+                        <a href="{% url 'admin:index' %}" class="admin-btn">Go to Admin Dashboard</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="member-welcome">
+                    <h2>Welcome, {{ user.username }}!</h2>
+                    <p>Ready to make an impact?</p>
+                    <div class="action-buttons">
+                        <a href="{% url 'tc_app:profile' %}" class="btn btn-primary">View Profile</a>
+                        <a href="{% url 'tc_app:events' %}" class="btn btn-secondary">Explore Events</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="cta-buttons">
+                <a href="{% url 'tc_app:login' %}" class="btn btn-primary">Login</a>
+                <a href="{% url 'tc_app:register' %}" class="btn btn-secondary">Join Now</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 
 <!-- Features Section -->
 <section class="features">
@@ -142,4 +171,33 @@
         </div>
     </div>
 </footer>
+
+<style>
+.admin-actions {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 2rem 0;
+}
+
+.admin-buttons {
+    margin-top: 1rem;
+}
+
+.admin-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #20B2AA;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.admin-btn:hover {
+    background-color: #1a8f89;
+}
+</style>
 {% endblock %}

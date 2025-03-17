@@ -1,0 +1,168 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Quick Stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>Pending Approvals</h3>
+            <div class="stat-value">{{ pending_approvals }}</div>
+            <a href="{% url 'admin:pending-approvals' %}" class="view-all-btn">View All</a>
+        </div>
+        <div class="stat-card">
+            <h3>Approved Members</h3>
+            <div class="stat-value">{{ approved_members }}</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Members</h3>
+            <div class="stat-value">{{ total_members }}</div>
+        </div>
+    </div>
+
+    <!-- Pending Approvals Section -->
+    {% if pending_approvals > 0 %}
+    <div class="pending-approvals-section">
+        <h2>Recent Pending Approvals</h2>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Membership Type</th>
+                        <th>Applied Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for membership in pending_memberships %}
+                    <tr>
+                        <td>{{ membership.user.username }}</td>
+                        <td>{{ membership.membership_type.name }}</td>
+                        <td>{{ membership.created_at|date:"M d, Y" }}</td>
+                        <td class="actions">
+                            <a href="{% url 'admin:approve-membership' membership.id %}" 
+                               class="approve-btn">Approve</a>
+                            <a href="{% url 'admin:reject-membership' membership.id %}" 
+                               class="reject-btn">Reject</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.dashboard-container {
+    padding: 20px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    margin: 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin: 10px 0;
+}
+
+.view-all-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #79aec8;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.view-all-btn:hover {
+    background: #417690;
+}
+
+.pending-approvals-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.pending-approvals-section h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f8f9fa;
+    font-weight: 500;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.approve-btn, .reject-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+}
+
+.approve-btn {
+    background: #28a745;
+}
+
+.approve-btn:hover {
+    background: #218838;
+}
+
+.reject-btn {
+    background: #dc3545;
+}
+
+.reject-btn:hover {
+    background: #c82333;
+}
+</style>
+{% endblock %} 
