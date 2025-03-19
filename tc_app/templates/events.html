@@ -39,40 +39,30 @@
                         </button>
                     </div>
 
-                    {% if not event.is_booked and event.status == 'upcoming' %}
-                        <div class="booking-section">
-                            {% if event.available_seats > 0 %}
-                                <button onclick="bookEvent({{ event.id }})" 
-                                        class="book-btn full-width" 
-                                        id="book-btn-{{ event.id }}"
-                                        {% if not user.is_authenticated %}disabled{% endif %}>
-                                    <i class="fas fa-ticket-alt"></i> 
-                                    {% if user.is_authenticated %}
-                                        Reserve Your Spot Now
-                                    {% else %}
-                                        Login to Book
-                                    {% endif %}
-                                </button>
-                                {% if event.available_seats <= 5 %}
-                                    <div class="seats-warning">
-                                        Only {{ event.available_seats }} seats left!
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                <button class="book-btn full-width" disabled>
-                                    <i class="fas fa-ban"></i> Fully Booked
-                                </button>
-                            {% endif %}
-                        </div>
-                    {% else %}
+                    <div class="booking-section">
                         {% if event.is_booked %}
-                            <div class="booking-section">
-                                <div class="booked-badge full-width">
-                                    <i class="fas fa-check-circle"></i> You're Registered!
-                                </div>
+                            <div class="booked-badge full-width">
+                                <i class="fas fa-check-circle"></i> You're Registered!
                             </div>
+                        {% else %}
+                            <button onclick="bookEvent({{ event.id }})" 
+                                    class="book-btn full-width" 
+                                    id="book-btn-{{ event.id }}"
+                                    {% if not user.is_authenticated %}disabled{% endif %}>
+                                <i class="fas fa-ticket-alt"></i> 
+                                {% if user.is_authenticated %}
+                                    Book Now
+                                {% else %}
+                                    Login to Book
+                                {% endif %}
+                            </button>
+                            {% if event.available_seats <= 5 and event.available_seats > 0 %}
+                                <div class="seats-warning">
+                                    Only {{ event.available_seats }} seats left!
+                                </div>
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -695,5 +685,69 @@
             setTimeout(() => successMessage.remove(), 300);
         }, 3000);
     }
+
+    function bookEvent(eventId) {
+        fetch(`/api/events/${eventId}/book/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the button in the event card
+                const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
+                const bookingSection = eventCard.querySelector('.booking-section');
+                bookingSection.innerHTML = `
+                    <div class="booked-badge full-width">
+                        <i class="fas fa-check-circle"></i> You're Registered!
+                    </div>
+                `;
+                
+                // Show success message with more details
+                Swal.fire({
+                    title: 'Event Booked Successfully!',
+                    html: `
+                        <div class="booking-confirmation">
+                            <p>You have successfully booked this event.</p>
+                            <p>Check your email for confirmation details.</p>
+                            <p>You can view your bookings in your profile.</p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    confirmButtonText: 'Great!',
+                    confirmButtonColor: '#20B2AA'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Booking Failed',
+                    text: data.error,
+                    icon: 'error',
+                    confirmButtonColor: '#20B2AA'
+                });
+            }
+        });
+    }
+
+    // Make sure to add the getCookie function if it's not already present
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 </script>
+
+<!-- Add SweetAlert2 library if not already included -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %} 
