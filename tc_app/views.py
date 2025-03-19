@@ -212,51 +212,38 @@ def select_membership(request):
 
 @login_required
 def edit_profile_view(request):
-    if request.method == 'POST':
-        # Handle profile image upload
-        if 'profile_image' in request.FILES:
-            if request.user.membership:
-                # Delete old image if it exists
-                if request.user.membership.profile_image:
-                    try:
-                        request.user.membership.profile_image.delete()
-                    except:
-                        pass
-                request.user.membership.profile_image = request.FILES['profile_image']
-                request.user.membership.save()
-            else:
-                # Create new membership if it doesn't exist
-                request.user.membership = Membership.objects.create(
-                    user=request.user,
-                    profile_image=request.FILES['profile_image']
-                )
+    try:
+        # Try to get existing membership or create a new one
+        membership, created = Membership.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'membership_type': MembershipType.objects.first(),  # Default membership type
+                'status': 'pending'
+            }
+        )
 
-        # Handle password update
-        current_password = request.POST.get('current_password')
-        new_password = request.POST.get('new_password')
-        confirm_password = request.POST.get('confirm_password')
+        if request.method == 'POST':
+            # Handle profile image upload
+            if 'profile_image' in request.FILES:
+                membership.profile_image = request.FILES['profile_image']
+            
+            # Update other fields
+            membership.full_name = request.POST.get('full_name', '')
+            membership.email = request.POST.get('email', '')
+            membership.phone_number = request.POST.get('phone_number', '')
+            membership.save()
+            
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('tc_app:profile')
 
-        if current_password and new_password and confirm_password:
-            if new_password == confirm_password:
-                # Verify current password
-                if request.user.check_password(current_password):
-                    request.user.set_password(new_password)
-                    request.user.save()
-                    # Update session to prevent logout
-                    update_session_auth_hash(request, request.user)
-                    messages.success(request, 'Password updated successfully!')
-                else:
-                    messages.error(request, 'Current password is incorrect!')
-            else:
-                messages.error(request, 'New passwords do not match!')
+        context = {
+            'membership': membership,
+        }
+        return render(request, 'edit_profile.html', context)
 
-        messages.success(request, 'Profile updated successfully!')
+    except Exception as e:
+        messages.error(request, f'An error occurred while updating your profile: {str(e)}')
         return redirect('tc_app:profile')
-
-    context = {
-        'membership': request.user.membership if hasattr(request.user, 'membership') else None
-    }
-    return render(request, 'edit_profile.html', context)
 
 @login_required
 @require_http_methods(["GET", "POST"])

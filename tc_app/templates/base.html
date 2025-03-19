@@ -9,9 +9,87 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    :root {
-        --primary-color: #20B2AA;
-    }
+    <style>
+        :root {
+            --primary-color: #20B2AA;
+        }
+        .navbar {
+            padding: 0;
+            margin: 0;
+            position: relative;
+            z-index: 1000;
+        }
+        .nav-container {
+            padding: 10px 20px;
+        }
+        main {
+            padding-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .profile-container {
+            margin-top: 30px;
+        }
+        .profile-image-container {
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        /* Hide any other message implementations */
+        .alert, 
+        .alert-success, 
+        .alert-error,
+        .django-messages {
+            display: none;
+        }
+        
+        /* Keep only our new message styling */
+        .messages {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        
+        .message {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .message.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        .message.error {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
@@ -71,7 +149,7 @@
                     </div>
                 {% else %}
                     <div class="auth-buttons">
-                        <a href="{% url 'tc_app:login' %}" class="login-button">Login</a>
+                        <a href="{% url 'tc_app:login_choice' %}" class="login-button">Login</a>
                         <a href="{% url 'tc_app:signup' %}" class="signup-button">Sign Up</a>
                     </div>
                 {% endif %}
@@ -82,14 +160,35 @@
     {% if messages %}
     <div class="messages">
         {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
+        <div class="message {{ message.tags }}">
             {{ message }}
         </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    {% block content %}{% endblock %}
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Add this script before closing body tag -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const messages = document.querySelectorAll('.message');
+            
+            messages.forEach(function(message) {
+                // Add fade out animation after 3 seconds
+                setTimeout(function() {
+                    message.style.animation = 'fadeOut 0.5s ease-out forwards';
+                }, 3000);
+                
+                // Remove message from DOM after animation
+                setTimeout(function() {
+                    message.remove();
+                }, 3500);
+            });
+        });
+    </script>
 </body>
 
 <script>
