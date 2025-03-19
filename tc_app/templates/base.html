@@ -10,84 +10,195 @@
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-        :root {
-            --primary-color: #20B2AA;
+    :root {
+            --primary-color: #2D46B9;
+            --primary-light: #3457D5;
+            --secondary-color: #FF6B6B;
+            --accent-color: #4ECDC4;
+            --gradient-1: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+            --gradient-2: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            --gradient-3: linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%);
+            --bg-gradient: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+            --card-gradient: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
+            --text-primary: #2C3E50;
+            --text-secondary: #526480;
+            --shadow-sm: 0 2px 4px rgba(45, 70, 185, 0.1);
+            --shadow-md: 0 4px 6px rgba(45, 70, 185, 0.1);
+            --shadow-lg: 0 10px 15px rgba(45, 70, 185, 0.1);
         }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
         .navbar {
+            background: var(--gradient-1);
             padding: 0;
             margin: 0;
             position: relative;
             z-index: 1000;
+            box-shadow: var(--shadow-md);
         }
+
         .nav-container {
-            padding: 10px 20px;
+            padding: 1rem 2rem;
         }
-        main {
-            padding-top: 20px;
-            position: relative;
-            z-index: 1;
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s ease;
         }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .auth-buttons .login-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons .signup-button {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-buttons a:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--card-gradient);
+            border: none;
+            border-radius: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Button Styling */
+        .btn-primary {
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: var(--gradient-2);
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .btn-accent {
+            background: var(--gradient-3);
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* Form Styling */
+        .form-control {
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(45, 70, 185, 0.1);
+        }
+
+        /* Section Styling */
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Profile Section Styling */
         .profile-container {
-            margin-top: 30px;
+            background: var(--card-gradient);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-md);
         }
-        .profile-image-container {
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
+
+        /* Membership Cards Styling */
+        .membership-card {
+            background: var(--card-gradient);
+            border: 2px solid #E2E8F0;
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
         }
-        /* Hide any other message implementations */
-        .alert, 
-        .alert-success, 
-        .alert-error,
-        .django-messages {
-            display: none;
+
+        .membership-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
-        
-        /* Keep only our new message styling */
-        .messages {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            min-width: 300px;
-        }
-        
+
+        /* Messages Styling */
         .message {
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            animation: slideIn 0.5s ease-out;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-sm);
         }
-        
+
         .message.success {
-            background-color: #4CAF50;
+            background: var(--gradient-3);
             color: white;
         }
-        
+
         .message.error {
-            background-color: #f44336;
+            background: var(--gradient-2);
             color: white;
         }
-        
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+
+        /* Header Gradients */
+        .gradient-text {
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
+
+        /* Animation Classes */
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
         }
     </style>
 </head>
@@ -168,7 +279,7 @@
     {% endif %}
 
     <main>
-        {% block content %}{% endblock %}
+    {% block content %}{% endblock %}
     </main>
 
     <!-- Add this script before closing body tag -->

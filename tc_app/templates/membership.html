@@ -116,21 +116,31 @@
         background: white;
         padding: 2rem;
         border-radius: 20px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 5px 20px rgba(45, 70, 185, 0.1);
     }
 
     .membership-header {
         text-align: center;
         margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(45deg, #2D46B9, #3457D5);
+        border-radius: 15px;
+        color: white;
     }
 
     .membership-header h1 {
-        color: #2c3e50;
-        font-size: 2rem;
+        color: white;
         margin-bottom: 0.5rem;
+        font-size: 2.2rem;
+        font-weight: 600;
     }
 
-    /* Info Grid Layout */
+    .membership-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
     .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -139,74 +149,174 @@
     }
 
     .form-group {
-        background: #f8f9fa;
+        background: #f8faff;
         padding: 1.5rem;
-        border-radius: 10px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
     }
 
-    /* Section Header */
+    .form-group:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    }
+
+    .form-group label {
+        color: #2C3E50;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #E2E8F0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #2D46B9;
+        box-shadow: 0 0 0 3px rgba(45, 70, 185, 0.1);
+        outline: none;
+    }
+
     .section-header {
         text-align: center;
-        margin: 2rem 0;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
+        margin: 3rem 0 2rem;
     }
 
     .section-header h2 {
-        color: #2c3e50;
-        font-size: 1.5rem;
+        color: #2C3E50;
+        font-size: 1.8rem;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
     }
 
-    /* Membership Options Layout */
+    .section-header h2 i {
+        color: #2D46B9;
+    }
+
     .membership-options {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 1.5rem;
-        margin-bottom: 2rem;
+        margin: 2rem 0;
+    }
+
+    .membership-option {
+        position: relative;
+    }
+
+    .membership-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
     }
 
     .membership-card {
+        background: white;
+        border: 2px solid #E2E8F0;
+        border-radius: 15px;
+        padding: 0;
+        transition: all 0.3s ease;
         height: 100%;
+        cursor: pointer;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        padding: 1.5rem;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        transition: all 0.3s ease;
     }
 
     .membership-option input[type="radio"]:checked + .membership-card {
-        border-color: var(--primary-color);
-        background: rgba(32, 178, 170, 0.02);
+        border-color: #2D46B9;
+        box-shadow: 0 8px 20px rgba(45, 70, 185, 0.15);
         transform: translateY(-5px);
     }
 
-    /* Form Actions */
-    .form-actions {
+    .card-header {
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        padding: 1.5rem;
+        color: white;
         text-align: center;
-        margin-top: 2rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eee;
     }
 
-    .submit-btn {
-        background: linear-gradient(45deg, var(--primary-color), #2ed8d8);
-        color: white;
-        padding: 1rem 3rem;
-        border: none;
-        border-radius: 25px;
-        font-size: 1.1rem;
-        cursor: pointer;
+    .card-title h4 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .price {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 1rem 0;
+        display: block;
+    }
+
+    .duration {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .features-list {
+        padding: 1.5rem;
+        flex-grow: 1;
+    }
+
+    .features-list ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .features-list li {
+        padding: 0.8rem;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #f8faff;
+        border-radius: 8px;
         transition: all 0.3s ease;
     }
 
+    .features-list li:hover {
+        transform: translateX(5px);
+        background: #f0f4ff;
+    }
+
+    .features-list li i {
+        color: #4ECDC4;
+    }
+
+    .form-actions {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #E2E8F0;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
+    }
+
     .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(32, 178, 170, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(45, 70, 185, 0.3);
     }
 
     @media (max-width: 1024px) {
