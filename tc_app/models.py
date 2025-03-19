@@ -128,6 +128,14 @@ class Membership(models.Model):
         blank=True
     )
 
+    @property
+    def is_active(self):
+        now = timezone.now()
+        return (
+            self.status == 'approved' and 
+            self.start_date <= now <= self.end_date
+        )
+
     def save(self, *args, **kwargs):
         if not self.pk:  # Only for new memberships
             self.end_date = self.start_date + relativedelta(months=self.membership_type.duration)

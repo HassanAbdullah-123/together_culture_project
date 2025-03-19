@@ -4,6 +4,8 @@ from .models import CustomUser, Membership, MembershipType, Event, Module, Conta
 from django.urls import path
 from django.http import HttpResponseRedirect
 from django.contrib import messages
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 class CustomAdminSite(admin.AdminSite):
     site_header = 'Together Culture Administration'
@@ -55,7 +57,12 @@ class CustomAdminSite(admin.AdminSite):
         try:
             membership = Membership.objects.get(id=membership_id)
             membership.status = 'approved'
+            # Set the start date to now and calculate end date based on membership type duration
+            membership.start_date = timezone.now()
+            membership.end_date = membership.start_date + relativedelta(months=membership.membership_type.duration)
             membership.save()
+            
+            # Send notification to user (optional)
             messages.success(request, f'Membership for {membership.user.username} has been approved.')
         except Membership.DoesNotExist:
             messages.error(request, 'Membership not found.')
