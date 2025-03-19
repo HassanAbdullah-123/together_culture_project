@@ -542,3 +542,33 @@ def all_modules_view(request):
     }
     
     return render(request, 'all_modules.html', context)
+
+@login_required
+def toggle_event_notification(request, event_id):
+    try:
+        event = Event.objects.get(id=event_id)
+        # Toggle notification preference
+        # Implement your notification logic here
+        return JsonResponse({'success': True})
+    except Event.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Event not found'})
+
+def subscribe_newsletter(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            
+            # Add your email subscription logic here
+            # For example, save to database or integrate with email service
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Successfully subscribed to newsletter'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': str(e)
+            })
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})

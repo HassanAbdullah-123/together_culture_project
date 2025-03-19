@@ -15,22 +15,64 @@
         {% if upcoming_events %}
             {% for event in upcoming_events %}
             <div class="event-card">
-                {% if event.image %}
+                <div class="event-image-container">
                     <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
-                {% endif %}
-                <div class="event-details">
-                    <h3>{{ event.title }}</h3>
-                    <p class="event-date">
-                        <i class="far fa-calendar"></i> {{ event.date|date:"F j, Y" }}
-                    </p>
-                    {% if event.location %}
-                    <p class="event-location">
-                        <i class="fas fa-map-marker-alt"></i> {{ event.location }}
-                    </p>
+                </div>
+                <div class="event-content">
+                    <h3 class="event-title">{{ event.title }}</h3>
+                    <p class="event-description">{{ event.description }}</p>
+                    <div class="event-details">
+                        <div class="event-detail">
+                            <i class="far fa-calendar"></i> {{ event.date|date:"F d, Y" }}
+                        </div>
+                        <div class="event-detail">
+                            <i class="far fa-clock"></i> {{ event.time|time:"g:i A" }}
+                        </div>
+                        <div class="event-detail">
+                            <i class="fas fa-map-marker-alt"></i> {{ event.location }}
+                        </div>
+                    </div>
+                    
+                    <div class="event-actions">
+                        <button onclick="shareEvent({{ event.id }})" class="share-btn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+
+                    {% if not event.is_booked and event.status == 'upcoming' %}
+                        <div class="booking-section">
+                            {% if event.available_seats > 0 %}
+                                <button onclick="bookEvent({{ event.id }})" 
+                                        class="book-btn full-width" 
+                                        id="book-btn-{{ event.id }}"
+                                        {% if not user.is_authenticated %}disabled{% endif %}>
+                                    <i class="fas fa-ticket-alt"></i> 
+                                    {% if user.is_authenticated %}
+                                        Reserve Your Spot Now
+                                    {% else %}
+                                        Login to Book
+                                    {% endif %}
+                                </button>
+                                {% if event.available_seats <= 5 %}
+                                    <div class="seats-warning">
+                                        Only {{ event.available_seats }} seats left!
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <button class="book-btn full-width" disabled>
+                                    <i class="fas fa-ban"></i> Fully Booked
+                                </button>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        {% if event.is_booked %}
+                            <div class="booking-section">
+                                <div class="booked-badge full-width">
+                                    <i class="fas fa-check-circle"></i> You're Registered!
+                                </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
-                    <p class="event-description">{{ event.description|truncatewords:20 }}</p>
-                    <div class="event-status">Status: {{ event.status }}</div>
-                    <a href="#" class="event-link">Learn More</a>
                 </div>
             </div>
             {% endfor %}
@@ -41,12 +83,25 @@
         {% endif %}
     </div>
 
-    <div class="notification-section">
-        <h2>Get Notified</h2>
-        <p>Be the first to know when we launch our events!</p>
-        <div class="notification-form">
-            <input type="email" placeholder="Enter your email" class="email-input">
-            <button class="notify-btn">Notify Me</button>
+    <div class="newsletter-section">
+        <div class="newsletter-container">
+            <div class="newsletter-content">
+                <h2><i class="fas fa-bell"></i> Stay Updated</h2>
+                <p>Be the first to know when we launch new events!</p>
+            </div>
+            <form id="subscribeForm" class="subscribe-form" onsubmit="handleSubscribe(event)">
+                {% csrf_token %}
+                <div class="input-group">
+                    <input type="email" 
+                           id="subscribeEmail" 
+                           placeholder="Enter your email address"
+                           required>
+                    <button type="submit" class="subscribe-btn">
+                        <span class="btn-text">Subscribe</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -59,94 +114,204 @@
 
 <style>
 .events-page {
-    padding: 40px 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.events-container {
     max-width: 1200px;
     margin: 0 auto;
 }
 
 .events-header {
+    background: linear-gradient(45deg, #2D46B9, #3457D5);
+    padding: 2rem;
+    border-radius: 20px;
+    color: white;
+    margin-bottom: 2rem;
+    box-shadow: 0 5px 15px rgba(45, 70, 185, 0.1);
     text-align: center;
-    margin-bottom: 50px;
 }
 
-.event-icon {
-    color: #20B2AA;
-    font-size: 48px;
-    margin-bottom: 20px;
+.events-header h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    color: white;
 }
 
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 50px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
 
 .event-card {
     background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 15px;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .event-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(45, 70, 185, 0.15);
+}
+
+.event-image-container {
+    position: relative;
+    height: 180px;
+    overflow: hidden;
 }
 
 .event-image {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.event-details {
-    padding: 20px;
+.event-card:hover .event-image {
+    transform: scale(1.05);
 }
 
-.event-details h3 {
-    margin: 0 0 10px 0;
-    color: #2c3e50;
-}
-
-.event-date, .event-location {
-    color: #666;
-    font-size: 0.9em;
-    margin: 5px 0;
+.event-content {
+    padding: 1.2rem;
+    flex-grow: 1;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+}
+
+.event-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
 }
 
 .event-description {
-    margin: 15px 0;
-    color: #444;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    margin: 0.5rem 0;
+    color: #666;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.event-status {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #20B2AA;
+.event-details {
+    margin: 0.8rem 0;
+}
+
+.event-detail {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+}
+
+.event-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.notify-section {
+    background: rgba(45, 70, 185, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.notify-btn {
+    background: linear-gradient(45deg, #2D46B9, #3457D5);
     color: white;
-    border-radius: 4px;
-    font-size: 0.8em;
-    margin: 10px 0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
 }
 
-.event-link {
-    display: inline-block;
-    padding: 8px 16px;
-    background: #20B2AA;
+.notify-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 70, 185, 0.2);
+}
+
+.notify-btn.subscribed {
+    background: #4ECDC4;
+}
+
+.share-btn {
+    background: #f8faff;
+    color: #2D46B9;
+    border: 1px solid #2D46B9;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.share-btn:hover {
+    background: #2D46B9;
     color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-    margin-top: 10px;
 }
 
-.event-link:hover {
-    background: #1a8f89;
+.notification-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.booked-badge {
+    background: rgba(78, 205, 196, 0.1);
+    color: #4ECDC4;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    text-align: center;
+    font-weight: 500;
+    flex: 1;
+}
+
+.seats-left {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.seats-warning {
+    color: #FF6B6B;
 }
 
 .notification-section {
@@ -208,5 +373,327 @@
 .btn-back:hover {
     background: #e9ecef;
 }
+
+@media (max-width: 768px) {
+    .events-page {
+        padding: 1rem;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .event-actions {
+        flex-direction: column;
+    }
+}
+
+.book-btn {
+    background: linear-gradient(45deg, #2D46B9, #3457D5);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.book-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 70, 185, 0.2);
+}
+
+.book-btn:disabled {
+    background: #e2e8f0;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.booking-section {
+    background: rgba(45, 70, 185, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.book-btn.full-width {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.booked-badge.full-width {
+    background: #4ECDC4;
+    color: white;
+    padding: 0.8rem;
+    border-radius: 20px;
+    text-align: center;
+    font-weight: 500;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.seats-warning {
+    color: #FF6B6B;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.seats-warning:before {
+    content: '\f071';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.book-btn:disabled {
+    background: #e2e8f0;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.newsletter-section {
+    background: linear-gradient(45deg, #2D46B9, #3457D5);
+    padding: 2rem 1rem;
+    margin: 2rem 0;
+    border-radius: 20px;
+}
+
+.newsletter-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    color: white;
+}
+
+.newsletter-content {
+    margin-bottom: 1.5rem;
+}
+
+.newsletter-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.newsletter-content p {
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.subscribe-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    background: white;
+    padding: 0.5rem;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.subscribe-btn {
+    background: linear-gradient(45deg, #4ECDC4, #45B7AF);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.subscribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+}
+
+.subscribe-btn i {
+    transition: transform 0.3s ease;
+}
+
+.subscribe-btn:hover i {
+    transform: translateX(3px);
+}
+
+/* Success message styling */
+.success-message {
+    background: #4ECDC4;
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+    display: none;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .input-group {
+        flex-direction: column;
+        background: transparent;
+        padding: 0;
+        gap: 1rem;
+    }
+
+    .input-group input {
+        width: 100%;
+        background: white;
+    }
+
+    .subscribe-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
 </style>
+
+<div class="notification-toast" id="notificationToast">
+    <div class="toast-content"></div>
+</div>
+
+<script>
+    function showToast(message, success = true) {
+        const toast = document.getElementById('notificationToast');
+        toast.querySelector('.toast-content').textContent = message;
+        toast.style.display = 'block';
+        toast.style.background = success ? '#4ECDC4' : '#FF6B6B';
+        toast.style.color = 'white';
+
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+
+    function toggleNotification(eventId, button) {
+        fetch(`/api/events/${eventId}/notify/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                button.classList.toggle('subscribed');
+                if (button.classList.contains('subscribed')) {
+                    button.innerHTML = '<i class="fas fa-bell"></i> Notifications On';
+                    showToast("You'll be notified about this event!");
+                } else {
+                    button.innerHTML = '<i class="far fa-bell"></i> Notify Me';
+                    showToast("Notifications turned off");
+                }
+            }
+        })
+        .catch(error => {
+            showToast("Error updating notifications", false);
+        });
+    }
+
+    function shareEvent(eventId) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Check out this event!',
+                text: 'I found this interesting event on Together Culture',
+                url: window.location.href
+            })
+            .then(() => showToast('Event shared successfully!'))
+            .catch(() => showToast('Error sharing event', false));
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            showToast('Link copied to clipboard!');
+        }
+    }
+
+    function handleSubscribe(event) {
+        event.preventDefault();
+        const email = document.getElementById('subscribeEmail').value;
+        
+        // Send subscription request to your backend
+        fetch('/api/subscribe/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showSubscriptionSuccess();
+                document.getElementById('subscribeEmail').value = '';
+            } else {
+                showToast(data.message || 'Subscription failed', false);
+            }
+        })
+        .catch(error => {
+            showToast('An error occurred. Please try again.', false);
+        });
+    }
+
+    function showSubscriptionSuccess() {
+        const form = document.getElementById('subscribeForm');
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.innerHTML = '<i class="fas fa-check-circle"></i> Thanks for subscribing! You\'ll receive updates about new events.';
+        
+        form.appendChild(successMessage);
+        successMessage.style.display = 'block';
+
+        setTimeout(() => {
+            successMessage.style.display = 'none';
+            setTimeout(() => successMessage.remove(), 300);
+        }, 3000);
+    }
+</script>
 {% endblock %} 

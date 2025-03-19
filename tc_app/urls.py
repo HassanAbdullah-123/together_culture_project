@@ -26,4 +26,6 @@ urlpatterns = [
     path('api/modules/<int:module_id>/progress/', views.update_module_progress, name='update_module_progress'),
     path('modules/all/', views.all_modules_view, name='all_modules'),
     path('select-membership/', views.select_membership, name='select_membership'),
+    path('api/events/<int:event_id>/notify/', views.toggle_event_notification, name='toggle_event_notification'),
+    path('api/subscribe/', views.subscribe_newsletter, name='subscribe_newsletter'),
 ]
