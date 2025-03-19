@@ -22,41 +22,41 @@
 
             <!-- Personal Information Grid -->
             <div class="info-grid">
-                <div class="form-group">
-                    <label for="full_name">Full Name*</label>
-                    <input type="text" id="full_name" name="full_name" 
-                           value="{{ membership.full_name|default:'' }}" 
-                           class="{% if form.full_name.errors %}error{% endif %}" required>
-                </div>
+                    <div class="form-group">
+                        <label for="full_name">Full Name*</label>
+                        <input type="text" id="full_name" name="full_name" 
+                               value="{{ membership.full_name|default:'' }}" 
+                               class="{% if form.full_name.errors %}error{% endif %}" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">Email Address*</label>
-                    <input type="email" id="email" name="email" 
-                           value="{{ membership.email|default:'' }}" 
-                           class="{% if form.email.errors %}error{% endif %}" required>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Email Address*</label>
+                        <input type="email" id="email" name="email" 
+                               value="{{ membership.email|default:'' }}" 
+                               class="{% if form.email.errors %}error{% endif %}" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone" 
-                           value="{{ membership.phone_number|default:'' }}">
-                </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" 
+                               value="{{ membership.phone_number|default:'' }}">
+                    </div>
 
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" 
-                           value="{{ membership.location|default:'' }}">
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" 
+                               value="{{ membership.location|default:'' }}">
+                    </div>
                 </div>
-            </div>
 
             <!-- Membership Plans -->
             <div class="section-header">
                 <h2><i class="fas fa-crown"></i> Select Your Membership Plan</h2>
             </div>
-            
+
             <div class="membership-options">
-                {% for type in membership_types %}
-                <div class="membership-option">
+                    {% for type in membership_types %}
+                    <div class="membership-option">
                     <input type="radio" name="membership_type" id="type_{{ type.id }}" 
                            value="{{ type.id }}" {% if forloop.first %}checked{% endif %}>
                     <label for="type_{{ type.id }}" class="membership-card">
@@ -66,7 +66,7 @@
                                 <span class="price">${{ type.price }}/mo</span>
                             </div>
                             <span class="duration">{{ type.duration }} Month{% if type.duration > 1 %}s{% endif %}</span>
-                        </div>
+                    </div>
                         <div class="features-list">
                             {% if type.name == 'Basic' %}
                             <ul>
@@ -89,8 +89,8 @@
                                 <li><i class="fas fa-check"></i> 24/7 facility access</li>
                                 <li><i class="fas fa-check"></i> Professional development</li>
                             </ul>
-                            {% endif %}
-                        </div>
+                        {% endif %}
+                    </div>
                     </label>
                 </div>
                 {% endfor %}
