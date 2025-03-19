@@ -6,7 +6,7 @@
     <div class="membership-container">
         <div class="membership-header">
             <h1>Membership Application</h1>
-            <p>Join our community by completing your membership details</p>
+            <p>Join our vibrant community by completing your membership details</p>
         </div>
 
         <form method="post" enctype="multipart/form-data" class="membership-form" id="membershipForm">
@@ -20,220 +20,213 @@
             </div>
             {% endif %}
 
-            <div class="form-grid">
-                <!-- Personal Information -->
-                <div class="form-section">
-                    <h3>Personal Information</h3>
-                    <div class="form-group">
-                        <label for="full_name">Full Name*</label>
-                        <input type="text" id="full_name" name="full_name" 
-                               value="{{ membership.full_name|default:'' }}" 
-                               class="{% if form.full_name.errors %}error{% endif %}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">Email Address*</label>
-                        <input type="email" id="email" name="email" 
-                               value="{{ membership.email|default:'' }}" 
-                               class="{% if form.email.errors %}error{% endif %}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" 
-                               value="{{ membership.phone_number|default:'' }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" id="location" name="location" 
-                               value="{{ membership.location|default:'' }}">
-                    </div>
+            <!-- Personal Information Grid -->
+            <div class="info-grid">
+                <div class="form-group">
+                    <label for="full_name">Full Name*</label>
+                    <input type="text" id="full_name" name="full_name" 
+                           value="{{ membership.full_name|default:'' }}" 
+                           class="{% if form.full_name.errors %}error{% endif %}" required>
                 </div>
 
-                <!-- Profile Image -->
-                <div class="form-section">
-                    <h3>Profile Image</h3>
-                    <div class="profile-upload">
-                        <div class="image-preview">
-                            {% if membership.profile_image %}
-                                <img id="preview" src="{{ membership.profile_image.url }}" alt="Profile Preview">
+                <div class="form-group">
+                    <label for="email">Email Address*</label>
+                    <input type="email" id="email" name="email" 
+                           value="{{ membership.email|default:'' }}" 
+                           class="{% if form.email.errors %}error{% endif %}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" 
+                           value="{{ membership.phone_number|default:'' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" 
+                           value="{{ membership.location|default:'' }}">
+                </div>
+            </div>
+
+            <!-- Membership Plans -->
+            <div class="section-header">
+                <h2><i class="fas fa-crown"></i> Select Your Membership Plan</h2>
+            </div>
+            
+            <div class="membership-options">
+                {% for type in membership_types %}
+                <div class="membership-option">
+                    <input type="radio" name="membership_type" id="type_{{ type.id }}" 
+                           value="{{ type.id }}" {% if forloop.first %}checked{% endif %}>
+                    <label for="type_{{ type.id }}" class="membership-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h4>{{ type.name }}</h4>
+                                <span class="price">${{ type.price }}/mo</span>
+                            </div>
+                            <span class="duration">{{ type.duration }} Month{% if type.duration > 1 %}s{% endif %}</span>
+                        </div>
+                        <div class="features-list">
+                            {% if type.name == 'Basic' %}
+                            <ul>
+                                <li><i class="fas fa-check"></i> Access to community events</li>
+                                <li><i class="fas fa-check"></i> Basic networking opportunities</li>
+                                <li><i class="fas fa-check"></i> Monthly newsletter</li>
+                                <li><i class="fas fa-check"></i> Online resources</li>
+                            </ul>
+                            {% elif type.name == 'Premium' %}
+                            <ul>
+                                <li><i class="fas fa-check"></i> All Basic features</li>
+                                <li><i class="fas fa-check"></i> Priority event access</li>
+                                <li><i class="fas fa-check"></i> Mentorship opportunities</li>
+                                <li><i class="fas fa-check"></i> Exclusive workshops</li>
+                            </ul>
                             {% else %}
-                                <img id="preview" src="{% static 'images/default-profile.png' %}" alt="Profile Preview">
+                            <ul>
+                                <li><i class="fas fa-check"></i> All Premium features</li>
+                                <li><i class="fas fa-check"></i> Dedicated workspace</li>
+                                <li><i class="fas fa-check"></i> 24/7 facility access</li>
+                                <li><i class="fas fa-check"></i> Professional development</li>
+                            </ul>
                             {% endif %}
                         </div>
-                        <div class="upload-controls">
-                            <label for="profile_image" class="upload-btn">
-                                <i class="fas fa-camera"></i> Choose Photo
-                            </label>
-                            <input type="file" id="profile_image" name="profile_image" 
-                                   accept="image/*" onchange="previewImage(this)" class="hidden">
-                        </div>
-                    </div>
+                    </label>
                 </div>
-            </div>
-
-            <!-- Membership Type -->
-            <div class="form-section">
-                <h3>Membership Type*</h3>
-                <div class="membership-types">
-                    {% for type in membership_types %}
-                    <div class="membership-option">
-                        <input type="radio" id="type_{{ type.id }}" 
-                               name="membership_type" 
-                               value="{{ type.id }}"
-                               {% if membership.membership_type_id == type.id %}checked{% endif %}
-                               required>
-                        <label for="type_{{ type.id }}">
-                            <div class="type-content">
-                                <span class="type-name">{{ type.name }}</span>
-                                <span class="type-price">${{ type.price }}/month</span>
-                                <span class="type-description">{{ type.description }}</span>
-                            </div>
-                        </label>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Interests Section -->
-            <div class="form-section">
-                <h3>Interests</h3>
-                <div class="interests-container">
-                    <div id="selected-interests" class="selected-interests">
-                        {% if membership.interests %}
-                            {% with interests=membership.interests|safe %}
-                                {% if interests != '[]' %}
-                                    {% for interest in membership.get_interests %}
-                                        <div class="interest-tag">
-                                            <span>{{ interest }}</span>
-                                            <button type="button" onclick="removeInterest(this)">×</button>
-                                            <input type="hidden" name="interests[]" value="{{ interest }}">
-                                        </div>
-                                    {% endfor %}
-                                {% endif %}
-                            {% endwith %}
-                        {% endif %}
-                    </div>
-                    <div class="interest-input-group">
-                        <input type="text" id="interest-input" 
-                               placeholder="Add your interests (e.g., Art, Technology, Music)">
-                        <button type="button" onclick="addInterest()" class="add-interest-btn">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section terms-section">
-                <div class="checkbox-group">
-                    <input type="checkbox" id="terms" name="terms" required>
-                    <label for="terms">I agree to the Terms and Conditions*</label>
-                </div>
+                {% endfor %}
             </div>
 
             <div class="form-actions">
-                <button type="button" class="cancel-btn" onclick="history.back()">Cancel</button>
                 <button type="submit" class="submit-btn">Submit Application</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-// Update the form validation script
-document.getElementById('membershipForm').addEventListener('submit', function(e) {
-    const requiredFields = {
-        'full_name': 'Full Name',
-        'email': 'Email Address',
-        'membership_type': 'Membership Type',
-        'terms': 'Terms and Conditions'
-    };
-    
-    let errors = [];
-    
-    // Check each required field
-    Object.entries(requiredFields).forEach(([fieldId, fieldName]) => {
-        const element = document.getElementById(fieldId);
+<style>
+    .membership-page {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+        min-height: 100vh;
+        padding: 2rem;
+    }
+
+    .membership-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .membership-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .membership-header h1 {
+        color: #2c3e50;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Info Grid Layout */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+    }
+
+    /* Section Header */
+    .section-header {
+        text-align: center;
+        margin: 2rem 0;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .section-header h2 {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    /* Membership Options Layout */
+    .membership-options {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .membership-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .membership-option input[type="radio"]:checked + .membership-card {
+        border-color: var(--primary-color);
+        background: rgba(32, 178, 170, 0.02);
+        transform: translateY(-5px);
+    }
+
+    /* Form Actions */
+    .form-actions {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .submit-btn {
+        background: linear-gradient(45deg, var(--primary-color), #2ed8d8);
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(32, 178, 170, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+        .membership-options {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
         
-        if (element.type === 'radio') {
-            // Check if any radio button in the group is selected
-            const radioGroup = document.getElementsByName(element.name);
-            const isChecked = Array.from(radioGroup).some(radio => radio.checked);
-            if (!isChecked) {
-                errors.push(fieldName);
-                element.closest('.membership-types').classList.add('error');
-            }
-        } else if (element.type === 'checkbox') {
-            if (!element.checked) {
-                errors.push(fieldName);
-                element.closest('.checkbox-group').classList.add('error');
-            }
-        } else {
-            if (!element.value.trim()) {
-                errors.push(fieldName);
-                element.classList.add('error');
-            }
+        .membership-options {
+            grid-template-columns: 1fr;
         }
-    });
-    
-    // If there are errors, prevent form submission and show error message
-    if (errors.length > 0) {
-        e.preventDefault();
-        const errorMessage = `Please fill in the following required fields:\n${errors.join('\n')}`;
-        alert(errorMessage);
-    }
-});
 
-// Clear error styling when field is interacted with
-document.querySelectorAll('input, select, textarea').forEach(element => {
-    element.addEventListener('input', function() {
-        this.classList.remove('error');
-        const group = this.closest('.form-group, .membership-types, .checkbox-group');
-        if (group) {
-            group.classList.remove('error');
+        .membership-container {
+            padding: 1rem;
         }
-    });
-});
-
-// Existing functions remain the same
-function previewImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('preview').src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
     }
-}
-
-function addInterest() {
-    const input = document.getElementById('interest-input');
-    const interest = input.value.trim();
-    
-    if (interest) {
-        const container = document.getElementById('selected-interests');
-        const interestTag = document.createElement('div');
-        interestTag.className = 'interest-tag';
-        interestTag.innerHTML = `
-            <span>${interest}</span>
-            <button type="button" onclick="removeInterest(this)">×</button>
-            <input type="hidden" name="interests[]" value="${interest}">
-        `;
-        container.appendChild(interestTag);
-        input.value = '';
-    }
-}
-
-function removeInterest(button) {
-    button.parentElement.remove();
-}
-
-document.getElementById('interest-input').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        addInterest();
-    }
-});
-</script>
+</style>
 {% endblock %}
