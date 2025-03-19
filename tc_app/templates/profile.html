@@ -16,7 +16,10 @@
                 </div>
                 <div class="profile-title">
                     <h1>{{ user.get_full_name|default:user.username }}'s Profile</h1>
-                    <span class="member-since">Member since {{ user.date_joined|date:"F Y" }}</span>
+                    <div class="profile-subtitle">
+                        <span class="membership-type">{{ user.membership.membership_type.name }} Member</span>
+                        <span class="member-since">Member since {{ user.date_joined|date:"F Y" }}</span>
+                    </div>
                 </div>
             </div>
             <a href="{% url 'tc_app:edit_profile' %}" class="edit-profile-btn">
@@ -54,63 +57,100 @@
 
         <div class="profile-content">
             <!-- Personal Information Card -->
-            <div class="profile-card">
+            <div class="info-card">
                 <div class="card-header">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user-circle"></i>
                     <h2>Personal Information</h2>
                 </div>
-                <div class="card-content">
+                <div class="card-body">
                     <div class="info-grid">
                         <div class="info-item">
-                            <label>Username</label>
-                            <p>{{ user.username }}</p>
+                            <div class="info-label">
+                                <i class="fas fa-user"></i>
+                                <span>Full Name</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.full_name|default:"Not specified" }}</div>
                         </div>
+
                         <div class="info-item">
-                            <label>Email</label>
-                            <p>{{ user.email }}</p>
+                            <div class="info-label">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.email|default:"Not specified" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-phone"></i>
+                                <span>Phone</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.phone_number|default:"Not specified" }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Location</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.location|default:"Not specified" }}</div>
+                        </div>
+
+                        <div class="info-item full-width">
+                            <div class="info-label">
+                                <i class="fas fa-info-circle"></i>
+                                <span>About Me</span>
+                            </div>
+                            <div class="info-value bio">{{ user.membership.bio|default:"No bio provided"|linebreaks }}</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Membership Details Card -->
-            <div class="profile-card">
+            <!-- Membership Status Card -->
+            <div class="info-card">
                 <div class="card-header">
                     <i class="fas fa-id-card"></i>
                     <h2>Membership Details</h2>
                 </div>
-                <div class="card-content">
-                    {% if membership %}
-                        <div class="membership-info">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <label>Membership Type</label>
-                                    <p class="membership-type">{{ membership.membership_type.name }}</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>Status</label>
-                                    <p class="status-badge {{ membership.status }}">
-                                        {{ membership.get_status_display }}
-                                    </p>
-                                </div>
-                                <div class="info-item">
-                                    <label>Start Date</label>
-                                    <p>{{ membership.start_date|date:"F j, Y" }}</p>
-                                </div>
-                                <div class="info-item">
-                                    <label>End Date</label>
-                                    <p>{{ membership.end_date|date:"F j, Y" }}</p>
-                                </div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-tag"></i>
+                                <span>Membership Type</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.membership_type.name }}</div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-clock"></i>
+                                <span>Status</span>
+                            </div>
+                            <div class="info-value">
+                                <span class="status-badge {{ user.membership.status }}">
+                                    {{ user.membership.status|title }}
+                                </span>
                             </div>
                         </div>
-                    {% else %}
-                        <div class="no-membership">
-                            <p>No active membership</p>
-                            <a href="{% url 'tc_app:membership' %}" class="apply-btn">
-                                <i class="fas fa-plus"></i> Apply for membership
-                            </a>
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Start Date</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.start_date|date:"F d, Y" }}</div>
                         </div>
-                    {% endif %}
+
+                        <div class="info-item">
+                            <div class="info-label">
+                                <i class="fas fa-hourglass-end"></i>
+                                <span>End Date</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.end_date|date:"F d, Y" }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,240 +158,333 @@
 </div>
 
 <style>
-.profile-page {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: #f8f9fa;
-    min-height: calc(100vh - 60px);
-}
-
-.profile-container {
-    background: transparent;
-}
-
-/* Profile Header Styles */
-.profile-header {
-    background: white;
-    border-radius: 15px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.profile-header-content {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.profile-avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.avatar-placeholder {
-    font-size: 2.5rem;
-    color: white;
-    font-weight: bold;
-}
-
-.profile-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.profile-title {
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-title h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: #2c3e50;
-}
-
-.member-since {
-    color: #666;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-}
-
-.edit-profile-btn {
-    padding: 0.8rem 1.5rem;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.edit-profile-btn:hover {
-    background: #1a9090;
-    transform: translateY(-2px);
-}
-
-/* Profile Cards */
-.profile-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.profile-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-}
-
-.card-header {
-    background: #f8f9fa;
-    padding: 1.5rem;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.card-header i {
-    color: var(--primary-color);
-    font-size: 1.2rem;
-}
-
-.card-header h2 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #2c3e50;
-}
-
-.card-content {
-    padding: 1.5rem;
-}
-
-/* Info Grid */
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-}
-
-.info-item {
-    margin-bottom: 1rem;
-}
-
-.info-item label {
-    display: block;
-    color: #666;
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.info-item p {
-    margin: 0;
-    font-size: 1.1rem;
-    color: #2c3e50;
-}
-
-/* Status Badge */
-.status-badge {
-    display: inline-flex;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    align-items: center;
-}
-
-.status-badge.pending {
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-badge.approved {
-    background: #d4edda;
-    color: #155724;
-}
-
-.status-badge.rejected {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.membership-type {
-    color: var(--primary-color) !important;
-    font-weight: 500;
-}
-
-/* No Membership State */
-.no-membership {
-    text-align: center;
-    padding: 2rem;
-}
-
-.no-membership p {
-    color: #666;
-    margin-bottom: 1rem;
-}
-
-.apply-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.8rem 1.5rem;
-    background: var(--primary-color);
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.apply-btn:hover {
-    background: #1a9090;
-    transform: translateY(-2px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
     .profile-page {
-        padding: 1rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+        padding: 2rem;
+        min-height: calc(100vh - 60px);
+    }
+
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
     .profile-header {
-        flex-direction: column;
-        text-align: center;
-        gap: 1rem;
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(45deg, var(--primary-color), #2ed8d8);
+        z-index: 0;
     }
 
     .profile-header-content {
-        flex-direction: column;
-        text-align: center;
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .profile-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, var(--primary-color), #2ed8d8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: white;
+        font-weight: bold;
+    }
+
+    .profile-title {
+        color: white;
+    }
+
+    .profile-title h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .member-since {
+        display: inline-block;
+        background: rgba(255,255,255,0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .edit-profile-btn {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        background: white;
+        color: var(--primary-color);
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .edit-profile-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+
+    .profile-details {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .profile-field {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+    }
+
+    .profile-field i {
+        color: var(--primary-color);
+        font-size: 1.2rem;
+    }
+
+    .profile-field.bio {
+        display: block;
+    }
+
+    .profile-field.bio h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .profile-field.bio h3::before {
+        content: '\f075';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
     }
 
     .profile-content {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .info-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+
+    .card-header {
+        background: linear-gradient(45deg, var(--primary-color), #2ed8d8);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card-header i {
+        font-size: 1.5rem;
+    }
+
+    .card-header h2 {
+        margin: 0;
+        font-size: 1.3rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
     }
 
     .info-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
     }
-}
+
+    .info-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: #f0f0f0;
+    }
+
+    .info-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .info-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .info-label i {
+        color: var(--primary-color);
+    }
+
+    .info-value {
+        font-size: 1.1rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .info-value.bio {
+        font-weight: normal;
+        line-height: 1.6;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-badge.pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge.approved {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.rejected {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .profile-subtitle {
+        margin-top: 0.5rem;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .membership-type {
+        background: rgba(255,255,255,0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* No Membership State */
+    .no-membership {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .no-membership p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .apply-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.5rem;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .apply-btn:hover {
+        background: #1a9090;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .profile-page {
+            padding: 1rem;
+        }
+
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .profile-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-content {
+            grid-template-columns: 1fr;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-subtitle {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
 </style>
 {% endblock %}
