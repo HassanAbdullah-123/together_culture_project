@@ -24,6 +24,23 @@
             </a>
         </div>
 
+        <!-- Add this section after the profile header -->
+        <div class="profile-details">
+            {% if membership.location %}
+            <div class="profile-field">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ membership.location }}</span>
+            </div>
+            {% endif %}
+            
+            {% if membership.bio %}
+            <div class="profile-field bio">
+                <h3>About Me</h3>
+                <p>{{ membership.bio }}</p>
+            </div>
+            {% endif %}
+        </div>
+
         <!-- Messages -->
         {% if messages %}
         <div class="messages">

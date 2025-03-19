@@ -231,6 +231,8 @@ def edit_profile_view(request):
             membership.full_name = request.POST.get('full_name', '')
             membership.email = request.POST.get('email', '')
             membership.phone_number = request.POST.get('phone_number', '')
+            membership.location = request.POST.get('location', '')
+            membership.bio = request.POST.get('bio', '')
             membership.save()
             
             messages.success(request, 'Profile updated successfully!')
