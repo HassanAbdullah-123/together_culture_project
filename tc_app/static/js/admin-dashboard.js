@@ -30,22 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Event removal function
+// Remove the custom removeEvent function since we're using Django's built-in delete
 function removeEvent(eventId) {
-    if (confirm('Are you sure you want to remove this event?')) {
-        // Send DELETE request to your Django view
-        fetch(`/admin/tc_app/event/${eventId}/delete/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken'),
-            },
-        }).then(response => {
-            if (response.ok) {
-                // Reload the page or remove the event card from DOM
-                location.reload();
-            }
-        });
-    }
+    // This function can be removed as we're using Django's built-in delete functionality
 }
 
 // Helper function to get CSRF token
@@ -62,4 +49,9 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+// Remove the incomplete removeModule function since we're using Django's built-in delete
+function removeModule(moduleId) {
+    // This function can be removed as we're using Django's built-in delete functionality
 } 
