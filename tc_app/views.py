@@ -203,7 +203,15 @@ def membership_view(request):
         'current_membership': current_membership,
         'is_authenticated': is_authenticated
     }
-    return render(request, 'membership.html', context)
+    
+    response = render(request, 'membership.html', context)
+    
+    # Add headers to prevent caching
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
+    
+    return response
 
 def get_membership_description(membership_type):
     descriptions = {

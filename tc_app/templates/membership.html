@@ -33,34 +33,133 @@
             <div class="info-grid">
                 <div class="form-group">
                     <label for="username">Username*</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" 
+                           id="username" 
+                           name="username" 
+                           required 
+                           autocomplete="off"
+                           value="">
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email Address*</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           required 
+                           autocomplete="off"
+                           value="">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password*</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" 
+                           id="password" 
+                           name="password" 
+                           required 
+                           autocomplete="new-password"
+                           value="">
                 </div>
 
                 <div class="form-group">
                     <label for="full_name">Full Name*</label>
-                    <input type="text" id="full_name" name="full_name" required>
+                    <input type="text" 
+                           id="full_name" 
+                           name="full_name" 
+                           required 
+                           autocomplete="off"
+                           value="">
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" name="phone">
+                    <input type="tel" 
+                           id="phone" 
+                           name="phone" 
+                           autocomplete="off"
+                           value="">
                 </div>
 
                 <div class="form-group">
                     <label for="location">Location</label>
-                    <input type="text" id="location" name="location">
+                    <input type="text" 
+                           id="location" 
+                           name="location" 
+                           autocomplete="off"
+                           value="">
                 </div>
             </div>
+
+            <!-- Add this script at the bottom of the form -->
+            <script>
+                (function() {
+                    // Clear form on page load
+                    window.onload = function() {
+                        clearForm();
+                    };
+
+                    // Clear form on page show (when coming back from browser history)
+                    window.onpageshow = function(event) {
+                        if (event.persisted) {
+                            clearForm();
+                        }
+                    };
+
+                    // Clear form when leaving the page
+                    window.onunload = function() {
+                        clearForm();
+                    };
+
+                    function clearForm() {
+                        // Get the form
+                        const form = document.getElementById('membershipForm');
+                        if (form) {
+                            // Reset the form
+                            form.reset();
+
+                            // Clear all input fields
+                            const inputs = form.querySelectorAll('input');
+                            inputs.forEach(input => {
+                                input.value = '';
+                                
+                                // Remove any browser-saved data
+                                input.setAttribute('autocomplete', 'off');
+                                
+                                // For password fields
+                                if (input.type === 'password') {
+                                    input.setAttribute('autocomplete', 'new-password');
+                                }
+                            });
+
+                            // Clear browser autofill
+                            document.execCommand('clearAuthenticationCache');
+                            
+                            // Additional measure to prevent autofill
+                            setTimeout(() => {
+                                inputs.forEach(input => {
+                                    input.value = '';
+                                });
+                            }, 100);
+                        }
+                    }
+
+                    // Add event listener for form submission
+                    if (document.getElementById('membershipForm')) {
+                        document.getElementById('membershipForm').addEventListener('submit', function() {
+                            // Clear localStorage and sessionStorage
+                            localStorage.clear();
+                            sessionStorage.clear();
+                        });
+                    }
+                })();
+            </script>
+
+            <!-- Add this meta tag in the head section -->
+            {% block extra_head %}
+            <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
+            <meta http-equiv="Pragma" content="no-cache">
+            <meta http-equiv="Expires" content="0">
+            {% endblock %}
             {% endif %}
 
             <!-- Membership Plans Section -->
@@ -69,17 +168,47 @@
             </div>
 
             <div class="membership-options">
-                {% for type in membership_types %}
-                <div class="membership-option {% if current_membership.membership_type == type %}current-plan{% endif %}">
-                    <input type="radio" name="membership_type" id="type_{{ type.id }}" 
-                           value="{{ type.id }}" {% if forloop.first %}checked{% endif %}>
-                    <label for="type_{{ type.id }}" class="plan-details">
-                        <h3>{{ type.name }}</h3>
-                        <div class="price">${{ type.price }}<span>/month</span></div>
-                        <div class="features">{{ type.description|safe }}</div>
+                <div class="membership-option">
+                    <label class="plan-details">
+                        <h3 data-type="community">Community Member</h3>
+                        <div class="price">£0.00<span>/month</span></div>
+                        <div class="features">
+                            <ul>
+                                <li>Basic membership that allows access to general community events and discussions.</li>
+                                <li>Members can participate in networking events, workshops, and online forums.</li>
+                                <li>Ideal for individuals looking to connect, learn, and contribute to the creative community.</li>
+                            </ul>
+                        </div>
                     </label>
                 </div>
-                {% endfor %}
+
+                <div class="membership-option">
+                    <label class="plan-details">
+                        <h3 data-type="key_access">Key Access Member</h3>
+                        <div class="price">£49.99<span>/month</span></div>
+                        <div class="features">
+                            <ul>
+                                <li>Includes all benefits of Community Membership plus 24/7 access to specific shared spaces.</li>
+                                <li>Members can use co-working areas, attend exclusive networking sessions, and access premium resources.</li>
+                                <li>Perfect for professionals and creatives who need flexible access to collaborative spaces.</li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="membership-option">
+                    <label class="plan-details">
+                        <h3 data-type="workspace">Creative Workspace Member</h3>
+                        <div class="price">£99.99<span>/month</span></div>
+                        <div class="features">
+                            <ul>
+                                <li>Full-access membership for individuals who require dedicated workspace and advanced facilities.</li>
+                                <li>Includes a personal desk or studio space, high-speed internet, printing services, and storage.</li>
+                                <li>Ideal for artists, entrepreneurs, and freelancers needing a permanent creative hub.</li>
+                            </ul>
+                        </div>
+                    </label>
+                </div>
             </div>
 
             <button type="submit" class="submit-btn">
@@ -145,22 +274,61 @@
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 0.5rem;
         color: #333;
         font-weight: 500;
     }
 
+    .form-group label::after {
+        content: "*";
+        color: #4052EC;
+        margin-left: 4px;
+    }
+
+    .form-group label:not([for*="required"])::after {
+        display: none;
+    }
+
     .form-group input {
         width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 16px;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e6e9f5;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4052EC;
+        box-shadow: 0 0 0 3px rgba(64, 82, 236, 0.1);
+    }
+
+    .form-group input::placeholder {
+        color: #aab;
+    }
+
+    /* Style for required fields */
+    .form-group input:required {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='none' stroke='%234052EC' stroke-width='1'/%3E%3C/svg%3E");
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        padding-right: 35px;
+    }
+
+    /* Error state */
+    .form-group input:invalid:not(:placeholder-shown) {
+        border-color: #dc3545;
+    }
+
+    /* Success state */
+    .form-group input:valid:not(:placeholder-shown) {
+        border-color: #28a745;
     }
 
     .section-header {
@@ -193,12 +361,24 @@
     .membership-options {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
+        gap: 2rem;
         margin: 2rem 0;
     }
 
     .membership-option {
         position: relative;
+        background: white;
+        border: 2px solid #E2E8F0;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.08);
+    }
+
+    .membership-option:hover {
+        border-color: #2D46B9;
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
     }
 
     .membership-option input[type="radio"] {
@@ -207,82 +387,166 @@
         cursor: pointer;
     }
 
-    .membership-card {
-        background: white;
-        border: 2px solid #E2E8F0;
-        border-radius: 15px;
-        padding: 0;
-        transition: all 0.3s ease;
-        height: 100%;
-        cursor: pointer;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .membership-option input[type="radio"]:checked + .membership-card {
-        border-color: #2D46B9;
-        box-shadow: 0 8px 20px rgba(45, 70, 185, 0.15);
-        transform: translateY(-5px);
-    }
-
-    .card-header {
-        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
-        padding: 1.5rem;
-        color: white;
-        text-align: center;
-    }
-
-    .card-title h4 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 600;
-    }
-
-    .price {
-        font-size: 2rem;
-        font-weight: bold;
-        margin: 1rem 0;
+    .plan-details {
         display: block;
+        padding: 2.5rem 2rem;
+        cursor: pointer;
     }
 
-    .duration {
-        background: rgba(255, 255, 255, 0.2);
-        padding: 0.4rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        display: inline-block;
+    .plan-details h3 {
+        color: white;
+        margin-bottom: 1.5rem;
+        font-size: 1.6rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        padding: 1.2rem;
+        background: linear-gradient(135deg, #2D46B9, #3457D5);
+        border-radius: 12px;
+        margin: -2.5rem -2rem 2rem;
+        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.15);
     }
 
-    .features-list {
+    .plan-details h3::before {
+        content: '🌱';
+        font-size: 1.4rem;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 0.5rem;
+        border-radius: 8px;
+    }
+
+    .plan-details h3[data-type="key_access"]::before {
+        content: '🔑';
+    }
+
+    .plan-details h3[data-type="workspace"]::before {
+        content: '🎨';
+    }
+
+    .plan-details .price {
+        font-size: 2.4rem;
+        font-weight: bold;
+        color: #2D46B9;
+        margin-bottom: 2rem;
         padding: 1.5rem;
-        flex-grow: 1;
+        text-align: center;
+        background: linear-gradient(135deg, rgba(45, 70, 185, 0.08), rgba(52, 87, 213, 0.08));
+        border-radius: 12px;
+        border: 2px solid rgba(45, 70, 185, 0.1);
     }
 
-    .features-list ul {
+    .plan-details .price span {
+        font-size: 1rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .plan-details .features {
+        color: #1a1a1a;
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .plan-details .features ul {
         list-style: none;
         padding: 0;
         margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
-    .features-list li {
-        padding: 0.8rem;
-        margin-bottom: 0.5rem;
+    .plan-details .features li {
+        padding: 1.2rem;
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: linear-gradient(135deg, #f8f9ff, #ffffff);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(45, 70, 185, 0.1);
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(45, 70, 185, 0.05);
+        color: #000000;
+    }
+
+    .plan-details .features li:hover {
+        background: white;
+        border-color: rgba(45, 70, 185, 0.2);
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.1);
+    }
+
+    .plan-details .features li::before {
+        content: '→';
+        color: #3457D5;
+        font-weight: bold;
+        min-width: 24px;
+        height: 24px;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        background: #f8faff;
-        border-radius: 8px;
+        justify-content: center;
+        background: rgba(45, 70, 185, 0.1);
+        border-radius: 6px;
+    }
+
+    .membership-option input[type="radio"]:checked + .plan-details {
+        background-color: rgba(45, 70, 185, 0.02);
+    }
+
+    .membership-option input[type="radio"]:checked + .plan-details .features li {
+        background: white;
+        border-color: rgba(45, 70, 185, 0.2);
+        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.08);
+    }
+
+    .membership-option.current-plan {
+        border-color: #2D46B9;
+        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
+    }
+
+    /* Hover and active states */
+    .membership-option:hover .plan-details .features li {
+        border-color: rgba(45, 70, 185, 0.2);
+    }
+
+    .membership-option input[type="radio"]:checked + .plan-details .price {
+        background: linear-gradient(135deg, rgba(45, 70, 185, 0.12), rgba(52, 87, 213, 0.12));
+        border-color: rgba(45, 70, 185, 0.2);
+    }
+
+    /* Additional enhancements for feature items */
+    .plan-details .features li:nth-child(1) {
+        background: linear-gradient(135deg, rgba(45, 70, 185, 0.05), rgba(52, 87, 213, 0.05));
+        border-color: rgba(45, 70, 185, 0.15);
+        font-weight: 600;
+    }
+
+    .plan-details .features li:nth-child(2) {
+        background: linear-gradient(135deg, rgba(45, 70, 185, 0.03), rgba(52, 87, 213, 0.03));
+        border-color: rgba(45, 70, 185, 0.12);
+        font-weight: 600;
+    }
+
+    .plan-details .features li:nth-child(3) {
+        background: linear-gradient(135deg, rgba(45, 70, 185, 0.02), rgba(52, 87, 213, 0.02));
+        border-color: rgba(45, 70, 185, 0.1);
+        font-weight: 600;
+    }
+
+    .learn-more-link {
+        display: inline-block;
+        margin-top: 1.5rem;
+        color: #20B2AA;
+        text-decoration: none;
+        font-weight: 500;
         transition: all 0.3s ease;
     }
 
-    .features-list li:hover {
+    .learn-more-link:hover {
+        color: #1a8f88;
         transform: translateX(5px);
-        background: #f0f4ff;
-    }
-
-    .features-list li i {
-        color: #4ECDC4;
     }
 
     .form-actions {
@@ -314,6 +578,15 @@
         .membership-options {
             grid-template-columns: repeat(2, 1fr);
         }
+        
+        .plan-details {
+            padding: 2rem 1.5rem;
+        }
+        
+        .plan-details h3 {
+            margin: -2rem -1.5rem 2rem;
+            font-size: 1.4rem;
+        }
     }
 
     @media (max-width: 768px) {
@@ -327,6 +600,10 @@
 
         .membership-container {
             padding: 1rem;
+        }
+        
+        .plan-details .price {
+            font-size: 2rem;
         }
     }
 </style>
