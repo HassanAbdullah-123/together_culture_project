@@ -1,0 +1,188 @@
+/* Reset and Base Styles */
+.membership-plans-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.membership-plans-page {
+    background: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
+    padding: 80px 30px;
+    min-height: 100vh;
+}
+
+.plans-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.plans-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.plans-header h1 {
+    font-size: 2.5rem;
+    color: #1a237e;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.plans-header p {
+    font-size: 1.1rem;
+    color: #64748b;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+}
+
+.plan-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.popular-badge {
+    position: absolute;
+    top: 20px;
+    right: -35px;
+    background: #2563eb;
+    color: white;
+    padding: 8px 40px;
+    transform: rotate(45deg);
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    z-index: 1;
+}
+
+.plan-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.plan-header h2 {
+    color: #1e293b;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+}
+
+.price .amount {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #2563eb;
+    line-height: 1;
+}
+
+.price .period {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.plan-content {
+    margin-bottom: 30px;
+}
+
+.main-benefit {
+    color: #334155;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.benefits-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.benefits-list li {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+    color: #475569 !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+}
+
+.benefits-list li i {
+    color: #10b981 !important;
+    font-size: 1.2rem !important;
+}
+
+.ideal-for {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.plan-footer {
+    margin-top: auto;
+}
+
+.select-plan-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select-plan-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .membership-plans-page {
+        padding: 40px 20px;
+    }
+
+    .plans-header h1 {
+        font-size: 2rem;
+    }
+
+    .plan-card {
+        padding: 30px;
+    }
+
+    .price .amount {
+        font-size: 2.8rem;
+    }
+} 

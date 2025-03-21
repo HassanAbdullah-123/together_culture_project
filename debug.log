@@ -1,0 +1,249 @@
+Available membership types: []
+POST data received: <QueryDict: {'csrfmiddlewaretoken': ['FwuMLKeUNs3gcDy9DstAjaQYPopY8eLRaSj3dgA6zaP6s4ZfN0kOIphUqhr1mvxv'], 'username': ['Kainatakram'], 'email': ['umair11@gmail.com'], 'password1': ['***'], 'password2': ['***'], 'full_name': ['kainat akram1'], 'phone_number': ['03443381262'], 'location': ['dhaka'], 'bio': ['my bio '], 'membership_type': ['1']}>
+Membership type ID received: 1
+Converted membership_type_id to int: 1
+MembershipType with id 1 does not exist
+Available membership types: [{'id': 1, 'name': 'Community Member', 'code': 'community', 'description': 'Basic membership that allows access to general community events and discussions.', 'price': Decimal('24.99'), 'duration': 1}, {'id': 2, 'name': 'Key Access Member', 'code': 'community', 'description': 'Enhanced access with key privileges and exclusive events.', 'price': Decimal('49.99'), 'duration': 1}, {'id': 3, 'name': 'Creative Workspace Member', 'code': 'community', 'description': 'Full access to workspace and all community features.', 'price': Decimal('99.99'), 'duration': 1}]
+POST data received: <QueryDict: {'csrfmiddlewaretoken': ['FwuMLKeUNs3gcDy9DstAjaQYPopY8eLRaSj3dgA6zaP6s4ZfN0kOIphUqhr1mvxv'], 'username': ['Kainatakram'], 'email': ['umair11@gmail.com'], 'password1': ['***'], 'password2': ['***'], 'full_name': ['kainat akram1'], 'phone_number': ['03443381262'], 'location': ['dhaka'], 'bio': ['my bio '], 'membership_type': ['1']}>
+Membership type ID received: 1
+Converted membership_type_id to int: 1
+Found membership type: Community Member
+Created user: Kainatakram
+Error creating user/membership: (1054, "Unknown column 'start_date' in 'field list'")
+Traceback (most recent call last):
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\connections.py", line 280, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+MySQLdb.OperationalError: (1054, "Unknown column 'start_date' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\together_culture_website\together_culture\tc_app\views.py", line 202, in membership_view
+    membership = Membership.objects.create(
+        user=user,
+    ...<5 lines>...
+        status='pending'
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\together_culture\tc_app\models.py", line 120, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\connections.py", line 280, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.OperationalError: (1054, "Unknown column 'start_date' in 'field list'")
+Context being sent to template: {'membership_types': <QuerySet [<MembershipType: Community Member>, <MembershipType: Key Access Member>, <MembershipType: Creative Workspace Member>]>, 'current_membership': None, 'is_authenticated': False}
+Available membership types: [{'id': 1, 'name': 'Community Member', 'code': 'community', 'description': 'Basic membership that allows access to general community events and discussions.', 'price': Decimal('24.99'), 'duration': 1}, {'id': 2, 'name': 'Key Access Member', 'code': 'community', 'description': 'Enhanced access with key privileges and exclusive events.', 'price': Decimal('49.99'), 'duration': 1}, {'id': 3, 'name': 'Creative Workspace Member', 'code': 'community', 'description': 'Full access to workspace and all community features.', 'price': Decimal('99.99'), 'duration': 1}]
+Context being sent to template: {'membership_types': <QuerySet [<MembershipType: Community Member>, <MembershipType: Key Access Member>, <MembershipType: Creative Workspace Member>]>, 'current_membership': None, 'is_authenticated': False}
+Available membership types: [{'id': 1, 'name': 'Community Member', 'code': 'community', 'description': 'Basic membership that allows access to general community events and discussions.', 'price': Decimal('24.99'), 'duration': 1}, {'id': 2, 'name': 'Key Access Member', 'code': 'community', 'description': 'Enhanced access with key privileges and exclusive events.', 'price': Decimal('49.99'), 'duration': 1}, {'id': 3, 'name': 'Creative Workspace Member', 'code': 'community', 'description': 'Full access to workspace and all community features.', 'price': Decimal('99.99'), 'duration': 1}]
+POST data received: <QueryDict: {'csrfmiddlewaretoken': ['Uzm7bvqhmJDPkSZWab1RFKiYxQgENjQvpVboD1Mt8rpFAjq2kJS54ZJU8JiH1AC9'], 'username': ['Kainatakram'], 'email': ['umair11@gmail.com'], 'password1': ['***'], 'password2': ['***'], 'full_name': ['kainat akram1'], 'phone_number': ['03443381262'], 'location': ['dhaka'], 'bio': ['mh bio'], 'membership_type': ['1']}>
+Membership type ID received: 1
+Converted membership_type_id to int: 1
+Found membership type: Community Member
+Created user: Kainatakram
+Error creating user/membership: (1054, "Unknown column 'start_date' in 'field list'")
+Traceback (most recent call last):
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\connections.py", line 280, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+MySQLdb.OperationalError: (1054, "Unknown column 'start_date' in 'field list'")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\together_culture_website\together_culture\tc_app\views.py", line 202, in membership_view
+    membership = Membership.objects.create(
+        user=user,
+    ...<5 lines>...
+        status='pending'
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\query.py", line 679, in create
+    obj.save(force_insert=True, using=self.db)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\together_culture\tc_app\models.py", line 120, in save
+    super().save(*args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 892, in save
+    self.save_base(
+    ~~~~~~~~~~~~~~^
+        using=using,
+        ^^^^^^^^^^^^
+    ...<2 lines>...
+        update_fields=update_fields,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 998, in save_base
+    updated = self._save_table(
+        raw,
+    ...<4 lines>...
+        update_fields,
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 1161, in _save_table
+    results = self._do_insert(
+        cls._base_manager, using, fields, returning_fields, raw
+    )
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\base.py", line 1202, in _do_insert
+    return manager._insert(
+           ~~~~~~~~~~~~~~~^
+        [self],
+        ^^^^^^^
+    ...<3 lines>...
+        raw=raw,
+        ^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\query.py", line 1847, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\models\sql\compiler.py", line 1836, in execute_sql
+    cursor.execute(sql, params)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 122, in execute
+    return super().execute(sql, params)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        sql, params, many=False, executor=self._execute
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\django\db\backends\mysql\base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\cursors.py", line 330, in _query
+    db.query(q)
+    ~~~~~~~~^^^
+  File "D:\together_culture_website\venv\Lib\site-packages\MySQLdb\connections.py", line 280, in query
+    _mysql.connection.query(self, query)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+django.db.utils.OperationalError: (1054, "Unknown column 'start_date' in 'field list'")
+Context being sent to template: {'membership_types': <QuerySet [<MembershipType: Community Member>, <MembershipType: Key Access Member>, <MembershipType: Creative Workspace Member>]>, 'current_membership': None, 'is_authenticated': False}
+Available membership types: []
+POST data received: <QueryDict: {'csrfmiddlewaretoken': ['cKvY1ub15MxVl7K3ohij2GQLuGi9yM6VH6kft0xdRujLByb9yP9xrVhH5zkcM3Sz'], 'username': ['Numeer2222222'], 'email': ['newuser@gmail.com'], 'password1': ['***'], 'password2': ['***'], 'full_name': ['Numeer qadri111111'], 'phone_number': ['03443381262'], 'location': ['dhaka'], 'bio': ['my bio '], 'membership_type': ['1']}>
+Membership type ID received: 1
+Converted membership_type_id to int: 1
+MembershipType with id 1 does not exist
+Available membership types: []
+Context being sent to template: {'membership_types': <QuerySet []>, 'current_membership': None, 'is_authenticated': False}
+Available membership types: []
+Context being sent to template: {'membership_types': <QuerySet []>, 'current_membership': None, 'is_authenticated': False}
+Available membership types: []
+POST data received: <QueryDict: {'csrfmiddlewaretoken': ['Kh3kdrdD2RYaMxE5BThVs0fP6Plfv8FwfDSBFXzPOzK02Y5bLr89RfGLHIniJpra'], 'username': ['Numeer2222222'], 'email': ['newuser@gmail.com'], 'password1': ['***'], 'password2': ['***'], 'full_name': ['Numeer qadri111111'], 'phone_number': ['03443381262'], 'location': ['dhaka'], 'bio': ['my bio '], 'membership_type': ['2']}>
+Membership type ID received: 2
+Converted membership_type_id to int: 2
+MembershipType with id 2 does not exist

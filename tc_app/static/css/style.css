@@ -1265,6 +1265,7 @@ main {
     display: block;
     padding: 20px;
     cursor: pointer;
+    color: #2c5282;  /* Making the label text blue as well */
 }
 
 .type-content {
@@ -1276,12 +1277,13 @@ main {
 .type-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
+    color: var(--primary-color);  /* This will use your theme's primary color */
 }
 
 .type-description {
     font-size: 0.9rem;
-    color: #666;
+    color: #2c5282;  /* A nice shade of blue */
+    line-height: 1.6;
 }
 
 /* Style for selected membership type */
@@ -3602,5 +3604,474 @@ a[href*="Events"]:hover::before {
 .btn.btn-primary:hover {
     background: #f8f9fa;
     box-shadow: 0 6px 20px rgba(32, 178, 170, 0.25);
+}
+
+.price {
+    color: #2b6cb0;  /* A slightly darker blue for the price */
+    font-weight: 600;
+}
+
+.price span {
+    color: #4a5568;  /* A more subtle color for the "/month" text */
+    font-size: 0.9em;
+}
+
+/* Professional Membership Description Styling */
+.membership-description {
+    color: white;
+    padding: 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Specific styling for the benefits list */
+.membership-description .benefits-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 1.5rem 0 !important;
+}
+
+.membership-description .benefits-list li {
+    padding: 0.75rem 0 !important;
+    font-size: 0.95rem !important;
+    display: flex !important;
+    align-items: center !important;
+    color: #D1D5DB !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+}
+
+.membership-description .benefits-list li:before {
+    content: "" !important;
+    display: none !important;
+}
+
+/* Add checkmark as a separate span for better control */
+.membership-description .benefits-list li span.checkmark {
+    color: #10B981;
+    margin-right: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.membership-description .main-benefit {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    color: #E5E7EB;
+}
+
+.membership-description .ideal-for {
+    font-size: 0.9rem;
+    color: #9CA3AF;
+    font-style: italic;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1.5rem;
+}
+
+/* Membership Card Styling */
+.membership-option {
+    background: linear-gradient(145deg, rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1.5rem;
+}
+
+.membership-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.membership-option label {
+    padding: 2rem;
+    cursor: pointer;
+}
+
+.type-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 1.5rem 0;
+}
+
+.price span {
+    font-size: 1rem;
+    color: #9CA3AF;
+    font-weight: normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .membership-description {
+        padding: 1rem;
+    }
+
+    .main-benefit {
+        font-size: 1rem;
+    }
+
+    .benefits-list li {
+        font-size: 0.9rem;
+    }
+}
+
+/* Professional Membership Plans Styling */
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.plan-card {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.plan-badge {
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: #2563eb;
+    color: white;
+    padding: 0.5rem 3rem;
+    transform: rotate(45deg);
+    font-size: 0.8rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.plan-header {
+    text-align: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.plan-header h2 {
+    color: #1e293b;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.price .amount {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.price .period {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.plan-content {
+    padding: 1rem 0;
+}
+
+.main-benefit {
+    color: #334155;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    color: #475569;
+    font-size: 1rem;
+}
+
+.check-icon {
+    color: #10b981;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.ideal-for {
+    font-style: italic;
+    color: #64748b;
+    font-size: 0.9rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.plan-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.select-plan-btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select-plan-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Current Plan Styling */
+.plan-card.current-plan {
+    border: 2px solid #2563eb;
+}
+
+.current-plan .plan-badge {
+    background: #059669;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .plans-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+    
+    .plan-card {
+        padding: 1.5rem;
+    }
+    
+    .price .amount {
+        font-size: 2.5rem;
+    }
+}
+
+/* Modern Membership Plans Styling */
+.membership-plans-page {
+    background: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
+    padding: 80px 30px;
+    min-height: 100vh;
+}
+
+.plans-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.plans-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.plans-header h1 {
+    font-size: 2.5rem;
+    color: #1a237e;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.plans-header p {
+    font-size: 1.1rem;
+    color: #64748b;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.plan-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.plan-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.popular-badge {
+    position: absolute;
+    top: 20px;
+    right: -35px;
+    background: #2563eb;
+    color: white;
+    padding: 8px 40px;
+    transform: rotate(45deg);
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.plan-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.plan-header h2 {
+    color: #1e293b;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 5px;
+}
+
+.price .amount {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #2563eb;
+    line-height: 1;
+}
+
+.price .period {
+    color: #64748b;
+    font-size: 1.1rem;
+}
+
+.plan-content {
+    margin-bottom: 30px;
+}
+
+.main-benefit {
+    color: #334155;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    color: #475569;
+    font-size: 1rem;
+}
+
+.benefits-list li i {
+    color: #10b981;
+    font-size: 1.2rem;
+}
+
+.ideal-for {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.select-plan-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.select-plan-btn:hover {
+    background: #1d4ed8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Current Plan Styling */
+.plan-card.current-plan {
+    border: 2px solid #2563eb;
+}
+
+.current-plan-btn {
+    background: #e2e8f0;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .membership-plans-page {
+        padding: 40px 20px;
+    }
+
+    .plans-header h1 {
+        font-size: 2rem;
+    }
+
+    .plan-card {
+        padding: 30px;
+    }
+
+    .price .amount {
+        font-size: 2.8rem;
+    }
 }
 

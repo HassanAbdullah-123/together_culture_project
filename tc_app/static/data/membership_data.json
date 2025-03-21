@@ -1,0 +1,40 @@
+{
+    "membership_types": [
+        {
+            "id": 1,
+            "name": "Community Member",
+            "price": 24.99,
+            "description": "Basic membership that allows access to general community events and discussions.",
+            "features": [
+                "Access to community events",
+                "Online discussion forums",
+                "Monthly newsletter"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "Key Access Member",
+            "price": 49.99,
+            "description": "Enhanced access with key privileges and exclusive events.",
+            "features": [
+                "All Community Member benefits",
+                "Exclusive event access",
+                "Priority booking",
+                "Member discounts"
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Creative Workspace Member",
+            "price": 99.99,
+            "description": "Full access to workspace and all community features.",
+            "features": [
+                "All Key Access Member benefits",
+                "24/7 workspace access",
+                "Private meeting rooms",
+                "Storage facilities",
+                "Professional development workshops"
+            ]
+        }
+    ]
+} 

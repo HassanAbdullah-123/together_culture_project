@@ -13,6 +13,8 @@ from django.views.decorators.http import require_POST
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.db.models import Count
+import logging
+import os
 
 # Create your views here.
 from django.views.generic import TemplateView
@@ -20,6 +22,8 @@ from .models import Testimonial, MembershipType, CustomUser, UserProfile, Member
 from django import forms
 from django.db.models import Count
 from django.db.utils import IntegrityError
+
+logger = logging.getLogger(__name__)
 
 class HomeView(TemplateView):
     template_name = 'home.html'
@@ -126,45 +130,20 @@ def signup_view(request):
     return render(request, 'signup.html')
 
 def membership_view(request):
-    membership_types = MembershipType.objects.all()
-    current_membership = None
-    is_authenticated = request.user.is_authenticated
-
-    if is_authenticated:
-        current_membership = Membership.objects.filter(user=request.user).first()
+    # Load membership data from JSON file
+    json_file_path = os.path.join(settings.BASE_DIR, 'tc_app/static/data/membership_data.json')
+    with open(json_file_path, 'r') as file:
+        membership_data = json.load(file)
 
     if request.method == 'POST':
-        if is_authenticated:
-            # Existing membership update logic
-            membership_type_id = request.POST.get('membership_type')
-            try:
-                membership_type = MembershipType.objects.get(id=int(membership_type_id))
-                
-                start_date = timezone.now()
-                end_date = start_date + relativedelta(months=membership_type.duration)
-                
-                membership, created = Membership.objects.update_or_create(
-                    user=request.user,
-                    defaults={
-                        'membership_type': membership_type,
-                        'start_date': start_date,
-                        'end_date': end_date,
-                        'status': 'pending'
-                    }
-                )
-                
-                messages.success(request, 'Your membership plan has been updated successfully!')
-                return redirect('tc_app:profile')
-                
-            except (MembershipType.DoesNotExist, ValueError) as e:
-                messages.error(request, 'Invalid membership type selected. Please try again.')
-        else:
-            # Registration logic for non-authenticated users
+        if not request.user.is_authenticated:
+            # Get form data
             username = request.POST.get('username')
             email = request.POST.get('email')
-            password = request.POST.get('password')
+            password1 = request.POST.get('password1')
+            password2 = request.POST.get('password2')
             full_name = request.POST.get('full_name')
-            phone = request.POST.get('phone')
+            phone = request.POST.get('phone_number')
             location = request.POST.get('location')
             membership_type_id = request.POST.get('membership_type')
 
@@ -173,37 +152,27 @@ def membership_view(request):
                 user = CustomUser.objects.create_user(
                     username=username,
                     email=email,
-                    password=password
+                    password=password1
                 )
 
                 # Create membership
-                membership_type = MembershipType.objects.get(id=int(membership_type_id))
-                Membership.objects.create(
+                membership = Membership.objects.create(
                     user=user,
                     full_name=full_name,
                     email=email,
                     phone_number=phone,
                     location=location,
-                    membership_type=membership_type,
                     status='pending'
                 )
 
-                # Log the user in
-                login(request, user)
-                messages.success(request, 'Registration successful! Your membership is pending approval.')
-                return redirect('tc_app:profile')
+                messages.success(request, 'Registration successful! Your membership is pending approval. Please login to your account.')
+                return redirect('tc_app:login')
 
-            except IntegrityError:
-                messages.error(request, 'Username or email already exists. Please try again.')
             except Exception as e:
+                logger.error(f"Registration error: {str(e)}")
                 messages.error(request, 'An error occurred during registration. Please try again.')
-    
-    context = {
-        'membership_types': membership_types,
-        'current_membership': current_membership,
-        'is_authenticated': is_authenticated
-    }
-    return render(request, 'membership.html', context)
+
+    return render(request, 'membership.html', {'membership_data': membership_data})
 
 def get_membership_description(membership_type):
     descriptions = {
@@ -231,25 +200,28 @@ def select_membership(request):
     if request.method == 'POST':
         membership_type_id = request.POST.get('membership_type')
         try:
-            membership_type = MembershipType.objects.get(id=membership_type_id)
-            
+            membership_type_id = int(membership_type_id)
+            if membership_type_id not in [1, 2, 3]:
+                raise ValueError
+                
             # Calculate end date based on membership duration
-            end_date = timezone.now() + timezone.timedelta(days=30 * membership_type.duration)
+            durations = {1: 1, 2: 3, 3: 12}  # months for each type
+            end_date = timezone.now() + timezone.timedelta(days=30 * durations[membership_type_id])
             
             # Update or create membership
             Membership.objects.update_or_create(
                 user=request.user,
                 defaults={
-                    'membership_type': membership_type,
+                    'membership_type': membership_type_id,
                     'end_date': end_date,
                     'status': 'active'
                 }
             )
             
-            messages.success(request, f'Successfully subscribed to {membership_type.name} plan!')
+            messages.success(request, 'Successfully updated membership plan!')
             return redirect('tc_app:membership')
             
-        except MembershipType.DoesNotExist:
+        except (ValueError, KeyError):
             messages.error(request, 'Invalid membership type selected.')
             
     return redirect('tc_app:membership')

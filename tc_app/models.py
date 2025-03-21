@@ -88,64 +88,37 @@ class Membership(models.Model):
         ('rejected', 'Rejected')
     ]
 
-    user = models.OneToOneField('CustomUser', on_delete=models.CASCADE)
-    profile_image = models.ImageField(
-        upload_to='profile_images/',
-        null=True,
-        blank=True,
-        default=None  # Add default value
-    )
-    full_name = models.CharField(
-        max_length=100,
-        null=True,  # Make it optional initially
-        blank=True
-    )
-    email = models.EmailField(null=True, blank=True)
-    phone_number = models.CharField(
-        max_length=20, 
-        null=True, 
-        blank=True
-    )
-    membership_type = models.ForeignKey(
-        MembershipType, 
-        on_delete=models.PROTECT
-    )
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=100, default='', blank=False)
+    email = models.EmailField(default='', blank=False)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    start_date = models.DateTimeField(default=timezone.now)
-    end_date = models.DateTimeField(default=timezone.now)
-    status = models.CharField(
-        max_length=20, 
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
-    location = models.CharField(
-        max_length=100,
-        null=True,
-        blank=True
-    )
-    bio = models.TextField(
-        null=True,
-        blank=True
-    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Membership'
+        verbose_name_plural = 'Memberships'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.full_name}'s Membership"
+
+    def save(self, *args, **kwargs):
+        # Ensure email matches user email if not set
+        if not self.email and self.user:
+            self.email = self.user.email
+        # Ensure full_name is set if not provided
+        if not self.full_name and self.user:
+            self.full_name = self.user.get_full_name() or self.user.username
+        super().save(*args, **kwargs)
 
     @property
     def is_active(self):
-        now = timezone.now()
-        return (
-            self.status == 'approved' and 
-            self.start_date <= now <= self.end_date
-        )
-
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Only for new memberships
-            self.end_date = self.start_date + relativedelta(months=self.membership_type.duration)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.user.username}'s Membership"
-
-    class Meta:
-        verbose_name_plural = "Memberships"
+        return self.status == 'active'
 
 class Event(models.Model):
     EVENT_STATUS_CHOICES = [

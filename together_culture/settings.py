@@ -152,3 +152,24 @@ EMAIL_HOST_USER = 'your-email@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'your-app-password'  # Your email password or app password
 DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
 ADMIN_EMAIL = 'admin@togetherculture.com'  # Admin email to receive notifications
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'tc_app': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
