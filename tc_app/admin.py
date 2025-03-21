@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.shortcuts import render
 from .models import CustomUser, Membership, MembershipType, Event, Module, Contact, Testimonial
-from django.urls import path
+from django.urls import path, reverse
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils import timezone
@@ -41,9 +41,23 @@ class CustomAdminSite(admin.AdminSite):
         # Use your existing custom dashboard template
         return render(request, 'admin/custom_admin_dashboard.html', context)
 
+    def home(self, request):
+        # Get all the counts and data for the dashboard
+        context = {
+            'total_members': Membership.objects.count(),
+            'pending_approvals': Membership.objects.filter(status='pending').count(),
+            'active_events': Event.objects.filter(status__in=['upcoming', 'ongoing']).count(),
+            'active_modules': Module.objects.filter(status='active').count(),
+            'has_permission': True,
+            'available_apps': self.get_app_list(request),
+            'site_url': reverse('admin:admin-home'),
+        }
+        return render(request, 'admin/admin_home.html', context)
+
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
+            path('home/', self.admin_view(self.home), name='admin-home'),
             path('membership/<int:membership_id>/approve/',
                  self.admin_view(self.approve_membership),
                  name='approve-membership'),

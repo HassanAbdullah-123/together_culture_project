@@ -1,44 +1,44 @@
-{% extends "admin/base.html" %}
-{% load static %}
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}">
+<head>
+<title>{% block title %}{% endblock %}</title>
+<link rel="stylesheet" href="{% static "admin/css/base.css" %}">
+{% block dark-mode-vars %}
+<link rel="stylesheet" href="{% static "admin/css/dark_mode.css" %}">
+{% endblock %}
+{% block extrastyle %}{% endblock %}
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% static "admin/css/rtl.css" %}">{% endif %}
+{% block extrahead %}{% endblock %}
+{% block responsive %}
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="{% static "admin/css/responsive.css" %}">
+    {% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% static "admin/css/responsive_rtl.css" %}">{% endif %}
+{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+</head>
 
-{% block extrahead %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
+  data-admin-utc-offset="{% now "Z" %}">
+
+<!-- Remove the default header -->
+{% block nav-global %}{% endblock %}
+
+<!-- Content -->
+{% block content %}
+  {% block object-tools %}{% endblock %}
+  {{ content }}
 {% endblock %}
 
-{% block usertools %}
-<div class="admin-user-tools">
-    {% if has_permission %}
-    <div class="user-tools-container">
-        <div class="welcome-msg">
-            Welcome, 
-            <strong>{% firstof user.get_short_name user.get_username %}</strong>
-        </div>
-        <div class="user-actions">
-            <div class="dropdown">
-                <button class="dropbtn">
-                    <i class="fas fa-user-circle"></i>
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="{% url 'admin:password_change' %}">
-                        <i class="fas fa-key"></i> Change Password
-                    </a>
-                    <a href="{% url 'admin:auth_user_change' user.id %}">
-                        <i class="fas fa-user-edit"></i> Edit Profile
-                    </a>
-                    <a href="{% url 'admin:index' %}">
-                        <i class="fas fa-external-link-alt"></i> View Site
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="{% url 'admin:logout' %}" class="logout-link">
-                        <i class="fas fa-sign-out-alt"></i> Log Out
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block footer %}{% endblock %}
+
+{% block messages %}
+    {% if messages %}
+    <ul class="messagelist">{% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}</ul>
     {% endif %}
-</div>
-{% endblock %} 
+{% endblock messages %}
+
+</body>
+</html> 

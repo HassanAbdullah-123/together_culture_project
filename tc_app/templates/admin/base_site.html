@@ -4,18 +4,22 @@
 {% block title %}{{ title }} | Together Culture Admin{% endblock %}
 
 {% block extrastyle %}
+{{ block.super }}
 <link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}
 
 {% block branding %}
 <div class="admin-branding">
-    <h1>Together Culture Administration</h1>
+    <h1><b>Together Culture Administration</b>h1>
 </div>
 {% endblock %}
 
 {% block usertools %}
 <div class="admin-header-tools">
+    <a href="{% url 'admin:admin-home' %}" class="view-site-link">
+        <i class="fas fa-home"></i> View Site
+    </a>
     <div class="admin-profile-menu">
         <button class="profile-button" onclick="toggleProfileMenu()">
             <div class="admin-avatar">
@@ -41,6 +45,23 @@
         </div>
     </div>
 </div>
+
+<style>
+.view-site-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.view-site-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+</style>
 
 <script>
 function toggleProfileMenu() {
