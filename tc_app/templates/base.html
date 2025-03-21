@@ -6,6 +6,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Together Culture{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+            padding: 0.75rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            height: 65px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .brand img {
+            height: 35px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand span {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            margin-left: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-links a i {
+            font-size: 0.9rem;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            height: 38px;
+        }
+
+        .login-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 38px;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .signup-btn {
+            background: white;
+            color: #3457D5;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 38px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .signup-btn span {
+            display: inline-block;
+            line-height: 1;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -16,16 +156,22 @@
                     <span>Together Culture</span>
                 </a>
                 <div class="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/about">About</a>
-                    <a href="/events">Events</a>
-                    <a href="/contact">Contact</a>
-                    <a href="/membership">Membership</a>
+                    <a href="/"><i class="fas fa-home"></i> Home</a>
+                    <a href="/about"><i class="fas fa-info-circle"></i> About</a>
+                    <a href="/events"><i class="fas fa-calendar-alt"></i> Events</a>
+                    <a href="/contact"><i class="fas fa-envelope"></i> Contact</a>
+                    <a href="/membership"><i class="fas fa-users"></i> Membership</a>
                 </div>
             </div>
             <div class="auth-buttons">
-                <a href="/login" class="login-btn">Login</a>
-                <a href="/signup" class="signup-btn">Sign Up</a>
+                <a href="/login" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+                <a href="/signup" class="signup-btn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Sign Up</span>
+                </a>
             </div>
         </div>
     </nav>
