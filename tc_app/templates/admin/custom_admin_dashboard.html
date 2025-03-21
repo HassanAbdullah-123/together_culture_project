@@ -4,6 +4,253 @@
 {% block extrastyle %}
 <link rel="stylesheet" href="{% static 'css/admin-custom.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+:root {
+    --primary-color: #2D46B9;
+    --primary-light: #3457D5;
+    --secondary-color: #FF6B6B;
+    --accent-color: #4ECDC4;
+    --gradient-1: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+    --gradient-2: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+    --gradient-3: linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%);
+    --bg-gradient: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+    --card-gradient: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
+    --text-primary: #2C3E50;
+    --text-secondary: #526480;
+}
+
+.custom-admin-dashboard {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    background: var(--gradient-1);
+    color: white;
+}
+
+.sidebar-section h3 {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.menu-item {
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stats-card {
+    background: var(--card-gradient);
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
+}
+
+.stats-card i {
+    color: var(--primary-color);
+}
+
+.events-section, .modules-section {
+    background: var(--card-gradient);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+}
+
+.section-header h2 {
+    color: var(--primary-color);
+}
+
+.add-btn, 
+.edit-btn, 
+.remove-btn, 
+.approve-btn, 
+.reject-btn,
+.menu-item,
+.action-link,
+.header-link {
+    color: white !important;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.tab-btn {
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.tab-btn.active {
+    background: var(--gradient-1);
+    color: white !important;
+}
+
+.tab-btn:hover {
+    background: var(--gradient-1);
+    color: white !important;
+}
+
+.event-card, .module-card {
+    background: var(--card-gradient);
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.event-card:hover, .module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
+}
+
+.add-btn {
+    background: var(--gradient-1);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.edit-btn {
+    background: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.remove-btn {
+    background: var(--secondary-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.approve-btn {
+    background: var(--primary-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.reject-btn {
+    background: var(--secondary-color);
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+/* Hover states */
+.add-btn:hover,
+.edit-btn:hover,
+.approve-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+}
+
+.remove-btn:hover,
+.reject-btn:hover {
+    background: #ff8585;
+    transform: translateY(-2px);
+}
+
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Count badges in menu */
+.count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+}
+
+/* Update table styles */
+table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+th {
+    background: var(--primary-color);
+    color: white;
+}
+
+tr:hover {
+    background: var(--bg-gradient);
+}
+
+/* Updated Top Header Styles */
+.top-header {
+    background: var(--gradient-1);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+}
+
+.header-brand h1 {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-link {
+    color: white !important;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.header-link:hover {
+    transform: translateY(-2px);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.separator {
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 5px;
+}
+
+.theme-switch-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    margin-left: 15px;
+}
+
+.theme-switch-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.theme-switch-btn i {
+    font-size: 1rem;
+}
+
+</style>
 {% endblock %}
 
 {% block usertools %}{% endblock %}
@@ -405,62 +652,6 @@ document.addEventListener('keydown', function(event) {
     }
 });
 </script>
-
-<style>
-/* Add only the necessary styles for pending approvals */
-.pending-approvals-section {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.approve-btn, .reject-btn {
-    padding: 6px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    color: white;
-    font-size: 12px;
-    transition: background-color 0.3s;
-}
-
-.approve-btn {
-    background-color: #28a745;
-}
-
-.approve-btn:hover {
-    background-color: #218838;
-}
-
-.reject-btn {
-    background-color: #dc3545;
-}
-
-.reject-btn:hover {
-    background-color: #c82333;
-}
-
-.table-responsive {
-    overflow-x: auto;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-</style>
 {% endblock %}
 
 {% block extrahead %}
