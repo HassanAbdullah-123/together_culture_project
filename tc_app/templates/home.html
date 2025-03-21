@@ -2,44 +2,68 @@
 {% load static %}
 
 {% block content %}
-<div class="hero-section">
+<!-- Hero Section -->
+<div class="hero-section" style="
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;">
     <!-- Background Video -->
-    <div class="hero-background">
-        <video autoplay muted loop playsinline class="background-video">
+    <div class="hero-background" style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;">
+        <video autoplay muted loop playsinline class="background-video" style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;">
             <source src="{% static 'videos/community.mp4' %}" type="video/mp4">
-            <!-- Fallback background image if video fails to load -->
             <img src="{% static 'images/community-bg.jpg' %}" alt="Community Background">
         </video>
-        <div class="overlay"></div>
+        <div class="overlay" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(45, 70, 185, 0.7);">
+        </div>
     </div>
-
-    <div class="hero-content">
-        <h1 class="hero-title">Join the Movement - <br>Build a Creative and<br>Equitable Future!</h1>
-        
-        <p class="hero-description">
+    
+    <div class="hero-content" style="
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 4rem;
+        max-width: 1200px;
+        margin: 0 auto;">
+        <h1 style="
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: white;
+            max-width: 800px;">
+            Join the Movement - <br>Build a Creative and<br>Equitable Future!
+        </h1>
+        <p style="
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;">
             Together Culture is a vibrant community where creators, entrepreneurs, and changemakers connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, and make a real impact.
         </p>
-
         {% if user.is_authenticated %}
-            {% if user.is_superuser %}
-                <div class="admin-actions">
-                    <h2>Admin Controls</h2>
-                    <div class="admin-buttons">
-                        <a href="{% url 'admin:index' %}" class="admin-btn">Go to Admin Dashboard</a>
-                    </div>
-                </div>
-            {% else %}
-                <div class="member-welcome">
-                    <h2 class="welcome-text">Welcome, {{ user.username }}!</h2>
-                    <p class="impact-text">Ready to make an impact?</p>
-                    <div class="action-links">
-                        <a href="{% url 'tc_app:profile' %}" class="btn btn-primary">View Profile</a>
-                        <a href="{% url 'tc_app:events' %}" class="btn btn-secondary">Explore Events</a>
-                    </div>
-                </div>
-            {% endif %}
+            <div class="welcome-message">
+                <h2>Welcome back, {{ user.username }}!</h2>
+                <a href="{% url 'tc_app:dashboard' %}" class="dashboard-btn">Go to Dashboard</a>
+            </div>
         {% else %}
-            <div class="cta-buttons">
+            <div class="cta-buttons" style="display: flex; gap: 1rem;">
                 <a href="{% url 'tc_app:login_choice' %}" class="btn btn-primary" style="
                     display: inline-flex;
                     align-items: center;
@@ -47,7 +71,7 @@
                     padding: 14px 32px;
                     font-size: 1.1rem;
                     font-weight: 600;
-                    color: var(--primary-color);
+                    color: #2D46B9;
                     background: white;
                     border-radius: 12px;
                     text-decoration: none;
@@ -64,7 +88,7 @@
                     font-size: 1.1rem;
                     font-weight: 600;
                     color: white;
-                    background: #20B2AA;
+                    background: #2D46B9;
                     border: 2px solid rgba(255, 255, 255, 0.2);
                     border-radius: 12px;
                     text-decoration: none;
@@ -80,35 +104,53 @@
 </div>
 
 <!-- Features Section -->
-<section class="features">
-    <div class="features-container">
-        <h2>Features</h2>
+<section class="features" style="
+    position: relative;
+    z-index: 2;
+    background: white;
+    padding: 80px 0;">
+    <div class="features-container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <h2 style="text-align: center; color: #2D46B9; font-size: 2.5rem; margin-bottom: 3rem;">Features</h2>
         
-        <div class="features-content">
+        <div class="features-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
             <div class="features-text">
-                <h3>Why Become a Member?</h3>
-                <ul class="features-list">
-                    <li>
+                <h3 style="color: #2D46B9; font-size: 1.8rem; margin-bottom: 2rem;">Why Become a Member?</h3>
+                <ul class="features-list" style="list-style: none; padding: 0;">
+                    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #333;">
                         <span class="feature-icon">📍</span>
                         Community Engagement – Connect with like-minded individuals who share your vision.
                     </li>
-                    <li>
+                    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #333;">
                         <span class="feature-icon">📍</span>
                         Digital Content Modules – Access exclusive courses and skill-building resources.
                     </li>
-                    <li>
+                    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #333;">
                         <span class="feature-icon">📍</span>
                         Event Participation – Attend live and virtual events that inspire and educate.
                     </li>
-                    <li>
+                    <li style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; font-size: 1.1rem; color: #333;">
                         <span class="feature-icon">📍</span>
                         Personalized Dashboard – Track your progress, explore new opportunities, and manage your membership with ease.
                     </li>
                 </ul>
-                <a href="#" class="explore-btn">Explore Membership Options →</a>
+                <a href="/membership" class="explore-btn" style="
+                    display: inline-block;
+                    margin-top: 2rem;
+                    padding: 1rem 2rem;
+                    background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 8px;
+                    font-weight: 500;
+                    transition: all 0.3s ease;">
+                    Explore Membership Options →
+                </a>
             </div>
             <div class="features-image">
-                <img src="{% static 'images/features-image.jpg' %}" alt="Members collaborating">
+                <img src="{% static 'images/features-image.jpg' %}" alt="Members collaborating" style="
+                    width: 100%;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);">
             </div>
         </div>
     </div>
@@ -117,8 +159,8 @@
 <!-- Testimonials Section -->
 <section class="testimonials">
     <div class="testimonials-container">
-        <h2>Testimonials</h2>
-        <p class="subtitle">Read What Others Have to Say</p>
+        <h2 style="text-align: center; color: #2D46B9; font-size: 2.5rem; margin-bottom: 3rem;">Testimonials</h2>
+        <p class="subtitle" style="text-align: center; color: #2D46B9; font-size: 1.5rem; margin-bottom: 2rem;">Read What Others Have to Say</p>
         
         <div class="testimonials-grid">
             <!-- First Testimonial -->
@@ -205,31 +247,639 @@
 </footer>
 
 <style>
-.admin-actions {
-    text-align: center;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    margin: 2rem 0;
-}
+    :root {
+        --primary-gradient: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        --primary-color: #2D46B9;
+        --secondary-color: #3457D5;
+        --text-light: #FFFFFF;
+        --text-dark: #1E293B;
+        --text-secondary: #526480;
+        --bg-light: rgba(255, 255, 255, 0.1);
+    }
 
-.admin-buttons {
-    margin-top: 1rem;
-}
+    body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: var(--primary-gradient);
+        font-family: Arial, sans-serif;
+    }
 
-.admin-btn {
-    display: inline-block;
-    padding: 12px 24px;
-    background-color: #20B2AA;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
+    .home-container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-.admin-btn:hover {
-    background-color: #1a8f89;
-}
+    .welcome-section {
+        background: var(--bg-light);
+        backdrop-filter: blur(10px);
+        border-radius: 0;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        color: var(--text-light);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        color: var(--text-dark);
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .action-section {
+        background: white;
+        border-radius: 10px;
+        padding: 2rem;
+        margin-top: 3rem;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    }
+
+    .btn {
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 0.5rem;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        .home-container {
+            padding: 2rem 1rem;
+        }
+
+        .welcome-section {
+            padding: 2rem;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .admin-actions {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+
+    .admin-buttons {
+        margin-top: 1rem;
+    }
+
+    .admin-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #20B2AA;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    .admin-btn:hover {
+        background-color: #1a8f89;
+    }
+
+    /* Features Section */
+    .features {
+        width: 100%;
+        margin: 0;
+        padding: 80px 0;
+        background: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+    }
+
+    .features-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .features-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .features-title {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .features-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
+    }
+
+    .feature-icon {
+        background: var(--primary-gradient);
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-icon i {
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .feature-title {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .feature-description {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+        width: 100%;
+        margin: 0;
+        padding: 80px 0;
+        background: white;
+    }
+
+    .testimonials-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .testimonials-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .testimonials-title {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .testimonials-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .testimonial-card {
+        background: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+        border-radius: 15px;
+        padding: 2rem;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
+    }
+
+    .testimonial-quote {
+        color: var(--text-dark);
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-color);
+    }
+
+    .author-info h4 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .author-info p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .features-title,
+        .testimonials-title {
+            font-size: 2rem;
+        }
+
+        .feature-card,
+        .testimonial-card {
+            padding: 1.5rem;
+        }
+
+        .testimonials-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .features-container,
+        .testimonials-container,
+        .footer-container {
+            padding: 0 15px;
+        }
+    }
+
+    /* Video Section */
+    .video-section {
+        position: relative;
+        padding: 80px 0;
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        overflow: hidden;
+    }
+
+    .video-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .video-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        color: white;
+    }
+
+    .video-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .video-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(45, 70, 185, 0.1);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .video-overlay:hover {
+        background: rgba(45, 70, 185, 0.2);
+    }
+
+    .play-button {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .play-button i {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-left: 5px;
+    }
+
+    .play-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+    }
+
+    .video-frame {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border: none;
+        border-radius: 15px;
+    }
+
+    /* Background decoration */
+    .video-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        opacity: 0.9;
+        z-index: 1;
+    }
+
+    .video-section::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+        animation: rotate 30s linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .video-section {
+            padding: 60px 0;
+        }
+
+        .video-title {
+            font-size: 2rem;
+        }
+
+        .play-button {
+            width: 60px;
+            height: 60px;
+        }
+
+        .play-button i {
+            font-size: 1.5rem;
+        }
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .section-description {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .features-title, 
+    .membership-title {
+        color: var(--primary-color);
+        font-size: 2.2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .features-subtitle,
+    .membership-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+
+    .feature-card h3 {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .membership-benefits h3 {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .membership-benefits p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 4rem 0;
+        background: var(--primary-gradient);
+        color: var(--text-light);
+    }
+
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .cta-description {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+
+    /* Footer adjustment */
+    .footer {
+        width: 100%;
+        margin: 0;
+        padding: 60px 0;
+    }
+
+    .footer-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .hero-section {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: none;
+    }
+
+    .hero-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .background-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(45, 70, 185, 0.6);
+        backdrop-filter: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        padding-top: 120px;
+        padding-left: 4rem;
+        padding-right: 4rem;
+    }
+
+    .hero-title {
+        color: white;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+    }
+
+    .hero-description {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.2rem;
+        max-width: 600px;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 100px 2rem 2rem 2rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
 </style>
 {% endblock %}

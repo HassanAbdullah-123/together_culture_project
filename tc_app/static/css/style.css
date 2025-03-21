@@ -4,6 +4,7 @@
     --white: #ffffff;
 }
 
+/* Reset and base styles */
 * {
     margin: 0;
     padding: 0;
@@ -15,26 +16,78 @@ body {
     line-height: 1.6;
 }
 
-/* Updated Navbar Styles */
+/* Navbar styling */
 .navbar {
-    background-color: var(--primary-color);
-    height: 70px;
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%) !important;
+    padding: 0.75rem 2rem;
 }
 
 .nav-container {
-    max-width: 1200px;
-    height: 100%;
-    margin: 0 auto;
-    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.brand img {
+    height: 35px;
+    width: auto;
+}
+
+.brand span {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    margin-left: 2rem;
+}
+
+.nav-links a {
+    color: white !important;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.login-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white !important;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.signup-btn {
+    background: white;
+    color: #3457D5 !important;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
 }
 
 /* Updated Logo and Brand */
@@ -424,8 +477,10 @@ main {
 .hero-section {
     position: relative;
     min-height: 100vh;
-    padding-top: 70px; /* Account for fixed navbar */
-    background: linear-gradient(135deg, #20B2AA 0%, #1a8f89 100%);
+    background: var(--primary-gradient);
+    overflow: hidden;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 .hero-content {
@@ -760,7 +815,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(32, 178, 170, 0.7);
+    background: rgba(45, 70, 185, 0.7); /* Changed from rgba(32, 178, 170, 0.7) */
     backdrop-filter: blur(2px);
 }
 
@@ -4074,4 +4129,5 @@ a[href*="Events"]:hover::before {
         font-size: 2.8rem;
     }
 }
+
 
