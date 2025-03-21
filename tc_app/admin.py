@@ -57,9 +57,6 @@ class CustomAdminSite(admin.AdminSite):
         try:
             membership = Membership.objects.get(id=membership_id)
             membership.status = 'approved'
-            # Set the start date to now and calculate end date based on membership type duration
-            membership.start_date = timezone.now()
-            membership.end_date = membership.start_date + relativedelta(months=membership.membership_type.duration)
             membership.save()
             
             # Send notification to user (optional)
@@ -83,12 +80,30 @@ class CustomUserAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email')
     list_filter = ('is_staff', 'is_active')
 
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'full_name', 'email', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('user__username', 'full_name', 'email')
+    readonly_fields = ('created_at', 'updated_at')
+    
+    actions = ['approve_selected', 'reject_selected']
+    
+    def approve_selected(self, request, queryset):
+        queryset.update(status='approved')
+        self.message_user(request, f'{queryset.count()} memberships were approved.')
+    approve_selected.short_description = "Approve selected memberships"
+    
+    def reject_selected(self, request, queryset):
+        queryset.update(status='rejected')
+        self.message_user(request, f'{queryset.count()} memberships were rejected.')
+    reject_selected.short_description = "Reject selected memberships"
+
 # Create instance of custom admin site
 admin_site = CustomAdminSite(name='admin')
 
 # Register your models with the custom admin site
 admin_site.register(CustomUser, CustomUserAdmin)
-admin_site.register(Membership)
+admin_site.register(Membership, MembershipAdmin)
 admin_site.register(MembershipType)
 admin_site.register(Event)
 admin_site.register(Module)

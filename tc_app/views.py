@@ -136,8 +136,32 @@ def membership_view(request):
         membership_data = json.load(file)
 
     if request.method == 'POST':
-        if not request.user.is_authenticated:
-            # Get form data
+        if request.user.is_authenticated:
+            # Handle membership update for logged-in users
+            membership_type_id = request.POST.get('membership_type')
+            try:
+                membership_type_id = int(membership_type_id)
+                if membership_type_id not in [1, 2, 3]:
+                    raise ValueError
+                
+                # Update existing membership
+                membership = Membership.objects.get(user=request.user)
+                membership.status = 'pending'  # Set to pending for admin approval
+                membership.save()
+                
+                messages.success(request, 'Membership update request submitted successfully! Pending admin approval.')
+                return redirect('tc_app:member_dashboard')  # or wherever you want to redirect
+                
+            except ValueError:
+                messages.error(request, 'Invalid membership type selected.')
+            except Membership.DoesNotExist:
+                messages.error(request, 'Membership not found.')
+            except Exception as e:
+                logger.error(f"Membership update error: {str(e)}")
+                messages.error(request, 'An error occurred while updating membership.')
+        
+        else:
+            # Existing code for new user registration
             username = request.POST.get('username')
             email = request.POST.get('email')
             password1 = request.POST.get('password1')
@@ -172,8 +196,10 @@ def membership_view(request):
                 logger.error(f"Registration error: {str(e)}")
                 messages.error(request, 'An error occurred during registration. Please try again.')
 
-
-    return render(request, 'membership.html', {'membership_data': membership_data})
+    return render(request, 'membership.html', {
+        'membership_data': membership_data,
+        'current_membership': request.user.membership if request.user.is_authenticated else None
+    })
 
     
     context = {
