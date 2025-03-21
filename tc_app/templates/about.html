@@ -6,107 +6,214 @@
 {% block content %}
 <div class="about-page">
     <!-- Hero Section -->
-    <div class="about-hero">
-        <div class="about-hero-content">
-            <h1>Empowering Communities,<br>Connecting Creators</h1>
-            <p class="hero-description">
-                Together Culture is a community-driven platform designed to foster creativity, 
-                collaboration, and sustainability through technology and innovation
+    <div class="about-hero" style="
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        padding: 120px 0 80px;
+        color: white;
+        min-height: 60vh;
+        display: flex;
+        align-items: center;">
+        
+        <div class="about-hero-content" style="
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;">
+            
+            <h1 style="
+                font-size: 3.5rem;
+                margin-bottom: 1.5rem;
+                max-width: 800px;">Empowering Communities,<br>Connecting Creators</h1>
+            
+            <p class="hero-description" style="
+                font-size: 1.2rem;
+                max-width: 600px;
+                line-height: 1.6;
+                opacity: 0.9;">
+                Together Culture is a community-driven platform designed to foster 
+                creativity, collaboration, and sustainability through technology and 
+                innovation
             </p>
         </div>
     </div>
 
     <!-- Mission Section -->
-    <div class="about-section mission-section">
+    <div class="about-section mission-section" style="
+        padding-top: 120px;
+        padding-bottom: 80px;
+        background: white;">
         <div class="section-container">
             <div class="section-grid">
                 <div class="section-content">
-                    <h2>Our Mission</h2>
-                    <p>At Together Culture, we believe in creating a fair, sustainable, and creative 
-                    economy where individuals can collaborate, share knowledge, and grow together. 
-                    Our platform serves as a bridge connecting diverse creators and fostering meaningful 
-                    partnerships.</p>
-                    <a href="{% url 'tc_app:membership' %}" class="get-involved-btn">Get Involved</a>
+                    <h2 style="color: #2D46B9; margin-bottom: 1.5rem;">Our Mission</h2>
+                    <p style="color: #444; line-height: 1.8; margin-bottom: 1.5rem;">
+                        Together Culture is dedicated to fostering a vibrant community where creativity, collaboration, and cultural exchange thrive.
+                    </p>
+                    
+                    <h2 style="color: #2D46B9; margin-bottom: 1.5rem;">Our Vision</h2>
+                    <p style="color: #444; line-height: 1.8; margin-bottom: 1.5rem;">
+                        We envision a world where cultural boundaries dissolve through shared experiences and mutual understanding.
+                    </p>
+                    
+                    <a href="{% url 'tc_app:membership' %}" class="get-involved-btn" style="
+                        display: inline-block;
+                        padding: 1rem 2rem;
+                        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-weight: 500;
+                        transition: all 0.3s ease;">
+                        Join Our Community →
+                    </a>
                 </div>
                 <div class="section-image">
-                    <img src="{% static 'images/about-mission.jpg' %}" alt="Our Mission">
+                    <img src="{% static 'images/our-mission.jpg' %}" alt="Our Mission">
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Values Section -->
-    <div class="about-section values-section">
+    <div class="about-section values-section" style="
+        padding: 80px 0;
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);">
         <div class="section-container">
-            <h2>Our Core Values</h2>
+            <h2 style="
+                color: white;
+                text-align: center;
+                margin-bottom: 3rem;">Our Core Values</h2>
             <div class="values-grid">
                 <div class="value-card">
                     <div class="value-icon">
-                        <i class="fas fa-users"></i>
+                        <i class="fas fa-users" style="
+                            font-size: 2rem;
+                            color: #2D46B9;
+                            margin-bottom: 1rem;"></i>
                     </div>
-                    <h3>Community First</h3>
-                    <p>Building strong, supportive networks where everyone's voice matters</p>
+                    <h3 style="color: #2D46B9; margin-bottom: 1rem;">Community</h3>
+                    <p style="color: #444;">Building strong connections and fostering meaningful relationships.</p>
                 </div>
                 <div class="value-card">
                     <div class="value-icon">
-                        <i class="fas fa-lightbulb"></i>
+                        <i class="fas fa-lightbulb" style="
+                            font-size: 2rem;
+                            color: #2D46B9;
+                            margin-bottom: 1rem;"></i>
                     </div>
-                    <h3>Innovation</h3>
-                    <p>Embracing new ideas and creative solutions for tomorrow's challenges</p>
+                    <h3 style="color: #2D46B9; margin-bottom: 1rem;">Innovation</h3>
+                    <p style="color: #444;">Embracing new ideas and creative solutions.</p>
                 </div>
                 <div class="value-card">
                     <div class="value-icon">
-                        <i class="fas fa-handshake"></i>
+                        <i class="fas fa-globe" style="
+                            font-size: 2rem;
+                            color: #2D46B9;
+                            margin-bottom: 1rem;"></i>
                     </div>
-                    <h3>Collaboration</h3>
-                    <p>Fostering partnerships that create meaningful impact</p>
-                </div>
-                <div class="value-card">
-                    <div class="value-icon">
-                        <i class="fas fa-leaf"></i>
-                    </div>
-                    <h3>Sustainability</h3>
-                    <p>Promoting practices that benefit both people and planet</p>
+                    <h3 style="color: #2D46B9; margin-bottom: 1rem;">Diversity</h3>
+                    <p style="color: #444;">Celebrating different perspectives and cultural backgrounds.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Impact Section -->
-    <div class="about-section impact-section">
-        <div class="section-container">
-            <h2>Our Impact</h2>
-            <div class="impact-grid">
-                <div class="impact-stat">
-                    <span class="stat-number">1000+</span>
-                    <span class="stat-label">Community Members</span>
+    <div class="impact-section" style="
+        padding: 80px 0;
+        background: white;">
+        
+        <div class="impact-container" style="
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;">
+            
+            <h2 style="color: #2D46B9; margin-bottom: 3rem;">Our Impact</h2>
+            
+            <div class="impact-grid" style="
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 2rem;">
+                
+                <div class="impact-item">
+                    <h3 style="
+                        font-size: 3.5rem;
+                        color: #2D46B9;
+                        margin-bottom: 1rem;">1000+</h3>
+                    <p style="color: #666;">Community Members</p>
                 </div>
-                <div class="impact-stat">
-                    <span class="stat-number">50+</span>
-                    <span class="stat-label">Creative Projects</span>
+                
+                <div class="impact-item">
+                    <h3 style="
+                        font-size: 3.5rem;
+                        color: #2D46B9;
+                        margin-bottom: 1rem;">50+</h3>
+                    <p style="color: #666;">Creative Projects</p>
                 </div>
-                <div class="impact-stat">
-                    <span class="stat-number">100+</span>
-                    <span class="stat-label">Events Hosted</span>
+                
+                <div class="impact-item">
+                    <h3 style="
+                        font-size: 3.5rem;
+                        color: #2D46B9;
+                        margin-bottom: 1rem;">100+</h3>
+                    <p style="color: #666;">Events Hosted</p>
                 </div>
-                <div class="impact-stat">
-                    <span class="stat-number">20+</span>
-                    <span class="stat-label">Partner Organizations</span>
+                
+                <div class="impact-item">
+                    <h3 style="
+                        font-size: 3.5rem;
+                        color: #2D46B9;
+                        margin-bottom: 1rem;">20+</h3>
+                    <p style="color: #666;">Partner Organizations</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Join Us Section -->
-    <div class="about-section join-section">
-        <div class="section-container">
-            <div class="join-content">
-                <h2>Join Our Community</h2>
-                <p>Be part of a growing network of creators, innovators, and change-makers</p>
-                <div class="join-buttons">
-                    <a href="{% url 'tc_app:signup' %}" class="join-btn primary">Sign Up Now</a>
-                    <a href="{% url 'tc_app:contact' %}" class="join-btn secondary">Contact Us</a>
-                </div>
+    <!-- Join Community Section -->
+    <div class="join-section" style="
+        padding: 80px 0;
+        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+        text-align: center;
+        color: white;">
+        
+        <div class="join-container" style="
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;">
+            
+            <h2 style="
+                font-size: 2.5rem;
+                margin-bottom: 1.5rem;">Join Our Community</h2>
+            
+            <p style="
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+                opacity: 0.9;">Be part of a growing network of creators, innovators, and change-makers</p>
+            
+            <div class="join-buttons" style="
+                display: flex;
+                gap: 1rem;
+                justify-content: center;">
+                
+                <a href="/signup" style="
+                    background: white;
+                    color: #2D46B9;
+                    padding: 1rem 2rem;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: 500;
+                    transition: all 0.3s ease;">Sign Up Now</a>
+                
+                <a href="/contact" style="
+                    background: transparent;
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: 500;
+                    border: 2px solid white;
+                    transition: all 0.3s ease;">Contact Us</a>
             </div>
         </div>
     </div>
