@@ -4,19 +4,25 @@
 {% block content %}
 <!-- Hero Section -->
 <div class="hero-section" style="
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     position: relative;
     overflow: hidden;
-    margin-top: 0;
-    padding-top: 65px;">
+    margin: 0;
+    padding: 0;
+    margin-top: -65px;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;">
     <!-- Background Video -->
     <div class="hero-background" style="
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
-        height: 100%;">
+        height: 100%;
+        z-index: 1;">
         <video autoplay muted loop playsinline class="background-video" style="
             width: 100%;
             height: 100%;
@@ -30,20 +36,22 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(45, 70, 185, 0.7);">
+            background: rgba(0, 0, 0, 0.4);">
         </div>
     </div>
     
     <div class="hero-content" style="
         position: relative;
         z-index: 2;
+        padding-top: 65px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding-left: 2rem;
+        padding-right: 2rem;
         height: 100%;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        padding: 0 4rem;
-        max-width: 1200px;
-        margin: 0 auto;">
+        justify-content: center;">
         <h1 style="
             font-size: 3.5rem;
             font-weight: 700;
@@ -110,8 +118,13 @@
     position: relative;
     z-index: 2;
     background: white;
-    padding: 80px 0;">
-    <div class="features-container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+    padding: 80px 0;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
         <h2 style="text-align: center; color: #2D46B9; font-size: 2.5rem; margin-bottom: 3rem;">Features</h2>
         
         <div class="features-content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
@@ -159,12 +172,30 @@
 </section>
 
 <!-- Testimonials Section -->
-<section class="testimonials">
-    <div class="testimonials-container">
-        <h2 style="text-align: center; color: #2D46B9; font-size: 2.5rem; margin-bottom: 3rem;">Testimonials</h2>
-        <p class="subtitle" style="text-align: center; color: #2D46B9; font-size: 1.5rem; margin-bottom: 2rem;">Read What Others Have to Say</p>
+<section class="testimonials" style="
+    padding: 80px 0;
+    background: white;
+    width: 100%;">
+    <div class="testimonials-container" style="
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;">
         
-        <div class="testimonials-grid">
+        <h2 style="
+            text-align: center;
+            color: #2D46B9;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;">Testimonials</h2>
+        <p style="
+            text-align: center;
+            color: #2D46B9;
+            font-size: 1.2rem;
+            margin-bottom: 3rem;">Read What Others Have to Say</p>
+
+        <div class="testimonials-grid" style="
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;">
             <!-- First Testimonial -->
             <div class="testimonial-card">
                 <div class="testimonial-image-container">
@@ -200,688 +231,4 @@
         </div>
     </div>
 </section>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section brand">
-            <h3>Together Culture</h3>
-            <img src="{% static 'images/logo.png' %}" alt="Together Culture Logo">
-        </div>
-
-        <div class="footer-section">
-            <h3>Navigation</h3>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">contact</a></li>
-                <li><a href="#">Events</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h3>Market</h3>
-            <ul>
-                <li><a href="#">Trending</a></li>
-                <li><a href="#">New Arrivals</a></li>
-                <li><a href="#">Top Creators</a></li>
-                <li><a href="#">Twitter</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <h3>contact</h3>
-            <ul>
-                <li><a href="#">Email</a></li>
-                <li><a href="#">LinkedIn</a></li>
-                <li><a href="#">Instagram</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section newsletter">
-            <h3>join our newsletter</h3>
-            <div class="newsletter-form">
-                <input type="email" placeholder="Email Address" class="email-input">
-                <button type="submit" class="submit-btn">submit</button>
-            </div>
-        </div>
-    </div>
-</footer>
-
-<style>
-    :root {
-        --primary-gradient: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
-        --primary-color: #2D46B9;
-        --secondary-color: #3457D5;
-        --text-light: #FFFFFF;
-        --text-dark: #1E293B;
-        --text-secondary: #526480;
-        --bg-light: rgba(255, 255, 255, 0.1);
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-        background: var(--primary-gradient);
-        font-family: Arial, sans-serif;
-    }
-
-    .home-container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
-    .welcome-section {
-        background: var(--bg-light);
-        backdrop-filter: blur(10px);
-        border-radius: 0;
-        padding: 3rem;
-        margin-bottom: 3rem;
-        color: var(--text-light);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        padding: 2rem 0;
-    }
-
-    .feature-card {
-        background: white;
-        border-radius: 10px;
-        padding: 2rem;
-        color: var(--text-dark);
-        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .feature-card h3 {
-        color: var(--primary-color);
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid var(--primary-color);
-    }
-
-    .action-section {
-        background: white;
-        border-radius: 10px;
-        padding: 2rem;
-        margin-top: 3rem;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
-    }
-
-    .btn {
-        padding: 1rem 2rem;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        margin: 0.5rem;
-        border: none;
-    }
-
-    .btn-primary {
-        background: var(--primary-gradient);
-        color: white;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
-    }
-
-    @media (max-width: 768px) {
-        .home-container {
-            padding: 2rem 1rem;
-        }
-
-        .welcome-section {
-            padding: 2rem;
-        }
-
-        .features-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .admin-actions {
-        text-align: center;
-        padding: 2rem;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        margin: 2rem 0;
-    }
-
-    .admin-buttons {
-        margin-top: 1rem;
-    }
-
-    .admin-btn {
-        display: inline-block;
-        padding: 12px 24px;
-        background-color: #20B2AA;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        font-weight: bold;
-        transition: background-color 0.3s;
-    }
-
-    .admin-btn:hover {
-        background-color: #1a8f89;
-    }
-
-    /* Features Section */
-    .features {
-        width: 100%;
-        margin: 0;
-        padding: 80px 0;
-        background: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
-    }
-
-    .features-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .features-header {
-        text-align: center;
-        margin-bottom: 4rem;
-    }
-
-    .features-title {
-        color: var(--primary-color);
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .features-subtitle {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 0;
-        padding: 0;
-    }
-
-    .feature-card {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
-    }
-
-    .feature-icon {
-        background: var(--primary-gradient);
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .feature-icon i {
-        color: white;
-        font-size: 1.5rem;
-    }
-
-    .feature-title {
-        color: var(--primary-color);
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .feature-description {
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-
-    /* Testimonials Section */
-    .testimonials {
-        width: 100%;
-        margin: 0;
-        padding: 80px 0;
-        background: white;
-    }
-
-    .testimonials-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .testimonials-header {
-        text-align: center;
-        margin-bottom: 4rem;
-    }
-
-    .testimonials-title {
-        color: var(--primary-color);
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .testimonials-subtitle {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .testimonials-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-        margin: 0;
-        padding: 0;
-    }
-
-    .testimonial-card {
-        background: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
-        border-radius: 15px;
-        padding: 2rem;
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .testimonial-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
-    }
-
-    .testimonial-quote {
-        color: var(--text-dark);
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-        font-style: italic;
-    }
-
-    .testimonial-author {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .author-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--primary-color);
-    }
-
-    .author-info h4 {
-        color: var(--primary-color);
-        font-weight: 600;
-        margin-bottom: 0.25rem;
-    }
-
-    .author-info p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-        .features-title,
-        .testimonials-title {
-            font-size: 2rem;
-        }
-
-        .feature-card,
-        .testimonial-card {
-            padding: 1.5rem;
-        }
-
-        .testimonials-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .features-container,
-        .testimonials-container,
-        .footer-container {
-            padding: 0 15px;
-        }
-    }
-
-    /* Video Section */
-    .video-section {
-        position: relative;
-        padding: 80px 0;
-        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
-        overflow: hidden;
-    }
-
-    .video-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px;
-        position: relative;
-        z-index: 2;
-    }
-
-    .video-header {
-        text-align: center;
-        margin-bottom: 3rem;
-        color: white;
-    }
-
-    .video-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .video-subtitle {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-
-    .video-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .video-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(45, 70, 185, 0.1);
-        backdrop-filter: blur(5px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .video-overlay:hover {
-        background: rgba(45, 70, 185, 0.2);
-    }
-
-    .play-button {
-        width: 80px;
-        height: 80px;
-        background: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    }
-
-    .play-button i {
-        color: var(--primary-color);
-        font-size: 2rem;
-        margin-left: 5px;
-    }
-
-    .play-button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
-    }
-
-    .video-frame {
-        width: 100%;
-        aspect-ratio: 16/9;
-        border: none;
-        border-radius: 15px;
-    }
-
-    /* Background decoration */
-    .video-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
-        opacity: 0.9;
-        z-index: 1;
-    }
-
-    .video-section::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
-        animation: rotate 30s linear infinite;
-        z-index: 1;
-    }
-
-    @keyframes rotate {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    @media (max-width: 768px) {
-        .video-section {
-            padding: 60px 0;
-        }
-
-        .video-title {
-            font-size: 2rem;
-        }
-
-        .play-button {
-            width: 60px;
-            height: 60px;
-        }
-
-        .play-button i {
-            font-size: 1.5rem;
-        }
-    }
-
-    .section-header {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .section-title {
-        color: var(--primary-color);
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .section-description {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        max-width: 700px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-
-    .features-title, 
-    .membership-title {
-        color: var(--primary-color);
-        font-size: 2.2rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .features-subtitle,
-    .membership-subtitle {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        text-align: center;
-        max-width: 600px;
-        margin: 0 auto 3rem;
-        line-height: 1.6;
-    }
-
-    .feature-card h3 {
-        color: var(--primary-color);
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .feature-card p {
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-
-    .membership-benefits h3 {
-        color: var(--primary-color);
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .membership-benefits p {
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-
-    .cta-section {
-        text-align: center;
-        padding: 4rem 0;
-        background: var(--primary-gradient);
-        color: var(--text-light);
-    }
-
-    .cta-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-    }
-
-    .cta-description {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        line-height: 1.6;
-    }
-
-    /* Footer adjustment */
-    .footer {
-        width: 100%;
-        margin: 0;
-        padding: 60px 0;
-    }
-
-    .footer-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 20px;
-    }
-
-    .hero-section {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: none;
-    }
-
-    .hero-background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    .background-video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(45, 70, 185, 0.6);
-        backdrop-filter: none;
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-        padding-top: 120px;
-        padding-left: 4rem;
-        padding-right: 4rem;
-    }
-
-    .hero-title {
-        color: white;
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-    }
-
-    .hero-description {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.2rem;
-        max-width: 600px;
-        line-height: 1.6;
-        margin-bottom: 2rem;
-    }
-
-    @media (max-width: 768px) {
-        .hero-content {
-            padding: 100px 2rem 2rem 2rem;
-        }
-
-        .hero-title {
-            font-size: 2.5rem;
-        }
-    }
-</style>
 {% endblock %}
