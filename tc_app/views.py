@@ -171,10 +171,10 @@ def membership_view(request):
             except Exception as e:
                 logger.error(f"Registration error: {str(e)}")
                 messages.error(request, 'An error occurred during registration. Please try again.')
-<<<<<<< HEAD
+
 
     return render(request, 'membership.html', {'membership_data': membership_data})
-=======
+
     
     context = {
         'membership_types': membership_types,
@@ -190,7 +190,7 @@ def membership_view(request):
     response['Expires'] = '0'
     
     return response
->>>>>>> f644d83d73441203c357be8204bda8d4783f566a
+
 
 def get_membership_description(membership_type):
     descriptions = {

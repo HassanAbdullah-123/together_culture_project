@@ -18,1094 +18,9 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-<<<<<<< HEAD
         {% endfor %}
     {% endif %}
-=======
-            <div class="info-grid">
-                <div class="form-group">
-                    <label for="username">Username*</label>
-                    <input type="text" 
-                           id="username" 
-                           name="username" 
-                           required 
-                           autocomplete="off"
-                           value="">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email Address*</label>
-                    <input type="email" 
-                           id="email" 
-                           name="email" 
-                           required 
-                           autocomplete="off"
-                           value="">
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Password*</label>
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           required 
-                           autocomplete="new-password"
-                           value="">
-                </div>
-
-                <div class="form-group">
-                    <label for="full_name">Full Name*</label>
-                    <input type="text" 
-                           id="full_name" 
-                           name="full_name" 
-                           required 
-                           autocomplete="off"
-                           value="">
-                </div>
-
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" 
-                           id="phone" 
-                           name="phone" 
-                           autocomplete="off"
-                           value="">
-                </div>
-
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" 
-                           id="location" 
-                           name="location" 
-                           autocomplete="off"
-                           value="">
-                </div>
-            </div>
-
-            <!-- Add this script at the bottom of the form -->
-            <script>
-                (function() {
-                    // Clear form on page load
-                    window.onload = function() {
-                        clearForm();
-                    };
-
-                    // Clear form on page show (when coming back from browser history)
-                    window.onpageshow = function(event) {
-                        if (event.persisted) {
-                            clearForm();
-                        }
-                    };
-
-                    // Clear form when leaving the page
-                    window.onunload = function() {
-                        clearForm();
-                    };
-
-                    function clearForm() {
-                        // Get the form
-                        const form = document.getElementById('membershipForm');
-                        if (form) {
-                            // Reset the form
-                            form.reset();
-
-                            // Clear all input fields
-                            const inputs = form.querySelectorAll('input');
-                            inputs.forEach(input => {
-                                input.value = '';
-                                
-                                // Remove any browser-saved data
-                                input.setAttribute('autocomplete', 'off');
-                                
-                                // For password fields
-                                if (input.type === 'password') {
-                                    input.setAttribute('autocomplete', 'new-password');
-                                }
-                            });
-
-                            // Clear browser autofill
-                            document.execCommand('clearAuthenticationCache');
-                            
-                            // Additional measure to prevent autofill
-                            setTimeout(() => {
-                                inputs.forEach(input => {
-                                    input.value = '';
-                                });
-                            }, 100);
-                        }
-                    }
-
-                    // Add event listener for form submission
-                    if (document.getElementById('membershipForm')) {
-                        document.getElementById('membershipForm').addEventListener('submit', function() {
-                            // Clear localStorage and sessionStorage
-                            localStorage.clear();
-                            sessionStorage.clear();
-                        });
-                    }
-                })();
-            </script>
-
-            <!-- Add this meta tag in the head section -->
-            {% block extra_head %}
-            <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, post-check=0, pre-check=0">
-            <meta http-equiv="Pragma" content="no-cache">
-            <meta http-equiv="Expires" content="0">
-            {% endblock %}
-            {% endif %}
-
-            <!-- Membership Plans Section -->
-            <div class="section-header">
-                <h2><i class="fas fa-crown"></i> {% if is_authenticated %}Select New Plan{% else %}Select Your Plan{% endif %}</h2>
-            </div>
-
-            <div class="membership-options">
-                <div class="membership-option">
-                    <label class="plan-details">
-                        <h3 data-type="community">Community Member</h3>
-                        <div class="price">£0.00<span>/month</span></div>
-                        <div class="features">
-                            <ul>
-                                <li>Basic membership that allows access to general community events and discussions.</li>
-                                <li>Members can participate in networking events, workshops, and online forums.</li>
-                                <li>Ideal for individuals looking to connect, learn, and contribute to the creative community.</li>
-                            </ul>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="membership-option">
-                    <label class="plan-details">
-                        <h3 data-type="key_access">Key Access Member</h3>
-                        <div class="price">£49.99<span>/month</span></div>
-                        <div class="features">
-                            <ul>
-                                <li>Includes all benefits of Community Membership plus 24/7 access to specific shared spaces.</li>
-                                <li>Members can use co-working areas, attend exclusive networking sessions, and access premium resources.</li>
-                                <li>Perfect for professionals and creatives who need flexible access to collaborative spaces.</li>
-                            </ul>
-                        </div>
-                    </label>
-                </div>
-
-                <div class="membership-option">
-                    <label class="plan-details">
-                        <h3 data-type="workspace">Creative Workspace Member</h3>
-                        <div class="price">£99.99<span>/month</span></div>
-                        <div class="features">
-                            <ul>
-                                <li>Full-access membership for individuals who require dedicated workspace and advanced facilities.</li>
-                                <li>Includes a personal desk or studio space, high-speed internet, printing services, and storage.</li>
-                                <li>Ideal for artists, entrepreneurs, and freelancers needing a permanent creative hub.</li>
-                            </ul>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn">
-                {% if is_authenticated %}
-                    Update Membership Plan
-                {% else %}
-                    Create Account & Join
-                {% endif %}
-            </button>
-
-            {% if not is_authenticated %}
-            <div class="login-prompt">
-                <p>Already have an account? <a href="{% url 'tc_app:login_choice' %}">Login here</a></p>
-            </div>
-            {% endif %}
-        </form>
-    </div>
->>>>>>> f644d83d73441203c357be8204bda8d4783f566a
 </div>
-
-<style>
-    :root {
-        --primary: #2563eb;
-        --primary-dark: #1d4ed8;
-        --primary-light: #3b82f6;
-        --secondary: #1a237e;
-        --success: #10b981;
-        --accent: #6366f1;
-        --text-primary: #1e293b;
-        --text-secondary: #64748b;
-        --border-color: #e2e8f0;
-        --bg-gradient: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
-        --card-gradient: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
-        --header-gradient: linear-gradient(135deg, #2563eb 0%, #1a237e 100%);
-        --form-bg: linear-gradient(to bottom right, #f1f5f9, #e2e8f0);
-    }
-
-    .membership-page {
-        background: var(--bg-gradient);
-        padding: 40px 20px;
-        min-height: 100vh;
-    }
-
-    .container {
-        max-width: 1400px;
-        margin: 0 auto;
-<<<<<<< HEAD
-        padding: 0 30px;
-        width: 100%;
-=======
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        box-shadow: 0 5px 20px rgba(45, 70, 185, 0.1);
-    }
-
-    .membership-header {
-        text-align: center;
-        margin-bottom: 2rem;
-        padding: 2rem;
-        background: linear-gradient(45deg, #2D46B9, #3457D5);
-        border-radius: 15px;
-        color: white;
-    }
-
-    .membership-header h1 {
-        color: white;
-        margin-bottom: 0.5rem;
-        font-size: 2.2rem;
-        font-weight: 600;
-    }
-
-    .membership-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-bottom: 30px;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #333;
-        font-weight: 500;
-    }
-
-    .form-group label::after {
-        content: "*";
-        color: #4052EC;
-        margin-left: 4px;
-    }
-
-    .form-group label:not([for*="required"])::after {
-        display: none;
-    }
-
-    .form-group input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        border: 2px solid #e6e9f5;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-group input:focus {
-        outline: none;
-        border-color: #4052EC;
-        box-shadow: 0 0 0 3px rgba(64, 82, 236, 0.1);
-    }
-
-    .form-group input::placeholder {
-        color: #aab;
-    }
-
-    /* Style for required fields */
-    .form-group input:required {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='none' stroke='%234052EC' stroke-width='1'/%3E%3C/svg%3E");
-        background-position: right 10px center;
-        background-repeat: no-repeat;
-        padding-right: 35px;
-    }
-
-    /* Error state */
-    .form-group input:invalid:not(:placeholder-shown) {
-        border-color: #dc3545;
-    }
-
-    /* Success state */
-    .form-group input:valid:not(:placeholder-shown) {
-        border-color: #28a745;
->>>>>>> f644d83d73441203c357be8204bda8d4783f566a
-    }
-
-    .page-header {
-        background: var(--header-gradient);
-        padding: 80px 30px;
-        border-radius: 25px;
-        text-align: center;
-        margin-bottom: 60px;
-        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
-        animation: fadeIn 0.8s ease-out;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Add decorative elements to header */
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-                    linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%);
-        background-size: 60px 60px;
-        opacity: 0.1;
-    }
-
-<<<<<<< HEAD
-    .page-title {
-        font-size: 3.2rem;
-        color: white;
-        margin-bottom: 20px;
-        font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-=======
-    .login-prompt a:hover {
-        text-decoration: underline;
-    }
-
-    .membership-options {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 2rem;
-        margin: 2rem 0;
-    }
-
-    .membership-option {
->>>>>>> f644d83d73441203c357be8204bda8d4783f566a
-        position: relative;
-        background: white;
-        border: 2px solid #E2E8F0;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        box-shadow: 0 4px 15px rgba(45, 70, 185, 0.08);
-    }
-
-    .membership-option:hover {
-        border-color: #2D46B9;
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
-    }
-
-    .page-subtitle {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.3rem;
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
-        position: relative;
-    }
-
-<<<<<<< HEAD
-    .registration-form {
-        background: var(--form-bg);
-        padding: 40px;
-        border-radius: 25px;
-        margin-bottom: 40px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-    }
-
-    .registration-form:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .section-title {
-        color: var(--primary-dark);
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 30px;
-        padding-bottom: 15px;
-        border-bottom: 2px solid var(--primary);
-        text-align: center;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 25px;
-    }
-
-    .form-group {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(5px);
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.9);
-    }
-
-    .form-group:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-        background: rgba(255, 255, 255, 0.8);
-    }
-
-    .form-label {
-        font-size: 1rem;
-        color: var(--text-primary);
-        margin-bottom: 10px;
-        font-weight: 500;
-    }
-
-    .form-input {
-        padding: 12px 16px;
-        border: 2px solid var(--border-color);
-        border-radius: 12px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: rgba(255, 255, 255, 0.9);
-    }
-
-    .form-input:focus {
-        border-color: var(--primary);
-        background: white;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        outline: none;
-    }
-
-    .membership-plans-container {
-        width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .membership-plans {
-        display: flex;
-        justify-content: space-between;
-        gap: 20px;
-        margin: 40px 0;
-    }
-
-    .plan-card {
-        flex: 1;
-        min-width: 0; /* Prevents flex items from growing beyond their content */
-    }
-
-    .plan-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
-        border-color: var(--primary);
-    }
-
-    /* Style for selected plan */
-    .plan-card.selected {
-        border: 2px solid var(--primary);
-        background: linear-gradient(to bottom right, #fff, #f0f7ff);
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
-    }
-
-    .plan-card input[type="radio"] {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        width: 20px;
-        height: 20px;
-        cursor: pointer;
-        accent-color: var(--primary);
-    }
-
-    .plan-header {
-        padding: 10px 0;
-    }
-
-    .plan-name {
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-        line-height: 1.2;
-    }
-
-    .plan-price {
-        font-size: 1.8rem;
-        font-weight: bold;
-        line-height: 1.4;  /* Increased line height */
-        padding: 5px 0;    /* Added padding */
-        margin: 10px 0;    /* Added margin */
-    }
-
-    .price-period {
-        font-size: 1rem;
-        color: #666;
-    }
-
-    .popular-badge {
-        position: absolute;
-        top: 20px;
-        right: -35px;
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-        padding: 8px 40px;
-        transform: rotate(45deg);
-        font-size: 0.85rem;
-        font-weight: 500;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        z-index: 1;
-    }
-
-    .plan-description {
-        font-size: 0.95rem;
-        line-height: 1.5;
-        margin: 15px 0;
-        word-wrap: break-word;  /* Handle long text */
-    }
-
-    .plan-features {
-        flex-grow: 1;  /* Take remaining space */
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .feature-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .plan-footer {
-        margin-top: 25px;
-        padding-top: 20px;
-        border-top: 2px solid rgba(37, 99, 235, 0.1);
-        font-style: italic;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-=======
-    .plan-details {
-        display: block;
-        padding: 2.5rem 2rem;
-        cursor: pointer;
-    }
-
-    .plan-details h3 {
-        color: white;
-        margin-bottom: 1.5rem;
-        font-size: 1.6rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 1.2rem;
-        background: linear-gradient(135deg, #2D46B9, #3457D5);
-        border-radius: 12px;
-        margin: -2.5rem -2rem 2rem;
-        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.15);
-    }
-
-    .plan-details h3::before {
-        content: '🌱';
-        font-size: 1.4rem;
-        background: rgba(255, 255, 255, 0.15);
-        padding: 0.5rem;
-        border-radius: 8px;
-    }
-
-    .plan-details h3[data-type="key_access"]::before {
-        content: '🔑';
-    }
-
-    .plan-details h3[data-type="workspace"]::before {
-        content: '🎨';
-    }
-
-    .plan-details .price {
-        font-size: 2.4rem;
-        font-weight: bold;
-        color: #2D46B9;
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        text-align: center;
-        background: linear-gradient(135deg, rgba(45, 70, 185, 0.08), rgba(52, 87, 213, 0.08));
-        border-radius: 12px;
-        border: 2px solid rgba(45, 70, 185, 0.1);
-    }
-
-    .plan-details .price span {
-        font-size: 1rem;
-        color: #666;
-        font-weight: 500;
-    }
-
-    .plan-details .features {
-        color: #1a1a1a;
-        font-size: 0.95rem;
-        line-height: 1.7;
-    }
-
-    .plan-details .features ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .plan-details .features li {
-        padding: 1.2rem;
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        background: linear-gradient(135deg, #f8f9ff, #ffffff);
-        border-radius: 12px;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(45, 70, 185, 0.1);
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(45, 70, 185, 0.05);
-        color: #000000;
-    }
-
-    .plan-details .features li:hover {
-        background: white;
-        border-color: rgba(45, 70, 185, 0.2);
-        transform: translateX(5px);
-        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.1);
-    }
-
-    .plan-details .features li::before {
-        content: '→';
-        color: #3457D5;
-        font-weight: bold;
-        min-width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(45, 70, 185, 0.1);
-        border-radius: 6px;
-    }
-
-    .membership-option input[type="radio"]:checked + .plan-details {
-        background-color: rgba(45, 70, 185, 0.02);
-    }
-
-    .membership-option input[type="radio"]:checked + .plan-details .features li {
-        background: white;
-        border-color: rgba(45, 70, 185, 0.2);
-        box-shadow: 0 4px 12px rgba(45, 70, 185, 0.08);
-    }
-
-    .membership-option.current-plan {
-        border-color: #2D46B9;
-        box-shadow: 0 8px 25px rgba(45, 70, 185, 0.15);
-    }
-
-    /* Hover and active states */
-    .membership-option:hover .plan-details .features li {
-        border-color: rgba(45, 70, 185, 0.2);
-    }
-
-    .membership-option input[type="radio"]:checked + .plan-details .price {
-        background: linear-gradient(135deg, rgba(45, 70, 185, 0.12), rgba(52, 87, 213, 0.12));
-        border-color: rgba(45, 70, 185, 0.2);
-    }
-
-    /* Additional enhancements for feature items */
-    .plan-details .features li:nth-child(1) {
-        background: linear-gradient(135deg, rgba(45, 70, 185, 0.05), rgba(52, 87, 213, 0.05));
-        border-color: rgba(45, 70, 185, 0.15);
-        font-weight: 600;
-    }
-
-    .plan-details .features li:nth-child(2) {
-        background: linear-gradient(135deg, rgba(45, 70, 185, 0.03), rgba(52, 87, 213, 0.03));
-        border-color: rgba(45, 70, 185, 0.12);
-        font-weight: 600;
-    }
-
-    .plan-details .features li:nth-child(3) {
-        background: linear-gradient(135deg, rgba(45, 70, 185, 0.02), rgba(52, 87, 213, 0.02));
-        border-color: rgba(45, 70, 185, 0.1);
-        font-weight: 600;
-    }
-
-    .learn-more-link {
-        display: inline-block;
-        margin-top: 1.5rem;
-        color: #20B2AA;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .learn-more-link:hover {
-        color: #1a8f88;
-        transform: translateX(5px);
-    }
-
-    .form-actions {
->>>>>>> f644d83d73441203c357be8204bda8d4783f566a
-        text-align: center;
-    }
-
-    .submit-button {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-        color: white;
-        padding: 16px 40px;
-        border-radius: 15px;
-        border: none;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
-        width: 100%;
-        text-align: center;
-    }
-
-    .submit-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
-        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
-    }
-
-    .message {
-        padding: 16px;
-        border-radius: 15px;
-        margin-bottom: 15px;
-        animation: slideIn 0.5s ease-out;
-        background: white;
-        border-left: 4px solid var(--primary);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    .message.success {
-        border-left-color: var(--success);
-        background: #f0fdf4;
-    }
-
-    .message.error {
-        border-left-color: #ef4444;
-        background: #fef2f2;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideIn {
-        from { transform: translateX(-100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 1024px) {
-        .membership-plans {
-            flex-wrap: wrap;
-        }
-        
-        .plan-card {
-            flex: 1 1 calc(50% - 10px);
-        }
-        
-        .plan-details {
-            padding: 2rem 1.5rem;
-        }
-        
-        .plan-details h3 {
-            margin: -2rem -1.5rem 2rem;
-            font-size: 1.4rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .plan-card {
-            flex: 1 1 100%;
-        }
-        
-        .container {
-            padding: 0 20px;
-        }
-        
-        .plan-details .price {
-            font-size: 2rem;
-        }
-    }
-
-    /* Add a subtle animation to the header text */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .page-title {
-        animation: fadeInUp 0.8s ease-out forwards;
-    }
-
-    .page-subtitle {
-        animation: fadeInUp 0.8s ease-out 0.2s forwards;
-        opacity: 0;
-    }
-
-    .login-section {
-        text-align: center;
-        margin-top: 50px;
-        padding: 30px;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-    }
-
-    .login-text {
-        color: var(--text-secondary);
-        font-size: 1.1rem;
-        margin-bottom: 15px;
-    }
-
-    .login-link {
-        color: var(--primary);
-        font-weight: 600;
-        text-decoration: none;
-        padding: 10px 20px;
-        border: 2px solid var(--primary);
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        display: inline-block;
-    }
-
-    .login-link:hover {
-        background: var(--primary);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-    }
-
-    .login-divider {
-        display: flex;
-        align-items: center;
-        margin: 40px 0;
-        color: var(--text-secondary);
-    }
-
-    .login-divider::before,
-    .login-divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .login-divider span {
-        padding: 0 20px;
-        font-size: 1.1rem;
-        background: var(--bg-gradient);
-        border-radius: 20px;
-        padding: 5px 20px;
-    }
-
-    /* Add to existing styles */
-    .messages {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        width: 350px;
-    }
-
-    .message {
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        animation: slideIn 0.5s ease-out forwards;
-    }
-
-    .message.success {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        border-left: 4px solid #059669;
-    }
-
-    .message.error {
-        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        color: white;
-        border-left: 4px solid #dc2626;
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-
-    /* Auto hide animation */
-    .message {
-        animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-out forwards 4.5s;
-    }
-
-    @keyframes fadeOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-
-    .flash-messages {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-width: 400px;
-    }
-
-    .flash-message {
-        padding: 16px 20px;
-        border-radius: 8px;
-        background: white;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        animation: slideIn 0.5s ease forwards;
-        opacity: 0;
-        transform: translateX(100%);
-    }
-
-    .flash-message.show {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .flash-message.success {
-        border-left: 4px solid #28a745;
-    }
-
-    .flash-message.error {
-        border-left: 4px solid #dc3545;
-    }
-
-    .message-content {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .message-content i {
-        font-size: 20px;
-    }
-
-    .flash-message.success i {
-        color: #28a745;
-    }
-
-    .flash-message.error i {
-        color: #dc3545;
-    }
-
-    .message-content span {
-        color: #333;
-        font-size: 15px;
-    }
-
-    .close-btn {
-        background: none;
-        border: none;
-        color: #666;
-        cursor: pointer;
-        padding: 4px;
-        margin-left: 10px;
-        transition: color 0.3s ease;
-    }
-
-    .close-btn:hover {
-        color: #333;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: center;
-        margin: 30px 0;
-        width: 100%;
-    }
-
-    .submit-btn {
-        min-width: 200px;  /* Gives the button a good width */
-        padding: 12px 30px;
-    }
-</style>
-
-<!-- Add this at the top of your template for debugging -->
-{% if debug %}
-<div style="background: #f0f0f0; padding: 10px; margin: 10px; border: 1px solid #ccc;">
-    <h3>Debug Information:</h3>
-    <p>Available Membership Types:</p>
-    <ul>
-    {% for type in membership_types %}
-        <li>ID: {{ type.id }} - Name: {{ type.name }}</li>
-    {% endfor %}
-    </ul>
-</div>
-{% endif %}
 
 <div class="membership-page">
     <div class="container">
@@ -1209,6 +124,593 @@
         </div>
     </div>
 </div>
+
+<style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-light: #3b82f6;
+        --secondary: #1a237e;
+        --success: #10b981;
+        --accent: #6366f1;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --border-color: #e2e8f0;
+        --bg-gradient: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
+        --card-gradient: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+        --header-gradient: linear-gradient(135deg, #2563eb 0%, #1a237e 100%);
+        --form-bg: linear-gradient(to bottom right, #f1f5f9, #e2e8f0);
+    }
+
+    .membership-page {
+        background: var(--bg-gradient);
+        padding: 40px 20px;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 30px;
+        width: 100%;
+    }
+
+    .membership-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 2rem;
+        background: linear-gradient(45deg, #2D46B9, #3457D5);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .membership-header h1 {
+        color: white;
+        margin-bottom: 0.5rem;
+        font-size: 2.2rem;
+        font-weight: 600;
+    }
+
+    .membership-header p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+        margin: 0;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .form-group label::after {
+        content: "*";
+        color: #4052EC;
+        margin-left: 4px;
+    }
+
+    .form-group label:not([for*="required"])::after {
+        display: none;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e6e9f5;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #4052EC;
+        box-shadow: 0 0 0 3px rgba(64, 82, 236, 0.1);
+    }
+
+    .form-group input::placeholder {
+        color: #aab;
+    }
+
+    /* Style for required fields */
+    .form-group input:required {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='7.5' fill='none' stroke='%234052EC' stroke-width='1'/%3E%3C/svg%3E");
+        background-position: right 10px center;
+        background-repeat: no-repeat;
+        padding-right: 35px;
+    }
+
+    /* Error state */
+    .form-group input:invalid:not(:placeholder-shown) {
+        border-color: #dc3545;
+    }
+
+    /* Success state */
+    .form-group input:valid:not(:placeholder-shown) {
+        border-color: #28a745;
+    }
+
+    .page-header {
+        background: var(--header-gradient);
+        padding: 80px 30px;
+        border-radius: 25px;
+        text-align: center;
+        margin-bottom: 60px;
+        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2);
+        animation: fadeIn 0.8s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Add decorative elements to header */
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+                    linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%);
+        background-size: 60px 60px;
+        opacity: 0.1;
+    }
+
+    .page-title {
+        font-size: 3.2rem;
+        color: white;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .page-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.3rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+        position: relative;
+    }
+
+    .registration-form {
+        background: var(--form-bg);
+        padding: 40px;
+        border-radius: 25px;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .registration-form:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        color: var(--primary-dark);
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 30px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid var(--primary);
+        text-align: center;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+
+    .form-group {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(5px);
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.9);
+    }
+
+    .form-group:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .form-label {
+        font-size: 1rem;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    .form-input {
+        padding: 12px 16px;
+        border: 2px solid var(--border-color);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-input:focus {
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        outline: none;
+    }
+
+    .membership-plans-container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .membership-plans {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin: 40px 0;
+    }
+
+    .plan-card {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+        border-color: var(--primary);
+    }
+
+    /* Style for selected plan */
+    .plan-card.selected {
+        border: 2px solid var(--primary);
+        background: linear-gradient(to bottom right, #fff, #f0f7ff);
+        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+    }
+
+    .plan-card input[type="radio"] {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--primary);
+    }
+
+    .plan-header {
+        padding: 10px 0;
+    }
+
+    .plan-name {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        line-height: 1.2;
+    }
+
+    .plan-price {
+        font-size: 1.8rem;
+        font-weight: bold;
+        line-height: 1.4;
+        padding: 5px 0;
+        margin: 10px 0;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .popular-badge {
+        position: absolute;
+        top: 20px;
+        right: -35px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 8px 40px;
+        transform: rotate(45deg);
+        font-size: 0.85rem;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    .plan-description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin: 15px 0;
+        word-wrap: break-word;
+    }
+
+    .plan-features {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .plan-footer {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 2px solid rgba(37, 99, 235, 0.1);
+        font-style: italic;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+        width: 100%;
+    }
+
+    .submit-btn {
+        min-width: 200px;
+        padding: 12px 30px;
+    }
+
+    @media (max-width: 1024px) {
+        .membership-plans {
+            flex-wrap: wrap;
+        }
+        
+        .plan-card {
+            flex: 1 1 calc(50% - 10px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .plan-card {
+            flex: 1 1 100%;
+        }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(-100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .page-title {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+
+    .page-subtitle {
+        animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        opacity: 0;
+    }
+
+    .login-section {
+        text-align: center;
+        margin-top: 50px;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .login-text {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .login-link {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+        padding: 10px 20px;
+        border: 2px solid var(--primary);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .login-link:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .login-divider {
+        display: flex;
+        align-items: center;
+        margin: 40px 0;
+        color: var(--text-secondary);
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .login-divider span {
+        padding: 0 20px;
+        font-size: 1.1rem;
+        background: var(--bg-gradient);
+        border-radius: 20px;
+        padding: 5px 20px;
+    }
+
+    .messages {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        width: 350px;
+    }
+
+    .message {
+        padding: 15px 20px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .message.success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border-left: 4px solid #059669;
+    }
+
+    .message.error {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border-left: 4px solid #dc2626;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .message {
+        animation: slideIn 0.5s ease-out forwards, fadeOut 0.5s ease-out forwards 4.5s;
+    }
+
+    @keyframes fadeOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    .flash-messages {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 400px;
+    }
+
+    .flash-message {
+        padding: 16px 20px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        animation: slideIn 0.5s ease forwards;
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    .flash-message.show {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .flash-message.success {
+        border-left: 4px solid #28a745;
+    }
+
+    .flash-message.error {
+        border-left: 4px solid #dc3545;
+    }
+
+    .message-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .message-content i {
+        font-size: 20px;
+    }
+
+    .flash-message.success i {
+        color: #28a745;
+    }
+
+    .flash-message.error i {
+        color: #dc3545;
+    }
+
+    .message-content span {
+        color: #333;
+        font-size: 15px;
+    }
+
+    .close-btn {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px;
+        margin-left: 10px;
+        transition: color 0.3s ease;
+    }
+
+    .close-btn:hover {
+        color: #333;
+    }
+</style>
 
 <script>
     function selectPlan(planId) {
