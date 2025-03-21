@@ -9,6 +9,11 @@
     <!-- Add Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         .navbar {
             position: fixed;
             top: 0;
@@ -145,6 +150,16 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             background: #f8f9fa;
         }
+
+        main {
+            margin-top: 0; /* Remove any margin */
+            padding-top: 0; /* Remove any padding */
+        }
+
+        .hero-section {
+            margin-top: 0 !important; /* Override any other margins */
+            padding-top: 65px; /* Equal to navbar height */
+        }
     </style>
 </head>
 <body>
@@ -186,7 +201,7 @@
     </div>
     {% endif %}
 
-    <main>
+    <main style="margin: 0; padding: 0;">
     {% block content %}{% endblock %}
     </main>
 
