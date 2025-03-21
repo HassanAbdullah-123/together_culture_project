@@ -13,7 +13,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #20B2AA;
+            background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
             font-family: Arial, sans-serif;
         }
 
@@ -21,7 +21,7 @@
             background: white;
             padding: 40px;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
             width: 100%;
             max-width: 400px;
             text-align: center;
@@ -34,9 +34,14 @@
         }
 
         .site-title {
-            color: #20B2AA;
+            color: #2D46B9;
             font-size: 24px;
             margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #2D46B9;
+            margin-bottom: 20px;
         }
 
         .form-group {
@@ -58,21 +63,28 @@
             font-size: 16px;
         }
 
+        .form-group input:focus {
+            border-color: #2D46B9;
+            box-shadow: 0 0 0 2px rgba(45, 70, 185, 0.1);
+            outline: none;
+        }
+
         .login-btn {
             width: 100%;
             padding: 12px;
-            background-color: #20B2AA;
+            background: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
             margin-top: 20px;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .login-btn:hover {
-            background-color: #1a8f88;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
         }
 
         .back-link {
@@ -81,20 +93,35 @@
         }
 
         .back-btn {
-            color: #666;
+            color: #2D46B9;
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .back-btn:hover {
-            color: #20B2AA;
+            color: #3457D5;
+            text-decoration: underline;
         }
 
-        .error-message {
-            color: #dc3545;
-            margin-bottom: 15px;
-            text-align: center;
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>

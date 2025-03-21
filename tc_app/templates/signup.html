@@ -6,6 +6,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Together Culture</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+            --primary-color: #2D46B9;
+            --secondary-color: #3457D5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-gradient);
+            font-family: Arial, sans-serif;
+        }
+
+        .signup-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(45, 70, 185, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .signup-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .signup-logo img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .signup-logo h1 {
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+
+        .signup-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #2D46B9;
+            box-shadow: 0 0 0 2px rgba(45, 70, 185, 0.1);
+            outline: none;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .signup-btn:hover {
+            background: linear-gradient(135deg, #3457D5 0%, #2D46B9 100%);
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body class="signup-page">
     <div class="signup-container">
