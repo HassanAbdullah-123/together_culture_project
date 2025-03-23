@@ -266,14 +266,40 @@
                 </div>
             </div>
             <div class="auth-buttons">
-                <a href="/login" class="login-btn">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login
-                </a>
-                <a href="/signup" class="signup-btn">
-                    <i class="fas fa-user-plus"></i>
-                    <span>Sign Up</span>
-                </a>
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <button class="user-button" onclick="toggleDropdown()">
+                            {% if user.membership.profile_image %}
+                                <img src="{{ user.membership.profile_image.url }}" alt="Profile" class="profile-pic">
+                            {% else %}
+                                <i class="fas fa-user-circle"></i>
+                            {% endif %}
+                            <span>{{ user.username }}</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="dropdown-menu" id="userDropdown">
+                            <a href="{% url 'tc_app:profile' %}">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                            <a href="{% url 'tc_app:member_dashboard' %}">
+                                <i class="fas fa-tachometer-alt"></i> Dashboard
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'tc_app:logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="/login" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </a>
+                    <a href="/signup" class="signup-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>Sign Up</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -360,37 +386,19 @@
 <script>
 function toggleDropdown() {
     const dropdown = document.getElementById('userDropdown');
-    const userInfo = document.querySelector('.user-info');
-    
-    // Toggle the dropdown
     dropdown.classList.toggle('show');
-    userInfo.classList.toggle('active');
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function closeDropdown(e) {
-        if (!dropdown.contains(e.target) && !userInfo.contains(e.target)) {
-            dropdown.classList.remove('show');
-            userInfo.classList.remove('active');
-            document.removeEventListener('click', closeDropdown);
-        }
-    });
 }
 
-// Close dropdown with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const dropdown = document.getElementById('userDropdown');
-        const userInfo = document.querySelector('.user-info');
-        dropdown.classList.remove('show');
-        userInfo.classList.remove('active');
+// Close dropdown when clicking outside
+window.onclick = function(event) {
+    if (!event.target.matches('.user-button') && !event.target.matches('.user-button *')) {
+        const dropdowns = document.getElementsByClassName('dropdown-menu');
+        for (const dropdown of dropdowns) {
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
+            }
+        }
     }
-});
-
-// Prevent dropdown from closing when clicking inside it
-document.getElementById('userDropdown')?.addEventListener('click', function(e) {
-    if (!e.target.classList.contains('logout-btn')) {
-        e.stopPropagation();
-    }
-});
+}
 </script>
 </html>

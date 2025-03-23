@@ -135,6 +135,14 @@ def membership_view(request):
     with open(json_file_path, 'r') as file:
         membership_data = json.load(file)
 
+    # Get current membership if user is authenticated
+    current_membership = None
+    if request.user.is_authenticated:
+        try:
+            current_membership = request.user.membership
+        except Membership.DoesNotExist:
+            current_membership = None
+
     if request.method == 'POST':
         if request.user.is_authenticated:
             # Handle membership update for logged-in users
@@ -144,24 +152,31 @@ def membership_view(request):
                 if membership_type_id not in [1, 2, 3]:
                     raise ValueError
                 
-                # Update existing membership
-                membership = Membership.objects.get(user=request.user)
-                membership.status = 'pending'  # Set to pending for admin approval
-                membership.save()
+                # Update or create membership
+                membership, created = Membership.objects.get_or_create(
+                    user=request.user,
+                    defaults={
+                        'status': 'pending',
+                        'full_name': request.user.get_full_name() or request.user.username,
+                        'email': request.user.email
+                    }
+                )
+                
+                if not created:
+                    membership.status = 'pending'
+                    membership.save()
                 
                 messages.success(request, 'Membership update request submitted successfully! Pending admin approval.')
-                return redirect('tc_app:member_dashboard')  # or wherever you want to redirect
+                return redirect('tc_app:member_dashboard')
                 
             except ValueError:
                 messages.error(request, 'Invalid membership type selected.')
-            except Membership.DoesNotExist:
-                messages.error(request, 'Membership not found.')
             except Exception as e:
                 logger.error(f"Membership update error: {str(e)}")
                 messages.error(request, 'An error occurred while updating membership.')
         
         else:
-            # Existing code for new user registration
+            # Handle new user registration (existing code remains the same)
             username = request.POST.get('username')
             email = request.POST.get('email')
             password1 = request.POST.get('password1')
@@ -196,16 +211,10 @@ def membership_view(request):
                 logger.error(f"Registration error: {str(e)}")
                 messages.error(request, 'An error occurred during registration. Please try again.')
 
-    return render(request, 'membership.html', {
-        'membership_data': membership_data,
-        'current_membership': request.user.membership if request.user.is_authenticated else None
-    })
-
-    
     context = {
-        'membership_types': membership_types,
+        'membership_data': membership_data,
         'current_membership': current_membership,
-        'is_authenticated': is_authenticated
+        'is_authenticated': request.user.is_authenticated
     }
     
     response = render(request, 'membership.html', context)
