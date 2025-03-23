@@ -2,6 +2,65 @@
 {% load static %}
 
 {% block content %}
+<style>
+:root {
+    --primary-color: #2D46B9;
+    --primary-light: #3457D5;
+    --secondary-color: #FF6B6B;
+    --accent-color: #4ECDC4;
+    --gradient-1: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+    --gradient-2: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+    --gradient-3: linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%);
+    --bg-gradient: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+    --card-gradient: linear-gradient(135deg, #FFFFFF 0%, #F8FAFF 100%);
+    --text-primary: #2C3E50;
+    --text-secondary: #526480;
+}
+
+.profile-container {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.profile-card {
+    background: var(--card-gradient);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(45, 70, 185, 0.1);
+    padding: 2rem;
+}
+
+.profile-header {
+    background: var(--gradient-1);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.edit-profile-btn {
+    background: var(--gradient-2);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.profile-section h2 {
+    color: var(--text-primary);
+}
+
+.profile-info p {
+    color: var(--text-secondary);
+}
+</style>
+
 <div class="profile-page">
     <div class="profile-container">
         <!-- Profile Header -->
