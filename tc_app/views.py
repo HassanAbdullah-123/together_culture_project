@@ -135,103 +135,53 @@ def membership_view(request):
     with open(json_file_path, 'r') as file:
         membership_data = json.load(file)
 
-    # Get current membership if user is authenticated
-    current_membership = None
-    if request.user.is_authenticated:
+    # Create MembershipTypes if they don't exist
+    for mt in membership_data['membership_types']:
+        MembershipType.objects.get_or_create(
+            id=mt['id'],
+            defaults={
+                'name': mt['name'],
+                'code': 'community',
+                'description': mt['description'],
+                'price': mt['price'],
+                'duration': 1
+            }
+        )
+
+    if request.method == 'POST' and request.user.is_authenticated:
+        membership_type_id = request.POST.get('membership_type')
         try:
-            current_membership = request.user.membership
-        except Membership.DoesNotExist:
-            current_membership = None
+            membership_type = MembershipType.objects.get(id=membership_type_id)
+            
+            membership, created = Membership.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'status': 'pending',
+                    'full_name': request.user.get_full_name() or request.user.username,
+                    'email': request.user.email,
+                    'membership_type': membership_type,
+                    'start_date': timezone.now(),
+                    'end_date': timezone.now() + timezone.timedelta(days=30)
+                }
+            )
+            
+            if not created:
+                membership.status = 'pending'
+                membership.save()
+            
+            messages.success(request, 'Your membership update request has been submitted successfully! It is pending approval and admin will review it shortly.')
+            # Store the message in session before redirect
+            request.session['pending_message'] = True
+            return redirect('tc_app:profile')
+            
+        except MembershipType.DoesNotExist:
+            messages.error(request, 'Invalid membership type selected.')
 
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            # Handle membership update for logged-in users
-            membership_type_id = request.POST.get('membership_type')
-            try:
-                membership_type_id = int(membership_type_id)
-                if membership_type_id not in [1, 2, 3]:
-                    raise ValueError
-                
-                # Update or create membership
-                membership, created = Membership.objects.get_or_create(
-                    user=request.user,
-                    defaults={
-                        'status': 'pending',
-                        'full_name': request.user.get_full_name() or request.user.username,
-                        'email': request.user.email
-                    }
-                )
-                
-                if not created:
-                    membership.status = 'pending'
-                    membership.save()
-                
-                messages.success(request, 'Your membership update request has been submitted successfully! It is pending approval and admin will review it shortly.')
-                # Store the message in session before redirect
-                request.session['pending_message'] = True
-                return redirect('tc_app:member_dashboard')
-                
-            except ValueError:
-                messages.error(request, 'Invalid membership type selected.')
-            except Exception as e:
-                logger.error(f"Membership update error: {str(e)}")
-                messages.error(request, 'An error occurred while updating membership.')
-        
-        else:
-            # Handle new user registration (existing code remains the same)
-            username = request.POST.get('username')
-            email = request.POST.get('email')
-            password1 = request.POST.get('password1')
-            password2 = request.POST.get('password2')
-            full_name = request.POST.get('full_name')
-            phone = request.POST.get('phone_number')
-            location = request.POST.get('location')
-            membership_type_id = request.POST.get('membership_type')
-
-            try:
-                # Create user
-                user = CustomUser.objects.create_user(
-                    username=username,
-                    email=email,
-                    password=password1
-                )
-
-                # Create membership
-                membership = Membership.objects.create(
-                    user=user,
-                    full_name=full_name,
-                    email=email,
-                    phone_number=phone,
-                    location=location,
-                    status='pending'
-                )
-
-                messages.success(request, 'Registration successful! Your membership is pending approval. Please login to your account.')
-                return redirect('tc_app:login')
-
-            except Exception as e:
-                logger.error(f"Registration error: {str(e)}")
-                messages.error(request, 'An error occurred during registration. Please try again.')
-
-    # Check for pending message in session
-    pending_message = request.session.pop('pending_message', False)
-    
     context = {
         'membership_data': membership_data,
-        'current_membership': current_membership,
-        'is_authenticated': request.user.is_authenticated,
-        'show_pending_message': pending_message
+        'current_membership': request.user.membership if request.user.is_authenticated else None
     }
-    
-    response = render(request, 'membership.html', context)
-    
-    # Add headers to prevent caching
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    
-    return response
-
+    return render(request, 'membership.html', context)
 
 def get_membership_description(membership_type):
     descriptions = {

@@ -71,6 +71,8 @@ class CustomAdminSite(admin.AdminSite):
         try:
             membership = Membership.objects.get(id=membership_id)
             membership.status = 'approved'
+            membership.start_date = timezone.now()
+            membership.end_date = timezone.now() + timezone.timedelta(days=30)
             membership.save()
             
             # Send notification to user (optional)
@@ -95,15 +97,22 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_filter = ('is_staff', 'is_active')
 
 class MembershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'full_name', 'email', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
+    list_display = ('user', 'full_name', 'email', 'membership_type', 'status', 'created_at')
+    list_filter = ('status', 'created_at', 'membership_type')
     search_fields = ('user__username', 'full_name', 'email')
     readonly_fields = ('created_at', 'updated_at')
+    fields = ('user', 'full_name', 'email', 'phone_number', 'location', 'bio', 'profile_image', 
+             'membership_type', 'status', 'start_date', 'end_date', 'created_at', 'updated_at')
     
     actions = ['approve_selected', 'reject_selected']
     
     def approve_selected(self, request, queryset):
-        queryset.update(status='approved')
+        for membership in queryset:
+            if membership.membership_type:  # Only approve if membership type exists
+                membership.status = 'approved'
+                membership.start_date = timezone.now()
+                membership.end_date = timezone.now() + timezone.timedelta(days=30 * membership.membership_type.duration)
+                membership.save()
         self.message_user(request, f'{queryset.count()} memberships were approved.')
     approve_selected.short_description = "Approve selected memberships"
     

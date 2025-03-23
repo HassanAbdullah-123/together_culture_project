@@ -98,6 +98,9 @@ class Membership(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    start_date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
+    membership_type = models.ForeignKey('MembershipType', on_delete=models.SET_NULL, null=True)
 
     class Meta:
         verbose_name = 'Membership'
