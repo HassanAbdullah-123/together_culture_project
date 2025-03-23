@@ -1,6 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block content %}
+<div class="flash-messages">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash-message {{ message.tags }} show" id="flash-message">
+                <div class="message-content">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                    {% endif %}
+                    <span>{{ message }}</span>
+                </div>
+                <button class="close-btn" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
 {% block title %}Member Dashboard - Together Culture{% endblock %}
 
 {% block extra_head %}
@@ -18,10 +39,85 @@
     margin: 10px 0;
     color: #666;
 }
+
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.flash-message {
+    background: #f0fdf4;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+    border-left: 4px solid #22c55e;
+}
+
+.flash-message.success {
+    background: #f0fdf4;
+    border-left: 4px solid #22c55e;
+}
+
+.message-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #15803d;
+}
+
+.message-content i {
+    font-size: 1.2em;
+    color: #22c55e;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.close-btn:hover {
+    color: #334155;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.flash-message.fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+}
 </style>
 {% endblock %}
 
-{% block content %}
 <div class="member-dashboard">
     <!-- Welcome Section -->
     <div class="dashboard-header">
@@ -289,6 +385,21 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    
+    flashMessages.forEach(message => {
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+            message.classList.add('fade-out');
+            // Remove element after animation
+            setTimeout(() => {
+                message.remove();
+            }, 500);
+        }, 3000);
+    });
+});
 </script>
 
 <style>

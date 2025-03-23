@@ -166,7 +166,9 @@ def membership_view(request):
                     membership.status = 'pending'
                     membership.save()
                 
-                messages.success(request, 'Membership update request submitted successfully! Pending admin approval.')
+                messages.success(request, 'Your membership update request has been submitted successfully! It is pending approval and admin will review it shortly.')
+                # Store the message in session before redirect
+                request.session['pending_message'] = True
                 return redirect('tc_app:member_dashboard')
                 
             except ValueError:
@@ -211,10 +213,14 @@ def membership_view(request):
                 logger.error(f"Registration error: {str(e)}")
                 messages.error(request, 'An error occurred during registration. Please try again.')
 
+    # Check for pending message in session
+    pending_message = request.session.pop('pending_message', False)
+    
     context = {
         'membership_data': membership_data,
         'current_membership': current_membership,
-        'is_authenticated': request.user.is_authenticated
+        'is_authenticated': request.user.is_authenticated,
+        'show_pending_message': pending_message
     }
     
     response = render(request, 'membership.html', context)
@@ -445,7 +451,6 @@ def member_dashboard(request):
     # Get active modules with enrollment status
     active_modules = Module.objects.filter(status='active').order_by('-created_at')[:4]
     
-    # Add enrollment status for each module
     for module in active_modules:
         enrollment = ModuleEnrollment.objects.filter(
             user=request.user,
@@ -455,23 +460,18 @@ def member_dashboard(request):
         module.progress = enrollment.progress if enrollment else 0
         module.enrollment_status = enrollment.status if enrollment else None
 
-    # Get user stats
-    completed_modules_count = ModuleEnrollment.objects.filter(
-        user=request.user,
-        status='completed'
-    ).count()
-
-    booked_events_count = EventBooking.objects.filter(
-        user=request.user,
-        status='confirmed'
-    ).count()
-
     context = {
         'membership': membership,
         'upcoming_events': upcoming_events,
         'active_modules': active_modules,
-        'completed_modules_count': completed_modules_count,
-        'booked_events_count': booked_events_count,
+        'completed_modules_count': ModuleEnrollment.objects.filter(
+            user=request.user,
+            status='completed'
+        ).count(),
+        'booked_events_count': EventBooking.objects.filter(
+            user=request.user,
+            status='confirmed'
+        ).count(),
     }
     
     return render(request, 'member_dashboard.html', context)
