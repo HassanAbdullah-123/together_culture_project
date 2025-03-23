@@ -68,45 +68,35 @@
             Together Culture is a vibrant community where creators, entrepreneurs, and changemakers connect, collaborate, and thrive. Unlock exclusive resources, attend exciting events, and make a real impact.
         </p>
         {% if user.is_authenticated %}
-            <div class="welcome-message">
-                <h2>Welcome back, {{ user.username }}!</h2>
-                <a href="{% url 'tc_app:dashboard' %}" class="dashboard-btn">Go to Dashboard</a>
+            <div class="member-actions">
+                <div class="welcome-message">
+                    <h2>Welcome, {{ user.username }}!</h2>
+                    <p>Ready to make an impact?</p>
+                </div>
+                <div class="action-buttons">
+                    <a href="{% url 'tc_app:member_dashboard' %}" class="action-btn primary">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{% url 'tc_app:profile' %}" class="action-btn secondary">
+                        <i class="fas fa-user"></i>
+                        View Profile
+                    </a>
+                    <a href="{% url 'tc_app:events' %}" class="action-btn secondary">
+                        <i class="fas fa-calendar-alt"></i>
+                        Explore Events
+                    </a>
+                </div>
             </div>
         {% else %}
-            <div class="cta-buttons" style="display: flex; gap: 1rem;">
-                <a href="{% url 'tc_app:login_choice' %}" class="btn btn-primary" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 14px 32px;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    color: #2D46B9;
-                    background: white;
-                    border-radius: 12px;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 15px rgba(32, 178, 170, 0.15);">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Login
-                </a>
-                <a href="{% url 'tc_app:signup' %}" class="btn btn-secondary" style="
-                    display: inline-flex;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 14px 32px;
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    color: white;
-                    background: #2D46B9;
-                    border: 2px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 12px;
-                    text-decoration: none;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                    backdrop-filter: blur(4px);">
+            <div class="cta-buttons">
+                <a href="{% url 'tc_app:signup' %}" class="cta-btn primary">
                     <i class="fas fa-user-plus"></i>
                     Join Now
+                </a>
+                <a href="{% url 'tc_app:login' %}" class="cta-btn secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
                 </a>
             </div>
         {% endif %}

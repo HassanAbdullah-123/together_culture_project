@@ -169,7 +169,11 @@
                     <p>Ready to make an impact?</p>
                 </div>
                 <div class="action-buttons">
-                    <a href="{% url 'tc_app:profile' %}" class="action-btn primary">
+                    <a href="{% url 'tc_app:member_dashboard' %}" class="action-btn primary">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                    <a href="{% url 'tc_app:profile' %}" class="action-btn secondary">
                         <i class="fas fa-user"></i>
                         View Profile
                     </a>

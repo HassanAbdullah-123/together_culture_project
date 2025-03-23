@@ -430,8 +430,12 @@ def admin_dashboard(request):
     }
     return render(request, 'admin_dashboard.html', context)
 
-@login_required
+@login_required(login_url='tc_app:login')
 def member_dashboard(request):
+    # If user is not authenticated, redirect to login
+    if not request.user.is_authenticated:
+        return redirect('tc_app:login')
+        
     try:
         membership = Membership.objects.get(user=request.user)
     except Membership.DoesNotExist:
