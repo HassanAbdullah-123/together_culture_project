@@ -58,6 +58,7 @@ class CustomAdminSite(admin.AdminSite):
         urls = super().get_urls()
         custom_urls = [
             path('home/', self.admin_view(self.home), name='admin-home'),
+            path('dashboard/', self.admin_view(self.admin_dashboard), name='admin-dashboard'),
             path('membership/<int:membership_id>/approve/',
                  self.admin_view(self.approve_membership),
                  name='approve-membership'),
@@ -90,6 +91,17 @@ class CustomAdminSite(admin.AdminSite):
         except Membership.DoesNotExist:
             messages.error(request, 'Membership not found.')
         return HttpResponseRedirect('/admin/')
+
+    def admin_dashboard(self, request):
+        context = {
+            'total_members': Membership.objects.count(),
+            'total_events': Event.objects.count(),
+            'modules': Module.objects.filter(status='active').order_by('-created_at')[:3],
+            'upcoming_events': Event.objects.filter(status='upcoming').order_by('date')[:3],
+            'ongoing_events': Event.objects.filter(status='ongoing').order_by('date')[:3],
+            'completed_events': Event.objects.filter(status='completed').order_by('-date')[:3]
+        }
+        return render(request, 'admin/custom_admin_dashboard.html', context)
 
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'is_staff', 'date_joined')

@@ -38,7 +38,7 @@ def login_choice(request):
     return render(request, 'login_choice.html')
 
 def login_view(request):
-    login_type = request.GET.get('type')
+    login_type = request.GET.get('type', None)
     context = {'login_type': login_type}
     
     if request.method == 'POST':
@@ -59,8 +59,9 @@ def login_view(request):
                 
                 login(request, user)
                 
-                if user.is_staff and login_type == 'admin':
-                    return redirect('admin:index')
+                # Redirect based on login type
+                if login_type == 'admin' and user.is_staff:
+                    return redirect('admin:admin-home')
                 else:
                     return redirect('tc_app:member_dashboard')
             else:

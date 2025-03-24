@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
+from .admin import admin_site
 
 app_name = 'tc_app'
 
@@ -17,7 +18,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('about/', views.about_view, name='about'),
     path('events/', views.events_view, name='events'),
-    path('admin/dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path('admin/home/', admin_site.index, name='admin-home'),
     path('member-dashboard/', views.member_dashboard, name='member_dashboard'),
     path('api/events/<int:event_id>/', views.event_detail_api, name='event_detail_api'),
     path('api/events/<int:event_id>/book/', views.book_event, name='book_event'),

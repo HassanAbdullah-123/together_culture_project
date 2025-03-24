@@ -11,11 +11,11 @@ class UserTypeMiddleware:
             
             # If superuser, ensure they stay in admin interface
             if request.user.is_superuser:
-                # Allow access to admin URLs
-                if 'admin' in request.path:
+                # Allow access to admin URLs and admin home
+                if 'admin' in request.path or current_url == 'admin-home':
                     return self.get_response(request)
-                # Redirect to admin index for non-admin URLs
-                return redirect('admin:index')
+                # Redirect to admin home for non-admin URLs
+                return redirect('admin:admin-home')
             
             # If regular user tries to access admin pages, redirect to dashboard
             if not request.user.is_superuser and 'admin' in request.path:
