@@ -1,0 +1,306 @@
+:root {
+    --primary-color: #2D46B9;
+    --primary-light: #3457D5;
+    --secondary-color: #FF6B6B;
+    --accent-color: #4ECDC4;
+    --gradient-1: linear-gradient(135deg, #2D46B9 0%, #3457D5 100%);
+    --gradient-2: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+    --gradient-3: linear-gradient(135deg, #4ECDC4 0%, #45B7AF 100%);
+    --bg-gradient: linear-gradient(135deg, #F6F8FD 0%, #EDF1FC 100%);
+    --text-primary: #2C3E50;
+    --text-secondary: #526480;
+}
+
+/* Main Container */
+#content {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #F0F4FF 0%, #EBF3FF 100%);
+    border-radius: 15px;
+    box-shadow: 
+        0 4px 15px rgba(45, 70, 185, 0.08),
+        inset 0 0 80px rgba(45, 70, 185, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add decorative background elements */
+#content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #E5EBFF 0%, #F0F4FF 100%);
+    opacity: 0.7;
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+    pointer-events: none;
+}
+
+#content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #E5EBFF 0%, #F0F4FF 100%);
+    opacity: 0.7;
+    border-radius: 50%;
+    transform: translate(-30%, 30%);
+    pointer-events: none;
+}
+
+/* Form Header */
+.module h2, 
+.app-tc_app.model-event.change-form #content h1 {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(45, 70, 185, 0.08);
+    border-left: 4px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.module h2::before {
+    content: '📅';
+    font-size: 24px;
+}
+
+/* Colorful field sections */
+/* Title field */
+.field-title {
+    background: linear-gradient(135deg, rgba(45, 70, 185, 0.03) 0%, rgba(53, 87, 213, 0.07) 100%);
+    border-left: 4px solid #2D46B9;
+}
+
+/* Description field */
+.field-description {
+    background: linear-gradient(135deg, rgba(78, 205, 196, 0.03) 0%, rgba(69, 183, 175, 0.07) 100%);
+    border-left: 4px solid #4ECDC4;
+}
+
+/* Date and Time fields */
+.field-date, .field-time {
+    background: linear-gradient(135deg, rgba(255, 107, 107, 0.03) 0%, rgba(255, 142, 142, 0.07) 100%);
+    border-left: 4px solid #FF6B6B;
+}
+
+/* Location field */
+.field-location {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.03) 0%, rgba(102, 187, 106, 0.07) 100%);
+    border-left: 4px solid #4CAF50;
+}
+
+/* Status field */
+.field-status {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.03) 0%, rgba(255, 202, 40, 0.07) 100%);
+    border-left: 4px solid #FFC107;
+}
+
+/* Category field */
+.field-category {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.03) 0%, rgba(171, 71, 188, 0.07) 100%);
+    border-left: 4px solid #9C27B0;
+}
+
+/* Capacity field */
+.field-capacity {
+    background: linear-gradient(135deg, rgba(3, 169, 244, 0.03) 0%, rgba(41, 182, 246, 0.07) 100%);
+    border-left: 4px solid #03A9F4;
+}
+
+/* Requirements field */
+.field-requirements {
+    background: linear-gradient(135deg, rgba(233, 30, 99, 0.03) 0%, rgba(236, 64, 122, 0.07) 100%);
+    border-left: 4px solid #E91E63;
+}
+
+/* Enhanced form row styling */
+.form-row {
+    margin-bottom: 15px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(45, 70, 185, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for form rows */
+.form-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 70, 185, 0.1);
+}
+
+/* Label styling for colored sections */
+.form-row label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    position: relative;
+}
+
+/* Input styling for colored sections */
+.form-row input[type="text"],
+.form-row input[type="number"],
+.form-row input[type="datetime-local"],
+.form-row select,
+.form-row textarea {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(45, 70, 185, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Focus state for inputs */
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(45, 70, 185, 0.1);
+}
+
+/* Help text styling */
+.help {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding-left: 10px;
+    opacity: 0.8;
+}
+
+/* Required field indicator */
+.required label::after {
+    content: '*';
+    color: #FF6B6B;
+    margin-left: 4px;
+}
+
+/* Submit Button Section */
+.submit-row {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    text-align: right;
+    box-shadow: 0 2px 8px rgba(45, 70, 185, 0.05);
+    border: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+.submit-row input[type="submit"] {
+    background: var(--gradient-1);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(45, 70, 185, 0.2);
+}
+
+.submit-row input[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 70, 185, 0.3);
+}
+
+/* Error Messages */
+.errorlist {
+    background: #fff2f2;
+    color: #dc3545;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    border-left: 3px solid #dc3545;
+}
+
+/* Enhanced Select/Dropdown Styling */
+.form-row select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232D46B9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+/* Select Focus State */
+.form-row select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(45, 70, 185, 0.15);
+    background-color: white;
+}
+
+/* Select Hover State */
+.form-row select:hover {
+    border-color: var(--primary-color);
+    background-color: white;
+}
+
+/* Select Options Styling */
+.form-row select option {
+    padding: 12px;
+    background-color: white;
+    color: var(--text-primary);
+}
+
+/* Select Options Hover */
+.form-row select option:hover,
+.form-row select option:focus,
+.form-row select option:checked {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Active/Selected State */
+.form-row select:active,
+.form-row select:focus option:checked {
+    background-color: rgba(45, 70, 185, 0.1);
+}
+
+/* Disabled State */
+.form-row select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Label for Select Fields */
+.form-row select + label {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Selected Option */
+.form-row select option:checked {
+    font-weight: 600;
+    background-color: rgba(45, 70, 185, 0.1);
+}
+
+/* Specific height for Status and Category select fields */
+.field-status select,
+.field-category select {
+    height: 45px;  /* Increased height for select fields */
+}
+
+/* Specific height for Description textarea */
+.field-description textarea {
+    height: 100px;  /* Reduced height for description */
+    resize: vertical;  /* Allows vertical resizing if needed */
+    min-height: 80px;  /* Minimum height */
+    max-height: 200px;  /* Maximum height */
+} 

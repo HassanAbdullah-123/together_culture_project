@@ -133,6 +133,12 @@ class MembershipAdmin(admin.ModelAdmin):
         self.message_user(request, f'{queryset.count()} memberships were rejected.')
     reject_selected.short_description = "Reject selected memberships"
 
+class EventAdmin(admin.ModelAdmin):
+    class Media:
+        css = {
+            'all': ['css/event-form.css']
+        }
+
 # Create instance of custom admin site
 admin_site = CustomAdminSite(name='admin')
 
@@ -140,7 +146,7 @@ admin_site = CustomAdminSite(name='admin')
 admin_site.register(CustomUser, CustomUserAdmin)
 admin_site.register(Membership, MembershipAdmin)
 admin_site.register(MembershipType)
-admin_site.register(Event)
+admin_site.register(Event, EventAdmin)
 admin_site.register(Module)
 admin_site.register(Contact)
 admin_site.register(Testimonial)
