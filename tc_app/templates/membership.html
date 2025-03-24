@@ -85,7 +85,8 @@
                 <div class="membership-plans">
                     {% for type in membership_data.membership_types %}
                         <div class="plan-card" onclick="selectPlan('type_{{ type.id }}')">
-                            <input type="radio" name="membership_type" id="type_{{ type.id }}" value="{{ type.id }}" required>
+                            <input type="radio" name="membership_type" id="type_{{ type.id }}" value="{{ type.id }}" 
+                                   required {% if type.id == 1 %}checked{% endif %}>
                             <div class="plan-header">
                                 <h3 class="plan-name">{{ type.name }}</h3>
                                 <div class="plan-price">£{{ type.price }}/month</div>
