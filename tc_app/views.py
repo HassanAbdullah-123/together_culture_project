@@ -148,6 +148,18 @@ def membership_view(request):
             }
         )
 
+    if request.user.is_authenticated:
+        # Check if user has membership, if not create default community membership
+        if not hasattr(request.user, 'membership'):
+            community_type = MembershipType.objects.get(id=1)  # Community Member type
+            Membership.objects.create(
+                user=request.user,
+                membership_type=community_type,
+                status='approved',
+                full_name=request.user.get_full_name() or request.user.username,
+                email=request.user.email
+            )
+
     if request.method == 'POST' and request.user.is_authenticated:
         membership_type_id = request.POST.get('membership_type')
         try:

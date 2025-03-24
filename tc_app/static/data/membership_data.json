@@ -3,7 +3,7 @@
         {
             "id": 1,
             "name": "Community Member",
-            "price": 24.99,
+            "price": 0.00,
             "description": "Basic membership that allows access to general community events and discussions.",
             "features": [
                 "Access to community events",
