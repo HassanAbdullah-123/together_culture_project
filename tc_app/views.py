@@ -121,6 +121,17 @@ def signup_view(request):
                 email=email,
                 password=password1
             )
+
+            # Create default community membership
+            community_type = MembershipType.objects.get(id=1, code='community')
+            Membership.objects.create(
+                user=user,
+                full_name=username,
+                email=email,
+                membership_type=community_type,
+                status='pending'
+            )
+
             messages.success(request, 'Account created successfully! Please log in.')
             return redirect('tc_app:login_choice')
             
@@ -128,6 +139,7 @@ def signup_view(request):
             messages.error(request, 'An error occurred during signup. Please try again.')
             return render(request, 'signup.html')
     
+    # Handle GET request
     return render(request, 'signup.html')
 
 def membership_view(request):
@@ -222,9 +234,25 @@ def membership_view(request):
             except Exception as e:
                 messages.error(request, f'An error occurred: {str(e)}')
 
+    try:
+        current_membership = request.user.membership if request.user.is_authenticated else None
+    except Membership.DoesNotExist:
+        # Create default community membership if it doesn't exist
+        if request.user.is_authenticated:
+            community_type = MembershipType.objects.get(code='community')
+            current_membership = Membership.objects.create(
+                user=request.user,
+                full_name=request.user.get_full_name() or request.user.username,
+                email=request.user.email,
+                membership_type=community_type,
+                status='pending'
+            )
+        else:
+            current_membership = None
+
     context = {
         'membership_data': membership_data,
-        'current_membership': request.user.membership if request.user.is_authenticated else None
+        'current_membership': current_membership
     }
     return render(request, 'membership.html', context)
 
