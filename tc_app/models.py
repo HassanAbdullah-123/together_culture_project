@@ -94,6 +94,7 @@ class Membership(models.Model):
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
+    interests = models.TextField(null=True, blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)

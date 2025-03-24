@@ -101,6 +101,13 @@
                 <p>{{ membership.bio }}</p>
             </div>
             {% endif %}
+
+            {% if membership.interests %}
+            <div class="profile-field interests">
+                <h3>Interests</h3>
+                <p>{{ membership.interests }}</p>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Messages -->
@@ -161,6 +168,14 @@
                                 <span>About Me</span>
                             </div>
                             <div class="info-value bio">{{ user.membership.bio|default:"No bio provided"|linebreaks }}</div>
+
+                        </div>
+                        <div class="info-item full-width">
+                            <div class="info-label">
+                                <i class="fas fa-heart"></i>
+                                <span>Interests</span>
+                            </div>
+                            <div class="info-value">{{ user.membership.interests|default:"No interests specified"|linebreaks }}</div>
                         </div>
                     </div>
                 </div>

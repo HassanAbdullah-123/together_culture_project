@@ -83,6 +83,11 @@
                 <textarea id="bio" name="bio" rows="4">{{ membership.bio|default:'' }}</textarea>
             </div>
 
+            <div class="form-group full-width">
+                <label for="interests">Interests</label>
+                <textarea id="interests" name="interests" rows="4">{{ membership.interests|default:'' }}</textarea>
+            </div>
+
             <div class="form-actions">
                 <a href="{% url 'tc_app:profile' %}" class="cancel-btn">Cancel</a>
                 <button type="submit" class="save-btn">Save Changes</button>
