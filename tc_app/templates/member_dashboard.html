@@ -253,7 +253,7 @@
         <div class="welcome-section">
             <h1>Welcome, {{ user.username }}!</h1>
             {% if membership %}
-                <p class="membership-status">{{ membership.membership_type.name }} </p>
+                <p class="membership-status">{{ membership.membership_type.name }} Member</p>
             {% else %}
                 <p class="membership-status">No active membership</p>
             {% endif %}
