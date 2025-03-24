@@ -150,96 +150,31 @@ def membership_view(request):
 
     # Create MembershipTypes if they don't exist
     for mt in membership_data['membership_types']:
+        # Set the correct code for each membership type
+        if mt['id'] == 1:
+            code = 'community'
+        elif mt['id'] == 2:
+            code = 'key_access'
+        else:
+            code = 'creative'
+            
         MembershipType.objects.get_or_create(
             id=mt['id'],
             defaults={
                 'name': mt['name'],
-                'code': 'community',
+                'code': code,
                 'description': mt['description'],
                 'price': mt['price'],
                 'duration': 1
             }
         )
 
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            # Handle existing user membership update
-            membership_type_id = request.POST.get('membership_type')
-            try:
-                membership_type = MembershipType.objects.get(id=membership_type_id)
-                
-                membership, created = Membership.objects.update_or_create(
-                    user=request.user,
-                    defaults={
-                        'status': 'pending',
-                        'full_name': request.user.get_full_name() or request.user.username,
-                        'email': request.user.email,
-                        'membership_type': membership_type
-                    }
-                )
-                
-                messages.success(request, 'Your membership update request has been submitted successfully!')
-                return redirect('tc_app:profile')
-                
-            except MembershipType.DoesNotExist:
-                messages.error(request, 'Invalid membership type selected.')
-        else:
-            # Handle new user registration and membership
-            try:
-                # Get form data
-                username = request.POST.get('username')
-                email = request.POST.get('email')
-                password1 = request.POST.get('password1')
-                password2 = request.POST.get('password2')
-                full_name = request.POST.get('full_name')
-                membership_type_id = request.POST.get('membership_type')
-
-                # Validate passwords match
-                if password1 != password2:
-                    messages.error(request, 'Passwords do not match.')
-                    return render(request, 'membership.html', {'membership_data': membership_data})
-
-                # Create user
-                user = CustomUser.objects.create_user(
-                    username=username,
-                    email=email,
-                    password=password1
-                )
-
-                # Get membership type
-                membership_type = MembershipType.objects.get(id=membership_type_id)
-
-                # Create membership
-                Membership.objects.create(
-                    user=user,
-                    full_name=full_name,
-                    email=email,
-                    phone_number=request.POST.get('phone_number'),
-                    location=request.POST.get('location'),
-                    bio=request.POST.get('bio'),
-                    interests=request.POST.get('interests'),
-                    membership_type=membership_type,
-                    status='pending'
-                )
-
-                # Log the user in
-                login(request, user)
-                messages.success(request, 'Your account has been created and membership request submitted successfully!')
-                return redirect('tc_app:profile')
-
-            except IntegrityError:
-                messages.error(request, 'Username already exists. Please choose a different username.')
-            except MembershipType.DoesNotExist:
-                messages.error(request, 'Invalid membership type selected.')
-            except Exception as e:
-                messages.error(request, f'An error occurred: {str(e)}')
-
     try:
         current_membership = request.user.membership if request.user.is_authenticated else None
     except Membership.DoesNotExist:
         # Create default community membership if it doesn't exist
         if request.user.is_authenticated:
-            community_type = MembershipType.objects.get(code='community')
+            community_type = MembershipType.objects.get(id=1, code='community')
             current_membership = Membership.objects.create(
                 user=request.user,
                 full_name=request.user.get_full_name() or request.user.username,
@@ -250,9 +185,13 @@ def membership_view(request):
         else:
             current_membership = None
 
+    # Get the default community membership type
+    default_membership_type = MembershipType.objects.get(id=1, code='community')
+
     context = {
         'membership_data': membership_data,
-        'current_membership': current_membership
+        'current_membership': current_membership,
+        'default_membership_type': default_membership_type
     }
     return render(request, 'membership.html', context)
 
