@@ -102,7 +102,12 @@
             </div>
             {% endif %}
 
-            
+            {% if membership.interests %}
+            <div class="profile-field interests">
+                <h3>Interests</h3>
+                <p>{{ membership.interests }}</p>
+            </div>
+            {% endif %}
         </div>
 
         <!-- Messages -->

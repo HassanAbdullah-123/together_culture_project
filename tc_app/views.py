@@ -94,11 +94,6 @@ def signup_view(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
-        full_name = request.POST.get('full_name')
-        phone_number = request.POST.get('phone_number')
-        location = request.POST.get('location')
-        bio = request.POST.get('bio')
-        interests = request.POST.get('interests')
         
         # Validation
         if not all([username, email, password1, password2]):
@@ -126,19 +121,6 @@ def signup_view(request):
                 email=email,
                 password=password1
             )
-
-            # Create membership with interests
-            membership = Membership.objects.create(
-                user=user,
-                full_name=full_name,
-                email=email,
-                phone_number=phone_number,
-                location=location,
-                bio=bio,
-                interests=interests,
-                status='pending'
-            )
-
             messages.success(request, 'Account created successfully! Please log in.')
             return redirect('tc_app:login_choice')
             
@@ -289,7 +271,6 @@ def edit_profile_view(request):
             membership.phone_number = request.POST.get('phone_number', '')
             membership.location = request.POST.get('location', '')
             membership.bio = request.POST.get('bio', '')
-            membership.interests = request.POST.get('interests', '')
             membership.save()
             
             messages.success(request, 'Profile updated successfully!')
