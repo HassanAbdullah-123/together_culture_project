@@ -169,6 +169,79 @@ def membership_view(request):
             }
         )
 
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            # Handle existing user membership update
+            membership_type_id = request.POST.get('membership_type')
+            try:
+                membership_type = MembershipType.objects.get(id=membership_type_id)
+                
+                membership, created = Membership.objects.update_or_create(
+                    user=request.user,
+                    defaults={
+                        'status': 'pending',
+                        'full_name': request.user.get_full_name() or request.user.username,
+                        'email': request.user.email,
+                        'membership_type': membership_type
+                    }
+                )
+                
+                messages.success(request, 'Your membership update request has been submitted successfully!')
+                return redirect('tc_app:profile')
+                
+            except MembershipType.DoesNotExist:
+                messages.error(request, 'Invalid membership type selected.')
+        else:
+            # Handle new user registration and membership
+            try:
+                # Get form data
+                username = request.POST.get('username')
+                email = request.POST.get('email')
+                password1 = request.POST.get('password1')
+                password2 = request.POST.get('password2')
+                full_name = request.POST.get('full_name')
+                membership_type_id = request.POST.get('membership_type')
+
+                # Validate passwords match
+                if password1 != password2:
+                    messages.error(request, 'Passwords do not match.')
+                    return render(request, 'membership.html', {'membership_data': membership_data})
+
+                # Create user
+                user = CustomUser.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password1
+                )
+
+                # Get membership type
+                membership_type = MembershipType.objects.get(id=membership_type_id)
+
+                # Create membership
+                Membership.objects.create(
+                    user=user,
+                    full_name=full_name,
+                    email=email,
+                    phone_number=request.POST.get('phone_number'),
+                    location=request.POST.get('location'),
+                    bio=request.POST.get('bio'),
+                    interests=request.POST.get('interests'),
+                    membership_type=membership_type,
+                    status='pending'
+                )
+
+                # Log the user in
+                login(request, user)
+                messages.success(request, 'Your account has been created and membership request submitted successfully!')
+                return redirect('tc_app:profile')
+
+            except IntegrityError:
+                messages.error(request, 'Username already exists. Please choose a different username.')
+            except MembershipType.DoesNotExist:
+                messages.error(request, 'Invalid membership type selected.')
+            except Exception as e:
+                messages.error(request, f'An error occurred: {str(e)}')
+
     try:
         current_membership = request.user.membership if request.user.is_authenticated else None
     except Membership.DoesNotExist:
@@ -270,6 +343,7 @@ def edit_profile_view(request):
             membership.phone_number = request.POST.get('phone_number', '')
             membership.location = request.POST.get('location', '')
             membership.bio = request.POST.get('bio', '')
+            membership.interests = request.POST.get('interests', '')
             membership.save()
             
             messages.success(request, 'Profile updated successfully!')
@@ -607,3 +681,51 @@ def subscribe_newsletter(request):
                 'message': str(e)
             })
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        try:
+            membership = request.user.membership
+            
+            # Update basic information
+            membership.full_name = request.POST.get('full_name')
+            membership.email = request.POST.get('email')
+            membership.phone_number = request.POST.get('phone_number')
+            membership.bio = request.POST.get('bio')
+            membership.interests = request.POST.get('interests')
+            
+            # Handle profile image upload
+            if request.FILES.get('profile_image'):
+                membership.profile_image = request.FILES['profile_image']
+            
+            # Handle password update
+            current_password = request.POST.get('current_password')
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if current_password and new_password and confirm_password:
+                if new_password == confirm_password:
+                    if request.user.check_password(current_password):
+                        request.user.set_password(new_password)
+                        request.user.save()
+                        update_session_auth_hash(request, request.user)
+                        messages.success(request, 'Password updated successfully!')
+                    else:
+                        messages.error(request, 'Current password is incorrect.')
+                        return redirect('tc_app:edit_profile')
+                else:
+                    messages.error(request, 'New passwords do not match.')
+                    return redirect('tc_app:edit_profile')
+            
+            membership.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('tc_app:profile')
+            
+        except Exception as e:
+            messages.error(request, f'An error occurred while updating profile: {str(e)}')
+            return redirect('tc_app:edit_profile')
+    
+    return render(request, 'edit_profile.html', {
+        'membership': request.user.membership
+    })
