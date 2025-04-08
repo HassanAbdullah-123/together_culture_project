@@ -147,7 +147,8 @@ def membership_view(request):
     json_file_path = os.path.join(settings.BASE_DIR, 'tc_app/static/data/membership_data.json')
     with open(json_file_path, 'r') as file:
         membership_data = json.load(file)
-
+  
+   
     # Create MembershipTypes if they don't exist
     for mt in membership_data['membership_types']:
         # Set the correct code for each membership type
@@ -157,7 +158,7 @@ def membership_view(request):
             code = 'key_access'
         else:
             code = 'creative'
-            
+        
         MembershipType.objects.get_or_create(
             id=mt['id'],
             defaults={

@@ -60,8 +60,18 @@
                             <input type="text" name="full_name" required>
                         </div>
                         <div class="form-group">
-                            <label>Phone Number</label>
-                            <input type="tel" name="phone_number">
+                            <label for="phone_number">Phone Number</label>
+<input type="tel" id="phone_number" name="phone_number" maxlength="11" required pattern="\d{11}" placeholder="Enter 11-digit number">
+
+<script>
+  const input = document.getElementById("phone_number");
+
+  input.addEventListener("input", function () {
+    // Remove all non-digit characters and limit to 11 digits
+    this.value = this.value.replace(/\D/g, '').slice(0, 11);
+  });
+</script>
+
                         </div>
                         <div class="form-group">
                             <label>Location</label>
@@ -131,7 +141,11 @@
         </form>
     </div>
 </div>
-
+<script>
+    document.getElementById("phone_number").addEventListener("input", function (e) {
+      this.value = this.value.replace(/\D/g, '').slice(0, 11); // Remove non-digits and limit to 11
+    });
+  </script>
 <style>
     :root {
         --primary: #2563eb;
